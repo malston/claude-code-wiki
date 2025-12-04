@@ -1,0 +1,19 @@
+# Claude Code local settings
+.claude/settings.local.json
+.claude/conversation-*
+
+# Secrets
+**/secrets/
+*.pem
+*.key
+!*.key.example
+terraform/certs/generated/
+.envrc
+
+# OS files
+.DS_Store
+
+# Editor
+.idea/
+*.swp
+*.swo

@@ -15,6 +15,55 @@ Claude Code extends capabilities through three distinct mechanisms with differen
 
 ---
 
+## Table of Contents
+
+- [Subagents (Task Tool)](#subagents-task-tool)
+  - [What They Are](#what-they-are)
+  - [Key Characteristics](#key-characteristics)
+  - [When to Use Subagents](#when-to-use-subagents)
+  - [Example: When to Create a Custom Subagent](#example-when-to-create-a-custom-subagent)
+  - [When NOT to Create a Subagent](#when-not-to-create-a-subagent)
+- [Skills](#skills)
+  - [What They Are](#what-they-are-1)
+  - [Technical Structure](#technical-structure)
+  - [Key Characteristics](#key-characteristics-1)
+  - [Context Window Impact](#context-window-impact)
+  - [When to Use Skills](#when-to-use-skills)
+  - [Example: When to Create a Custom Skill](#example-when-to-create-a-custom-skill)
+  - [When NOT to Create a Skill](#when-not-to-create-a-skill)
+  - [Skills vs CLAUDE.md](#skills-vs-claudemd)
+  - [Skills vs Subagents](#skills-vs-subagents)
+  - [Pattern: Lens (Skill) + Reviewer (Subagent)](#pattern-lens-skill--reviewer-subagent)
+- [MCP Servers](#mcp-servers)
+  - [What They Are](#what-they-are-2)
+  - [Key Characteristics](#key-characteristics-2)
+  - [Output Limits](#output-limits)
+  - [When to Use MCP Tools](#when-to-use-mcp-tools)
+- [Context Window Implications](#context-window-implications)
+  - [Main Instance](#main-instance)
+  - [Subagent Context Distribution](#subagent-context-distribution)
+  - [MCP Context Impact](#mcp-context-impact)
+- [Memory System Architecture](#memory-system-architecture)
+  - [Hierarchical Memory (Not Episodic)](#hierarchical-memory-not-episodic)
+  - [Memory Isolation Boundaries](#memory-isolation-boundaries)
+  - [What Memory Stores](#what-memory-stores)
+  - [Memory Impact on Context](#memory-impact-on-context)
+- [Data Flow Comparison](#data-flow-comparison)
+  - [Subagent Flow](#subagent-flow)
+  - [MCP Tool Flow](#mcp-tool-flow)
+- [Decision Matrix](#decision-matrix)
+  - [Quick Reference](#quick-reference)
+- [Best Practices](#best-practices)
+  - [Subagent Configuration](#subagent-configuration)
+  - [Skill Design](#skill-design)
+  - [MCP Server Usage](#mcp-server-usage)
+  - [Context Optimization](#context-optimization)
+- [Key Insight](#key-insight)
+  - [The Three Extension Mechanisms](#the-three-extension-mechanisms)
+- [References](#references)
+
+---
+
 ## Subagents (Task Tool)
 
 ### What They Are
@@ -87,7 +136,7 @@ Main Instance resumes (subagent work didn't pollute context)
 
 **CLAUDE.md contents**:
 
-```markdown
+```text
 You are a compliance-focused code reviewer for a fintech platform.
 
 ## Review Checklist
@@ -130,7 +179,7 @@ Return findings as:
 
 **CLAUDE.md contents**:
 
-```markdown
+```text
 You assist with Python 2 → Python 3 async migration.
 
 ## Your Role
@@ -172,7 +221,7 @@ You assist with Python 2 → Python 3 async migration.
 
 **CLAUDE.md contents**:
 
-```markdown
+```text
 You are an incident response debugger. Your job is systematic root cause analysis.
 
 ## Investigation Framework
@@ -302,7 +351,7 @@ Skills are **lightweight context additions**:
 
 **SKILL.md contents**:
 
-```markdown
+```text
 ---
 name: api-design
 description: Use when designing, implementing, or reviewing REST API endpoints. Provides team conventions for naming, errors, pagination, and versioning.
@@ -365,7 +414,7 @@ See @pagination-patterns.md for cursor-based pagination standards.
 ```
 
 **SKILL.md contents**:
-```markdown
+```text
 ---
 name: db-migrations
 description: Use when creating, reviewing, or planning database migrations. Ensures backward compatibility, rollback safety, and performance considerations.
@@ -428,7 +477,7 @@ description: Use when creating, reviewing, or planning database migrations. Ensu
 
 **SKILL.md contents**:
 
-```markdown
+```text
 ---
 name: security-lens
 description: Apply security awareness during code review and implementation. Catches common vulnerabilities without requiring full security audit.
@@ -534,7 +583,7 @@ A common question: "Should X be a skill or subagent?" Often the answer is **both
 ```
 
 **code-review-lens/SKILL.md** (auto-activates during any coding):
-```markdown
+```text
 ---
 name: code-review-lens
 description: Apply code review awareness during implementation. Catches common issues without requiring full review.
@@ -551,7 +600,7 @@ While writing code, watch for:
 ```
 
 **code-reviewer/CLAUDE.md** (invoked explicitly for PR review):
-```markdown
+```text
 You perform thorough code reviews. Your job is to find issues the author missed.
 
 ## Review Process

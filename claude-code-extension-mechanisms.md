@@ -373,12 +373,10 @@ description: Use when designing, implementing, or reviewing REST API endpoints. 
 
 ## Response Envelope
 All responses use:
-```json
 {
   "data": { ... },
   "meta": { "request_id": "...", "timestamp": "..." }
 }
-```
 
 ## Error Format
 

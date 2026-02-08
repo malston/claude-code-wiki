@@ -104,6 +104,29 @@ How prompt caching reduces the cost of re-sending the system prompt on every API
 
 **Key insight:** Cache reads are 10x cheaper than base input. A 15,000-token system prompt costs ~$1.60 over a 200-message Opus 4.6 session with caching, vs ~$15 without.
 
+### [Context Management: Working Within the Token Budget](claude-code-context-management.md)
+
+Strategies for managing the context window -- Claude's working memory during a session:
+
+**Covered topics:**
+
+- What the context window is and how it fills up
+- What consumes context (file reads are the biggest variable cost)
+- Compaction: auto-compact, manual `/compact`, and what's preserved vs lost
+- Subagents as context management (97.5% context savings on delegated work)
+- Extended thinking and context implications
+- Practical strategies for long sessions
+
+**Quick reference:**
+
+| Model          | Standard | Extended (Beta) | Long Context Pricing |
+| -------------- | -------- | --------------- | -------------------- |
+| **Opus 4.6**   | 200K     | 1M              | 2x input above 200K  |
+| **Sonnet 4.5** | 200K     | 1M              | 2x input above 200K  |
+| **Haiku 4.5**  | 200K     | --              | --                   |
+
+**Key insight:** Caching reduces cost; context management reduces space consumption. They're complementary -- you need both.
+
 ---
 
 ## Future Topics

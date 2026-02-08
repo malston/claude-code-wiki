@@ -347,6 +347,29 @@ Copy-paste-ready hook recipes for the most common automation needs:
 
 **Key insight:** Start simple -- one or two safety hooks are better than a complex multi-hook pipeline. Use PreToolUse for safety (blocking before execution) and PostToolUse for quality (formatting/testing after execution).
 
+### [Building Custom Subagents & Skills: Extending Claude Code](claude-code-custom-extensions.md)
+
+How to build custom subagents, skills, and plugins from scratch:
+
+**Covered topics:**
+
+- Subagents: file structure, YAML frontmatter, tool permissions, model selection, permission modes, persistent memory
+- Skills: SKILL.md format, invocation control, auto-discovery, string substitutions, dynamic context injection
+- The lens + reviewer pattern: lightweight awareness (skill) + deep analysis (subagent) for any domain
+- Plugins: directory structure, manifest, bundling MCP servers + hooks + skills + subagents
+- Managing extensions with `claudeup local`
+- Scope and priority rules across project, user, and plugin levels
+
+**Quick reference:**
+
+| Extension    | What It Is                   | File Location               | When It Runs                  |
+| ------------ | ---------------------------- | --------------------------- | ----------------------------- |
+| **Subagent** | Isolated AI worker           | `.claude/agents/*.md`       | When Claude delegates a task  |
+| **Skill**    | Injected instructions        | `.claude/skills/*/SKILL.md` | Auto-discovered or `/invoked` |
+| **Plugin**   | Packaged bundle of all three | Plugin marketplace or local | When plugin is enabled        |
+
+**Key insight:** Start with a skill, graduate to a subagent. If simple instructions aren't enough because the task needs multi-file investigation or isolated execution, that's when a subagent pays off.
+
 ---
 
 ## Official Resources

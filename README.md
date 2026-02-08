@@ -292,6 +292,30 @@ How to connect Claude Code with external systems -- from MCP servers and hooks t
 
 **Key insight:** Each mechanism operates at a different layer and serves a different purpose. MCP for tool access, hooks for automation, headless for scripting, GitHub Actions for CI/CD. The real power comes from combining them.
 
+### [Model Selection & Cost Management: Choosing the Right Model and Controlling Spend](claude-code-model-selection.md)
+
+How to choose between Opus, Sonnet, and Haiku -- and how to manage what you spend:
+
+**Covered topics:**
+
+- The three model tiers: capabilities, pricing, and speed tradeoffs
+- Decision framework for choosing the right model per task
+- Configuration: aliases, switching, opusplan strategy, effort levels, extended context
+- Subagent model selection for cost-efficient delegation
+- How costs accumulate: input, output, caching, extended thinking
+- Cost reduction strategies: context management, hook preprocessing, headless budgets
+- Session-level and team-level cost tracking
+
+**Quick reference:**
+
+| Model          | Strengths                       | Input/MTok | Output/MTok | Cache Read | Speed    |
+| -------------- | ------------------------------- | ---------- | ----------- | ---------- | -------- |
+| **Opus 4.6**   | Complex reasoning, architecture | $5         | $25         | $0.50      | Moderate |
+| **Sonnet 4.5** | Daily coding, balanced          | $3         | $15         | $0.30      | Fast     |
+| **Haiku 4.5**  | Quick tasks, simple operations  | $1         | $5          | $0.10      | Fastest  |
+
+**Key insight:** Model selection is the single biggest cost lever. Using Sonnet instead of Opus for routine coding cuts input costs by 40% and output costs by 40%. Using Haiku for simple tasks cuts costs by 80%.
+
 ---
 
 ## Official Resources

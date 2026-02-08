@@ -272,15 +272,16 @@ Starting configuration:
 
 ### Estimated Savings
 
-| Metric                             | Before | After  | Saved  |
-| ---------------------------------- | ------ | ------ | ------ |
-| Plugins                            | 21     | 9      | 12     |
-| Skill catalog entries              | ~63    | ~35    | ~28    |
-| Subagent entries                   | ~17    | ~12    | ~5     |
-| Est. tokens/message                | ~6,100 | ~3,800 | ~2,300 |
-| Est. cost over 200 messages (Opus) | ~$2.40 | ~$1.50 | ~$0.90 |
+| Metric                                  | Before | After  | Saved  |
+| --------------------------------------- | ------ | ------ | ------ |
+| Plugins                                 | 21     | 9      | 12     |
+| Skill catalog entries                   | ~63    | ~35    | ~28    |
+| Subagent entries                        | ~17    | ~12    | ~5     |
+| Est. catalog tokens/message             | ~6,100 | ~3,800 | ~2,300 |
+| Cache-read cost, 200 msgs (Opus 4.6)    | ~$0.61 | ~$0.38 | ~$0.23 |
+| Without-cache cost, 200 msgs (Opus 4.6) | ~$6.10 | ~$3.80 | ~$2.30 |
 
-The percentage reduction matters more than the dollar amount -- that's ~2,300 tokens freed up for actual conversation context on every message.
+The dollar savings from catalog reduction are modest with [prompt caching](claude-code-prompt-caching.md) (cache reads are 10x cheaper than base input). The real win is **context window space** -- those ~2,300 tokens freed up per message are available for actual conversation content.
 
 ---
 

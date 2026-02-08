@@ -256,10 +256,10 @@ On subsequent messages, the system prompt stays largely the same. What changes:
 The system prompt is re-sent on every API call. For a 15,000-token system prompt over a 200-message session:
 
 - **Input tokens from system prompt alone:** 3,000,000
-- **At Opus input pricing ($15/M tokens):** ~$45 just for the system prompt
-- **At Sonnet input pricing ($3/M tokens):** ~$9
+- **At Opus 4.6 input pricing ($5/MTok):** ~$15 without caching
+- **At Sonnet 4.5 input pricing ($3/MTok):** ~$9 without caching
 
-This is the baseline cost before conversation content. It's why managing system prompt size matters.
+This is the baseline cost before conversation content. Prompt caching dramatically reduces this (see the [prompt caching article](claude-code-prompt-caching.md)), but managing system prompt size still matters for context window space.
 
 ### Behavior Shaping
 

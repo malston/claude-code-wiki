@@ -82,6 +82,28 @@ Understanding the hidden instruction text assembled and sent on every API call:
 
 **Key insight:** The system prompt is re-sent on every API call. Prompt caching mitigates cost (~90% discount after first message), but the context window space is consumed regardless.
 
+### [Prompt Caching: Why Your System Prompt Doesn't Cost What You Think](claude-code-prompt-caching.md)
+
+How prompt caching reduces the cost of re-sending the system prompt on every API call:
+
+**Covered topics:**
+
+- How prefix-based caching works
+- Cache hierarchy in Claude Code (tools → system → messages)
+- Full pricing breakdown with worked cost examples
+- Cache lifetime, minimum token requirements, and invalidation rules
+- Cost optimization vs context optimization distinction
+
+**Quick reference:**
+
+| Operation              | Multiplier | Opus 4.6   | Sonnet 4.5 |
+| ---------------------- | ---------- | ---------- | ---------- |
+| **Cache write (5min)** | 1.25x base | $6.25/MTok | $3.75/MTok |
+| **Cache read**         | 0.1x base  | $0.50/MTok | $0.30/MTok |
+| **Uncached input**     | 1x base    | $5/MTok    | $3/MTok    |
+
+**Key insight:** Cache reads are 10x cheaper than base input. A 15,000-token system prompt costs ~$1.60 over a 200-message Opus 4.6 session with caching, vs ~$15 without.
+
 ---
 
 ## Future Topics

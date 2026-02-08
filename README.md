@@ -424,6 +424,31 @@ How the permission system works and how to deploy Claude Code at organizational 
 
 **Key insight:** Deny rules always win. Start with deny rules for dangerous patterns, then selectively allow safe operations. Use project settings (committed to git) for team-wide rules and managed settings for enterprise-wide policy.
 
+### [Extended Thinking: How Claude Reasons Through Complex Problems](claude-code-extended-thinking.md)
+
+How extended thinking works, when to use it, and how to control its cost:
+
+**Covered topics:**
+
+- How thinking works: adaptive thinking (Opus 4.6), summarized output, interleaved thinking with tools
+- Effort levels: low/medium/high/max and what each controls (thinking depth, tool calls, explanations)
+- Configuration: toggle on/off, `MAX_THINKING_TOKENS`, budget vs output limits
+- Context window interaction: when thinking tokens are preserved vs stripped
+- When to use thinking: architecture, debugging, planning vs simple edits
+- Cost management: thinking billed as output tokens, effort as primary cost lever
+- Model support and feature compatibility restrictions
+
+**Quick reference:**
+
+| Level      | Thinking Behavior                     | Speed   | Cost    | Availability  |
+| ---------- | ------------------------------------- | ------- | ------- | ------------- |
+| **max**    | No depth limit, absolute maximum      | Slowest | Highest | Opus 4.6 only |
+| **high**   | Almost always thinks deeply (default) | Slow    | High    | All models    |
+| **medium** | May skip thinking for simple queries  | Medium  | Medium  | All models    |
+| **low**    | Minimizes or skips thinking           | Fast    | Low     | All models    |
+
+**Key insight:** Effort levels are the primary cost lever for thinking. On Opus 4.6 with adaptive thinking, Claude automatically scales thinking depth to task complexity -- manual tuning is rarely needed.
+
 ---
 
 ## Official Resources

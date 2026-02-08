@@ -316,6 +316,37 @@ How to choose between Opus, Sonnet, and Haiku -- and how to manage what you spen
 
 **Key insight:** Model selection is the single biggest cost lever. Using Sonnet instead of Opus for routine coding cuts input costs by 40% and output costs by 40%. Using Haiku for simple tasks cuts costs by 80%.
 
+### [Custom Hooks Cookbook: Practical Recipes for Automating Claude Code](claude-code-hooks-cookbook.md)
+
+Copy-paste-ready hook recipes for the most common automation needs:
+
+**Covered topics:**
+
+- Hook fundamentals: types (command, prompt, agent), exit codes, JSON output format
+- Complete event reference: all 14 lifecycle events with matcher syntax
+- Code quality recipes: auto-format (Prettier, gofmt, Ruff, ESLint) on save
+- Safety recipes: block dangerous commands, protect files, guard branches, prevent credential leaks
+- Verification recipes: test gates, build checks, stop-until-passing
+- Notification recipes: macOS/Linux desktop, Slack webhooks
+- Logging recipes: command audit, session tracking, debug wrappers
+- Context injection: post-compaction reminders, project state, environment variables
+- Quality gates: prompt-based and agent-based Stop hooks
+- Combining hooks into complete safety and CI-style setups
+
+**Quick reference:**
+
+| Category          | Example Recipes                                       | Hook Events Used                  |
+| ----------------- | ----------------------------------------------------- | --------------------------------- |
+| **Code quality**  | Auto-format, lint on save, type check                 | PostToolUse (Edit\|Write)         |
+| **Safety**        | Block dangerous commands, protect files, branch guard | PreToolUse (Bash, Edit\|Write)    |
+| **Verification**  | Test gates, build checks, stop-until-passing          | PostToolUse, Stop, TaskCompleted  |
+| **Notifications** | Desktop alerts, Slack, TTS                            | Notification                      |
+| **Logging**       | Command audit, session tracking, debug wrapper        | PostToolUse, SessionStart         |
+| **Context**       | Inject reminders, load state, persist env vars        | SessionStart, UserPromptSubmit    |
+| **Quality gates** | Block stopping until tasks complete, review checks    | Stop, SubagentStop, TaskCompleted |
+
+**Key insight:** Start simple -- one or two safety hooks are better than a complex multi-hook pipeline. Use PreToolUse for safety (blocking before execution) and PostToolUse for quality (formatting/testing after execution).
+
 ---
 
 ## Official Resources

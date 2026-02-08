@@ -127,13 +127,40 @@ Strategies for managing the context window -- Claude's working memory during a s
 
 **Key insight:** Caching reduces cost; context management reduces space consumption. They're complementary -- you need both.
 
+### [Effective Prompting: Getting Better Results from Claude Code](claude-code-effective-prompting.md)
+
+How to structure your requests for better outcomes -- from single messages to multi-session workflows:
+
+**Covered topics:**
+
+- How Claude Code processes your messages (system prompt + conversation + your input)
+- The fundamentals: be explicit, action vs suggestion, provide context, reference specific code
+- Task decomposition and the iterative refinement loop
+- CLAUDE.md as persistent prompting (what to include, what to omit, keeping it concise)
+- Working across context windows (tests-first, state files, fresh vs compaction)
+- Directing tool usage (subagent delegation, parallel operations, managing over-exploration)
+- Common anti-patterns to avoid
+
+**Quick reference:**
+
+| Principle                    | Impact                                          | Effort   |
+| ---------------------------- | ----------------------------------------------- | -------- |
+| **Be explicit, not vague**   | Biggest single improvement in result quality    | Low      |
+| **Action over suggestion**   | Gets implementation instead of recommendations  | Low      |
+| **Provide context ("why")**  | Helps Claude generalize and make good choices   | Low      |
+| **Reference specific code**  | Eliminates guesswork and speeds up responses    | Low      |
+| **Decompose large tasks**    | Reduces errors, enables course correction       | Medium   |
+| **Use CLAUDE.md well**       | Persistent rules applied to every message       | One-time |
+| **Manage multi-window work** | Enables tasks that span beyond a single session | Medium   |
+
+**Key insight:** Specific prompts get specific results. The biggest improvement comes from stating what you want, where, and why -- not from clever prompt engineering tricks.
+
 ---
 
 ## Future Topics
 
 Areas to document as I learn more about optimizing Claude Code workflows:
 
-- **Effective Prompting** - How to structure requests for best outcomes
 - **Memory Organization** - Structuring CLAUDE.md files for different scopes
 - **Workflow Patterns** - Common development workflows and how to optimize them
 - **Testing Strategies** - TDD patterns and test automation with Claude Code

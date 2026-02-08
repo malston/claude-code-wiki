@@ -266,13 +266,31 @@ How to structure test-driven development with Claude Code -- from writing effect
 
 **Key insight:** Tests give Claude a concrete feedback loop. Without tests, Claude produces code that looks right. With tests, Claude iterates until the output actually passes.
 
----
+### [Integration Patterns: Connecting Claude Code with External Tools and Services](claude-code-integration-patterns.md)
 
-## Future Topics
+How to connect Claude Code with external systems -- from MCP servers and hooks to headless mode and CI/CD:
 
-Areas to document as I learn more about optimizing Claude Code workflows:
+**Covered topics:**
 
-- **Integration Patterns** - Connecting Claude Code with external tools and services
+- The four integration mechanisms: MCP servers, hooks, headless mode, GitHub Actions
+- MCP server configuration: transports, scopes, authentication, Tool Search
+- Hook lifecycle: events, matchers, command/prompt/agent types, async hooks
+- Headless mode: `-p` flag, output formats, piping, system prompt customization
+- GitHub Actions: official action, setup, common workflows, cost optimization
+- Claude as MCP server (exposing tools to other applications)
+- Plugins as packaged integrations (bundling MCP + hooks + skills)
+- Integration decision framework and combining patterns
+
+**Quick reference:**
+
+| Mechanism          | Purpose                       | Direction            | Runs When                |
+| ------------------ | ----------------------------- | -------------------- | ------------------------ |
+| **MCP servers**    | Connect external tools/data   | Claude calls out     | Claude decides to use it |
+| **Hooks**          | Automate around Claude's work | System calls scripts | Lifecycle events fire    |
+| **Headless mode**  | Script Claude from outside    | External calls in    | Your script invokes it   |
+| **GitHub Actions** | CI/CD automation              | Events call Claude   | GitHub events trigger it |
+
+**Key insight:** Each mechanism operates at a different layer and serves a different purpose. MCP for tool access, hooks for automation, headless for scripting, GitHub Actions for CI/CD. The real power comes from combining them.
 
 ---
 

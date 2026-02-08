@@ -183,13 +183,41 @@ How to organize Claude Code's memory system -- CLAUDE.md files, rules directorie
 
 **Key insight:** Every line of CLAUDE.md costs context window space on every message. Be specific, not generic -- "use slog for logging" beats "follow best practices."
 
+### [Workflow Patterns: Common Development Workflows with Claude Code](claude-code-workflow-patterns.md)
+
+Core development workflows and how to structure work around Claude Code's strengths:
+
+**Covered topics:**
+
+- The core loop: instruct, review, course-correct
+- Explore-Plan-Implement: separating research from coding, the interview pattern
+- Fix with verification: reproduce, fix, verify
+- Test-driven development: tests as durable requirements across sessions
+- Code review: writer/reviewer pattern with fresh sessions
+- Session management: `/clear`, rewind, named sessions, resuming work
+- Multi-session and parallel work: git worktrees, headless mode, fan-out pattern
+- Subagent patterns: investigation, post-implementation review, avoiding overuse
+- Common failure patterns and how to fix them
+
+**Quick reference:**
+
+| Workflow                      | When to Use                        | Key Pattern                              |
+| ----------------------------- | ---------------------------------- | ---------------------------------------- |
+| **Explore-Plan-Implement**    | New features, unfamiliar code      | Separate research from coding            |
+| **Fix with Verification**     | Bug fixes, error resolution        | Reproduce, fix, verify                   |
+| **Test-Driven Development**   | New features, bug fixes            | Write tests first, then implement        |
+| **Code Review**               | Before merge, after implementation | Fresh session, different perspective     |
+| **Multi-Session**             | Large features, multi-day work     | State files, named sessions, checkpoints |
+| **Headless / CI Integration** | Automated checks, batch operations | `claude -p` with structured output       |
+
+**Key insight:** Give Claude a way to verify its own work -- tests, linters, build commands, screenshots. This single pattern is the highest-leverage improvement to any workflow.
+
 ---
 
 ## Future Topics
 
 Areas to document as I learn more about optimizing Claude Code workflows:
 
-- **Workflow Patterns** - Common development workflows and how to optimize them
 - **Testing Strategies** - TDD patterns and test automation with Claude Code
 - **Debugging Techniques** - Systematic approaches to troubleshooting
 - **Integration Patterns** - Connecting Claude Code with external tools and services

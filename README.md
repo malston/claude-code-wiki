@@ -18,13 +18,13 @@ Understanding the three ways Claude Code extends capabilities and when to use ea
 
 **Quick reference:**
 
-| Aspect | Subagents | Skills | MCP Servers |
-|--------|-----------|--------|-------------|
-| **Purpose** | Task delegation | Workflow guidance | External access |
-| **Reasoning** | Full AI (isolated) | Inherits main | None (deterministic) |
-| **Memory** | Session-based | Shared with main | Stateless |
-| **Context** | Own window | Injected | Minimal overhead |
-| **Invocation** | Explicit | Auto-discovered | Explicit tool calls |
+| Aspect         | Subagents          | Skills            | MCP Servers          |
+| -------------- | ------------------ | ----------------- | -------------------- |
+| **Purpose**    | Task delegation    | Workflow guidance | External access      |
+| **Reasoning**  | Full AI (isolated) | Inherits main     | None (deterministic) |
+| **Memory**     | Session-based      | Shared with main  | Stateless            |
+| **Context**    | Own window         | Injected          | Minimal overhead     |
+| **Invocation** | Explicit           | Auto-discovered   | Explicit tool calls  |
 
 **Key pattern: Lens + Reviewer**
 
@@ -33,6 +33,30 @@ Implementing both lightweight awareness (skill) and deep analysis (subagent) for
 - `security-lens` (skill) - Auto-activates during coding
 - `security-auditor` (subagent) - Deep analysis when explicitly invoked
 
+### [Optimizing Token Usage: Skills, Plugins, and Context Budget](claude-code-token-optimization.md)
+
+Managing the per-message token overhead from skills, plugins, and system configuration:
+
+**Covered topics:**
+
+- Two-phase cost model (catalog vs invocation)
+- How to audit your plugin and skill setup
+- Decision framework for keep/disable/replace
+- Worked example: cutting 21 plugins to 9
+- Managing skills with `claudeup` and plugin settings
+
+**Quick reference:**
+
+| Component                | When Loaded        | Token Cost Pattern          |
+| ------------------------ | ------------------ | --------------------------- |
+| **Skill catalog**        | Every message      | ~25-100 tokens per skill    |
+| **Skill content**        | On invocation only | Varies                      |
+| **Plugin subagents**     | Every message      | ~50-150 tokens per subagent |
+| **CLAUDE.md files**      | Every message      | Entire file contents        |
+| **MCP tool definitions** | Every message      | ~30-80 tokens per tool      |
+
+**Key insight:** A setup with 20+ plugins can consume 4,000-5,000+ tokens per message just for the skill/subagent catalog -- before any actual work happens.
+
 ---
 
 ## Future Topics
@@ -40,7 +64,6 @@ Implementing both lightweight awareness (skill) and deep analysis (subagent) for
 Areas to document as I learn more about optimizing Claude Code workflows:
 
 - **Effective Prompting** - How to structure requests for best outcomes
-- **Context Management** - Strategies for staying within token budgets
 - **Memory Organization** - Structuring CLAUDE.md files for different scopes
 - **Workflow Patterns** - Common development workflows and how to optimize them
 - **Testing Strategies** - TDD patterns and test automation with Claude Code

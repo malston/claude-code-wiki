@@ -17,50 +17,63 @@ Claude Code extends capabilities through three distinct mechanisms with differen
 
 ## Table of Contents
 
-- [Subagents (Task Tool)](#subagents-task-tool)
-  - [What They Are](#what-they-are)
-  - [Key Characteristics](#key-characteristics)
-  - [When to Use Subagents](#when-to-use-subagents)
-  - [Example: When to Create a Custom Subagent](#example-when-to-create-a-custom-subagent)
-  - [When NOT to Create a Subagent](#when-not-to-create-a-subagent)
-- [Skills](#skills)
-  - [What They Are](#what-they-are-1)
-  - [Technical Structure](#technical-structure)
-  - [Key Characteristics](#key-characteristics-1)
-  - [Context Window Impact](#context-window-impact)
-  - [When to Use Skills](#when-to-use-skills)
-  - [Example: When to Create a Custom Skill](#example-when-to-create-a-custom-skill)
-  - [When NOT to Create a Skill](#when-not-to-create-a-skill)
-  - [Skills vs CLAUDE.md](#skills-vs-claudemd)
-  - [Skills vs Subagents](#skills-vs-subagents)
-  - [Pattern: Lens (Skill) + Reviewer (Subagent)](#pattern-lens-skill--reviewer-subagent)
-- [MCP Servers](#mcp-servers)
-  - [What They Are](#what-they-are-2)
-  - [Key Characteristics](#key-characteristics-2)
-  - [Output Limits](#output-limits)
-  - [When to Use MCP Tools](#when-to-use-mcp-tools)
-- [Context Window Implications](#context-window-implications)
-  - [Main Instance](#main-instance)
-  - [Subagent Context Distribution](#subagent-context-distribution)
-  - [MCP Context Impact](#mcp-context-impact)
-- [Memory System Architecture](#memory-system-architecture)
-  - [Hierarchical Memory (Not Episodic)](#hierarchical-memory-not-episodic)
-  - [Memory Isolation Boundaries](#memory-isolation-boundaries)
-  - [What Memory Stores](#what-memory-stores)
-  - [Memory Impact on Context](#memory-impact-on-context)
-- [Data Flow Comparison](#data-flow-comparison)
-  - [Subagent Flow](#subagent-flow)
-  - [MCP Tool Flow](#mcp-tool-flow)
-- [Decision Matrix](#decision-matrix)
-  - [Quick Reference](#quick-reference)
-- [Best Practices](#best-practices)
-  - [Subagent Configuration](#subagent-configuration)
-  - [Skill Design](#skill-design)
-  - [MCP Server Usage](#mcp-server-usage)
-  - [Context Optimization](#context-optimization)
-- [Key Insight](#key-insight)
-  - [The Three Extension Mechanisms](#the-three-extension-mechanisms)
-- [References](#references)
+- [Subagents, Skills, and MCP Servers: Architecture Deep Dive](#subagents-skills-and-mcp-servers-architecture-deep-dive)
+  - [Executive Summary](#executive-summary)
+  - [Table of Contents](#table-of-contents)
+  - [Subagents (Task Tool)](#subagents-task-tool)
+    - [What They Are](#what-they-are)
+    - [Key Characteristics](#key-characteristics)
+    - [When to Use Subagents](#when-to-use-subagents)
+    - [Example: When to Create a Custom Subagent](#example-when-to-create-a-custom-subagent)
+      - [Example 1: Domain-Specific Code Reviewer](#example-1-domain-specific-code-reviewer)
+      - [Example 2: Legacy System Migration Assistant](#example-2-legacy-system-migration-assistant)
+      - [Example 3: Incident Response Debugger](#example-3-incident-response-debugger)
+    - [When NOT to Create a Subagent](#when-not-to-create-a-subagent)
+  - [Skills](#skills)
+    - [What They Are](#what-they-are-1)
+    - [Technical Structure](#technical-structure)
+    - [Key Characteristics](#key-characteristics-1)
+    - [Context Window Impact](#context-window-impact)
+    - [When to Use Skills](#when-to-use-skills)
+    - [Example: When to Create a Custom Skill](#example-when-to-create-a-custom-skill)
+      - [Example 1: API Design Guidelines](#example-1-api-design-guidelines)
+      - [Example 2: Database Migration Checklist](#example-2-database-migration-checklist)
+      - [Example 3: Security Review Lens](#example-3-security-review-lens)
+    - [When NOT to Create a Skill](#when-not-to-create-a-skill)
+    - [Skills vs CLAUDE.md](#skills-vs-claudemd)
+    - [Skills vs Subagents](#skills-vs-subagents)
+    - [Pattern: Lens (Skill) + Reviewer (Subagent)](#pattern-lens-skill--reviewer-subagent)
+      - [The Pattern](#the-pattern)
+      - [Example: Code Review](#example-code-review)
+      - [When to Use Which](#when-to-use-which)
+      - [Other Domains That Fit This Pattern](#other-domains-that-fit-this-pattern)
+  - [MCP Servers](#mcp-servers)
+    - [What They Are](#what-they-are-2)
+    - [Key Characteristics](#key-characteristics-2)
+    - [Output Limits](#output-limits)
+    - [When to Use MCP Tools](#when-to-use-mcp-tools)
+  - [Context Window Implications](#context-window-implications)
+    - [Main Instance](#main-instance)
+    - [Subagent Context Distribution](#subagent-context-distribution)
+    - [MCP Context Impact](#mcp-context-impact)
+  - [Memory System Architecture](#memory-system-architecture)
+    - [Hierarchical Memory (Not Episodic)](#hierarchical-memory-not-episodic)
+    - [Memory Isolation Boundaries](#memory-isolation-boundaries)
+    - [What Memory Stores](#what-memory-stores)
+    - [Memory Impact on Context](#memory-impact-on-context)
+  - [Data Flow Comparison](#data-flow-comparison)
+    - [Subagent Flow](#subagent-flow)
+    - [MCP Tool Flow](#mcp-tool-flow)
+  - [Decision Matrix](#decision-matrix)
+    - [Quick Reference](#quick-reference)
+  - [Best Practices](#best-practices)
+    - [Subagent Configuration](#subagent-configuration)
+    - [Skill Design](#skill-design)
+    - [MCP Server Usage](#mcp-server-usage)
+    - [Context Optimization](#context-optimization)
+  - [Key Insight](#key-insight)
+    - [The Three Extension Mechanisms](#the-three-extension-mechanisms)
+  - [References](#references)
 
 ---
 
@@ -397,12 +410,14 @@ See @pagination-patterns.md for cursor-based pagination standards.
 **Scenario**: Database migrations are high-risk. Your team has a checklist: backward compatibility, rollback plan, index impact, data backfill strategy. You want Claude to automatically apply this thinking when migration work is detected.
 
 **Why a skill (not a subagent)**:
+
 - Checklist guidance, not delegated investigation
 - Should enhance normal workflow, not isolate it
 - Lightweight - just the checklist and considerations
 - Works within main conversation context
 
 **Structure**:
+
 ```
 
 .claude/skills/
@@ -412,6 +427,7 @@ See @pagination-patterns.md for cursor-based pagination standards.
 ```
 
 **SKILL.md contents**:
+
 ```text
 ---
 name: db-migrations
@@ -581,6 +597,7 @@ A common question: "Should X be a skill or subagent?" Often the answer is **both
 ```
 
 **code-review-lens/SKILL.md** (auto-activates during any coding):
+
 ```text
 ---
 name: code-review-lens
@@ -598,6 +615,7 @@ While writing code, watch for:
 ```
 
 **code-reviewer/CLAUDE.md** (invoked explicitly for PR review):
+
 ```text
 You perform thorough code reviews. Your job is to find issues the author missed.
 

@@ -9,6 +9,7 @@ Personal knowledge base for optimizing outcomes with Claude Code - patterns, tec
 Understanding the three ways Claude Code extends capabilities and when to use each:
 
 **Covered topics:**
+
 - Technical architecture of each mechanism
 - When to use each approach (with decision matrix)
 - Real-world examples for custom implementations
@@ -28,6 +29,7 @@ Understanding the three ways Claude Code extends capabilities and when to use ea
 **Key pattern: Lens + Reviewer**
 
 Implementing both lightweight awareness (skill) and deep analysis (subagent) for the same domain:
+
 - `security-lens` (skill) - Auto-activates during coding
 - `security-auditor` (subagent) - Deep analysis when explicitly invoked
 
@@ -50,6 +52,7 @@ Areas to document as I learn more about optimizing Claude Code workflows:
 ## Official Resources
 
 Claude Code documentation:
+
 - [Subagents](https://code.claude.com/docs/en/sub-agents.md)
 - [Skills](https://code.claude.com/docs/en/skills.md)
 - [MCP Servers](https://code.claude.com/docs/en/mcp.md)

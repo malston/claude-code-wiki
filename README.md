@@ -212,6 +212,32 @@ Core development workflows and how to structure work around Claude Code's streng
 
 **Key insight:** Give Claude a way to verify its own work -- tests, linters, build commands, screenshots. This single pattern is the highest-leverage improvement to any workflow.
 
+### [Debugging Techniques: Systematic Troubleshooting with Claude Code](claude-code-debugging-techniques.md)
+
+A systematic approach to debugging with Claude Code -- from sharing errors effectively to tracing root causes:
+
+**Covered topics:**
+
+- The four-phase debugging framework: understand, reproduce, investigate, fix
+- Sharing errors effectively (what to include, what not to do)
+- Tracing techniques: backward tracing, git history, log analysis, architectural reasoning
+- Common bug categories: test failures, runtime errors, "it worked before," intermittent failures
+- Using subagents to investigate without polluting context
+- Debugging across context windows (clearing, saving progress, git checkpoints)
+- Anti-patterns: symptom patching, shotgun debugging, ignoring error messages, fixing tests instead of code
+
+**Quick reference:**
+
+| Technique                     | When to Use                                  | Key Benefit                            |
+| ----------------------------- | -------------------------------------------- | -------------------------------------- |
+| **Share the actual error**    | Always, as the first step                    | Eliminates guessing                    |
+| **Reproduce first**           | Before attempting any fix                    | Confirms the problem, verifies the fix |
+| **Trace backward**            | When the error location isn't the root cause | Finds where the problem originates     |
+| **Git history investigation** | When it "used to work"                       | Finds the breaking change              |
+| **Hypothesis testing**        | Complex bugs with multiple possible causes   | Systematic narrowing to root cause     |
+
+**Key insight:** Understand the root cause before attempting a fix. A failing test that captures the bug, followed by a targeted fix, beats any number of speculative patches.
+
 ---
 
 ## Future Topics
@@ -219,7 +245,6 @@ Core development workflows and how to structure work around Claude Code's streng
 Areas to document as I learn more about optimizing Claude Code workflows:
 
 - **Testing Strategies** - TDD patterns and test automation with Claude Code
-- **Debugging Techniques** - Systematic approaches to troubleshooting
 - **Integration Patterns** - Connecting Claude Code with external tools and services
 
 ---

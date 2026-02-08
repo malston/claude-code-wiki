@@ -370,6 +370,33 @@ How to build custom subagents, skills, and plugins from scratch:
 
 **Key insight:** Start with a skill, graduate to a subagent. If simple instructions aren't enough because the task needs multi-file investigation or isolated execution, that's when a subagent pays off.
 
+### [Agent Teams: Multi-Agent Orchestration in Claude Code](claude-code-agent-teams.md)
+
+How to coordinate multiple Claude Code instances working together on complex tasks:
+
+**Covered topics:**
+
+- Architecture: team lead, teammates, shared task list, mailbox messaging
+- Subagents vs agent teams comparison (hub-and-spoke vs mesh)
+- Starting teams, delegate mode, display modes (in-process, tmux, iTerm2)
+- Task system: states, dependencies, self-claiming
+- Communication: direct messages, broadcasts, idle notifications
+- Team-specific hooks: TeammateIdle and TaskCompleted
+- Plan approval workflow for high-stakes changes
+- Team patterns: competing hypotheses, parallel review, research + implementation, fan-out/fan-in
+- CLI flags: `--agent`, `--agents`, `--teammate-mode`
+
+**Quick reference:**
+
+| Aspect            | Subagents (Standard)           | Agent Teams                            |
+| ----------------- | ------------------------------ | -------------------------------------- |
+| **Communication** | Results return to parent only  | Teammates message each other directly  |
+| **Coordination**  | Hub-and-spoke (parent manages) | Mesh (shared task list, self-organize) |
+| **Best for**      | Focused tasks, research        | Parallel work, competing perspectives  |
+| **Cost**          | Lower (results summarized)     | Higher (N separate instances)          |
+
+**Key insight:** Agent teams shine when work benefits from parallel execution and competing perspectives. For sequential or focused tasks, standard subagents are simpler and cheaper.
+
 ---
 
 ## Official Resources

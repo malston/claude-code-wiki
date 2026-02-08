@@ -397,6 +397,33 @@ How to coordinate multiple Claude Code instances working together on complex tas
 
 **Key insight:** Agent teams shine when work benefits from parallel execution and competing perspectives. For sequential or focused tasks, standard subagents are simpler and cheaper.
 
+### [Permissions & Enterprise Deployment: Securing and Scaling Claude Code](claude-code-permissions-enterprise.md)
+
+How the permission system works and how to deploy Claude Code at organizational scale:
+
+**Covered topics:**
+
+- Permission modes: default, acceptEdits, plan, delegate, dontAsk, bypassPermissions
+- Permission rules: allow/deny/ask lists with tool-specific syntax (Bash globs, gitignore paths, MCP tools)
+- Settings cascade: 5 scopes with managed settings overriding everything
+- Sandboxing: OS-level filesystem and network isolation
+- Enterprise controls: managed policy files, `allowManagedHooksOnly`, `disableBypassPermissionsMode`
+- API providers: Anthropic, AWS Bedrock, Google Vertex AI, Microsoft Foundry, LLM gateways
+- CI/CD strategies: headless mode permissions, GitHub Actions configuration
+- Security hardening: minimal-interruption and strict lockdown configurations
+
+**Quick reference:**
+
+| Scope       | Location                       | Who Controls | Can Override? |
+| ----------- | ------------------------------ | ------------ | ------------- |
+| **Managed** | System-level path (admin-only) | IT/Admin     | No (highest)  |
+| **CLI**     | Command-line arguments         | Developer    | Only managed  |
+| **Local**   | `.claude/settings.local.json`  | Developer    | Managed + CLI |
+| **Project** | `.claude/settings.json`        | Team         | Above scopes  |
+| **User**    | `~/.claude/settings.json`      | Developer    | All above     |
+
+**Key insight:** Deny rules always win. Start with deny rules for dangerous patterns, then selectively allow safe operations. Use project settings (committed to git) for team-wide rules and managed settings for enterprise-wide policy.
+
 ---
 
 ## Official Resources

@@ -238,13 +238,40 @@ A systematic approach to debugging with Claude Code -- from sharing errors effec
 
 **Key insight:** Understand the root cause before attempting a fix. A failing test that captures the bug, followed by a targeted fix, beats any number of speculative patches.
 
+### [Testing Strategies: TDD Patterns and Test Automation](claude-code-testing-strategies.md)
+
+How to structure test-driven development with Claude Code -- from writing effective tests to automating test workflows:
+
+**Covered topics:**
+
+- Why tests matter more with AI-assisted development (feedback loops, verification)
+- TDD red-green-refactor cycle adapted for Claude Code
+- Prompting for tests (what to include, what to avoid)
+- Context isolation: the writer/implementer split for unbiased tests
+- What makes a good test (match patterns, avoid mocks, test behavior, edge cases)
+- Tests as durable requirements across context windows and sessions
+- Automating with hooks, CLAUDE.md rules, and headless CI
+- Test coverage strategies and incremental improvement
+
+**Quick reference:**
+
+| Strategy                        | When to Use                           | Key Benefit                                    |
+| ------------------------------- | ------------------------------------- | ---------------------------------------------- |
+| **Test-first (TDD)**            | New features, bug fixes               | Tests define requirements, Claude has a target |
+| **Test-after**                  | Exploratory work, prototyping         | Locks down behavior once approach is settled   |
+| **Existing test suite**         | Refactoring, bug fixes in tested code | Safety net already exists, just run it         |
+| **Separate writer/implementer** | High-quality features, complex logic  | Context isolation prevents bias                |
+| **Hooks for auto-testing**      | All development                       | Immediate feedback after every edit            |
+| **Headless test runner**        | CI/CD, batch validation               | Automated verification at scale                |
+
+**Key insight:** Tests give Claude a concrete feedback loop. Without tests, Claude produces code that looks right. With tests, Claude iterates until the output actually passes.
+
 ---
 
 ## Future Topics
 
 Areas to document as I learn more about optimizing Claude Code workflows:
 
-- **Testing Strategies** - TDD patterns and test automation with Claude Code
 - **Integration Patterns** - Connecting Claude Code with external tools and services
 
 ---

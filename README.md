@@ -155,13 +155,40 @@ How to structure your requests for better outcomes -- from single messages to mu
 
 **Key insight:** Specific prompts get specific results. The biggest improvement comes from stating what you want, where, and why -- not from clever prompt engineering tricks.
 
+### [Memory Organization: Structuring CLAUDE.md and Rules for Scale](claude-code-memory-organization.md)
+
+How to organize Claude Code's memory system -- CLAUDE.md files, rules directories, auto memory, and imports:
+
+**Covered topics:**
+
+- The memory hierarchy: managed policy, project, user, local, auto memory, child CLAUDE.md
+- How files are discovered (directory walk) and precedence rules
+- User memory vs project memory vs project local -- what goes where
+- The `.claude/rules/` directory for modular, path-specific rules
+- Auto memory: the 200-line limit and topic file pattern
+- Imports (`@path/to/file` syntax) for sharing content across files
+- Context cost of memory files and how to measure your footprint
+- Common mistakes (generic instructions, monolithic files, scope conflicts)
+
+**Quick reference:**
+
+| Memory Type        | Location                               | Scope              | Shared With           |
+| ------------------ | -------------------------------------- | ------------------ | --------------------- |
+| **Managed policy** | System-level path (IT-managed)         | Organization-wide  | All users             |
+| **Project memory** | `./CLAUDE.md` or `./.claude/CLAUDE.md` | Team + project     | Team (via git)        |
+| **Project rules**  | `./.claude/rules/*.md`                 | Team + project     | Team (via git)        |
+| **User memory**    | `~/.claude/CLAUDE.md`                  | All your projects  | Just you              |
+| **Project local**  | `./CLAUDE.local.md`                    | You + this project | Just you (gitignored) |
+| **Auto memory**    | `~/.claude/projects/<project>/memory/` | You + this project | Just you              |
+
+**Key insight:** Every line of CLAUDE.md costs context window space on every message. Be specific, not generic -- "use slog for logging" beats "follow best practices."
+
 ---
 
 ## Future Topics
 
 Areas to document as I learn more about optimizing Claude Code workflows:
 
-- **Memory Organization** - Structuring CLAUDE.md files for different scopes
 - **Workflow Patterns** - Common development workflows and how to optimize them
 - **Testing Strategies** - TDD patterns and test automation with Claude Code
 - **Debugging Techniques** - Systematic approaches to troubleshooting

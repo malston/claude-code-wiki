@@ -4,14 +4,14 @@
 
 Claude Code extends capabilities through three distinct mechanisms with different isolation models, memory characteristics, and context window implications:
 
-| Aspect | Subagents | Skills | MCP Servers |
-|--------|-----------|--------|-------------|
-| **Purpose** | Task delegation with reasoning | Knowledge/workflow injection | External tool/API access |
-| **Reasoning** | Full AI (isolated instance) | Inherits main instance | None (deterministic) |
-| **Memory** | Session-based, resumable | Shared with main | Stateless per call |
-| **Context** | Own isolated window | Injected into main | Minimal overhead |
-| **Invocation** | Explicit (Task tool) | Auto-discovered | Explicit tool calls |
-| **State** | Fresh but resumable | Part of main conversation | Truly stateless |
+| Aspect         | Subagents                      | Skills                       | MCP Servers              |
+| -------------- | ------------------------------ | ---------------------------- | ------------------------ |
+| **Purpose**    | Task delegation with reasoning | Knowledge/workflow injection | External tool/API access |
+| **Reasoning**  | Full AI (isolated instance)    | Inherits main instance       | None (deterministic)     |
+| **Memory**     | Session-based, resumable       | Shared with main             | Stateless per call       |
+| **Context**    | Own isolated window            | Injected into main           | Minimal overhead         |
+| **Invocation** | Explicit (Task tool)           | Auto-discovered              | Explicit tool calls      |
+| **State**      | Fresh but resumable            | Part of main conversation    | Truly stateless          |
 
 ---
 
@@ -95,7 +95,7 @@ Subagents are specialized AI assistants spawned via the `Task` tool. Each operat
 **Memory Behavior**
 
 - No memory between separate invocations
-- *Can* be resumed via agent ID to continue previous work
+- _Can_ be resumed via agent ID to continue previous work
 - No cross-agent memory sharing
 - No access to main instance's conversation history
 
@@ -265,15 +265,15 @@ Maintain running state:
 
 Don't create a subagent when:
 
-| Situation | Better Alternative |
-|-----------|-------------------|
-| Simple checklist to follow | Skill (auto-discovered, lightweight) |
-| Need to fetch external data | MCP server (stateless tool) |
-| One-off task, won't reuse | Just do it in main context |
-| Process guidance, not delegation | Skill |
-| Task completes in <10 turns | Main context is fine |
+| Situation                        | Better Alternative                   |
+| -------------------------------- | ------------------------------------ |
+| Simple checklist to follow       | Skill (auto-discovered, lightweight) |
+| Need to fetch external data      | MCP server (stateless tool)          |
+| One-off task, won't reuse        | Just do it in main context           |
+| Process guidance, not delegation | Skill                                |
+| Task completes in <10 turns      | Main context is fine                 |
 
-**Rule of thumb**: Create a subagent when you're *delegating work* that needs isolation. Use a skill when you're *guiding work* that happens in main context.
+**Rule of thumb**: Create a subagent when you're _delegating work_ that needs isolation. Use a skill when you're _guiding work_ that happens in main context.
 
 ---
 
@@ -282,6 +282,17 @@ Don't create a subagent when:
 ### What They Are
 
 Skills are **model-invoked knowledge components** - structured packages of instructions and supporting files that Claude discovers and activates automatically based on context.
+
+Their purpose is **knowledge and workflow injection** -- inserting content directly into the main conversation context so Claude follows those patterns while working. Nothing runs in isolation; the skill changes what Claude "knows" mid-conversation.
+
+Skills inject two categories of content:
+
+- **Knowledge injection** -- facts, rules, standards (e.g., "use parameterized SQL queries", "REST resources are plural nouns"). Tells Claude _what to know_.
+- **Workflow injection** -- processes, sequences, checklists (e.g., "write test first, then implement, then refactor"). Tells Claude _how to work_.
+
+Both happen the same way mechanically -- text gets added to the active context. The distinction is whether the skill shapes Claude's understanding or Claude's process.
+
+This is analogous to dependency injection in software: behavior is injected into the running context rather than hardcoded into the system prompt (CLAUDE.md) or delegated to a separate instance (subagent).
 
 ### Technical Structure
 
@@ -303,7 +314,7 @@ Skills are **model-invoked knowledge components** - structured packages of instr
 
 **Context Injection (Not Isolation)**
 
-- Skills inject into the *main* conversation context
+- Skills inject into the _main_ conversation context
 - No separate context window (unlike subagents)
 - Supporting files loaded progressively to manage context bloat
 - Skill's reasoning happens in main instance
@@ -537,41 +548,41 @@ See @owasp-quick-ref.md for detailed vulnerability patterns.
 
 Don't create a skill when:
 
-| Situation | Better Alternative |
-|-----------|-------------------|
-| Deep multi-file investigation | Subagent (needs isolation) |
-| Task needs its own conversation | Subagent (separate context) |
-| External API/data access | MCP server (stateless tool) |
-| One-off project-specific thing | Just put it in CLAUDE.md |
-| Complex stateful workflow | Subagent (can maintain state) |
+| Situation                       | Better Alternative            |
+| ------------------------------- | ----------------------------- |
+| Deep multi-file investigation   | Subagent (needs isolation)    |
+| Task needs its own conversation | Subagent (separate context)   |
+| External API/data access        | MCP server (stateless tool)   |
+| One-off project-specific thing  | Just put it in CLAUDE.md      |
+| Complex stateful workflow       | Subagent (can maintain state) |
 
-**Rule of thumb**: Create a skill when you want to *inject guidance* into normal work. Create a subagent when you want to *delegate work* entirely.
+**Rule of thumb**: Create a skill when you want to _inject guidance_ into normal work. Create a subagent when you want to _delegate work_ entirely.
 
 ### Skills vs CLAUDE.md
 
 Both inject into context, so when use which?
 
-| CLAUDE.md | Skills |
-|-----------|--------|
-| Always loaded | Auto-discovered by relevance |
-| Project-wide rules | Task-specific guidance |
-| Coding standards, preferences | Workflows, checklists |
-| Small, essential context | Can be larger (progressive loading) |
-| One file | Directory with supporting files |
+| CLAUDE.md                     | Skills                              |
+| ----------------------------- | ----------------------------------- |
+| Always loaded                 | Auto-discovered by relevance        |
+| Project-wide rules            | Task-specific guidance              |
+| Coding standards, preferences | Workflows, checklists               |
+| Small, essential context      | Can be larger (progressive loading) |
+| One file                      | Directory with supporting files     |
 
 **Example**: "Use 4-space indentation" → CLAUDE.md. "How to design an API endpoint" → Skill.
 
 ### Skills vs Subagents
 
-| Skills | Subagents |
-|--------|-----------|
-| Inject into main context | Own isolated context |
-| Auto-discovered | Explicitly invoked |
+| Skills                            | Subagents                      |
+| --------------------------------- | ------------------------------ |
+| Inject into main context          | Own isolated context           |
+| Auto-discovered                   | Explicitly invoked             |
 | Lightweight (progressive loading) | Higher overhead (full context) |
-| Share conversation memory | Fresh start each time |
-| Enhance main instance | Delegate to separate instance |
+| Share conversation memory         | Fresh start each time          |
+| Enhance main instance             | Delegate to separate instance  |
 
-**Rule of thumb**: Skills for *how* to approach work. Subagents for *delegating* work.
+**Rule of thumb**: Skills for _how_ to approach work. Subagents for _delegating_ work.
 
 ### Pattern: Lens (Skill) + Reviewer (Subagent)
 
@@ -579,10 +590,10 @@ A common question: "Should X be a skill or subagent?" Often the answer is **both
 
 #### The Pattern
 
-| Component | Purpose | When Used |
-|-----------|---------|-----------|
-| **Lens** (Skill) | Awareness during normal work | Always on, auto-discovered |
-| **Reviewer** (Subagent) | Thorough investigation | On-demand, explicit delegation |
+| Component               | Purpose                      | When Used                      |
+| ----------------------- | ---------------------------- | ------------------------------ |
+| **Lens** (Skill)        | Awareness during normal work | Always on, auto-discovered     |
+| **Reviewer** (Subagent) | Thorough investigation       | On-demand, explicit delegation |
 
 #### Example: Code Review
 
@@ -635,23 +646,23 @@ You perform thorough code reviews. Your job is to find issues the author missed.
 
 #### When to Use Which
 
-| Situation | Use |
-|-----------|-----|
-| Writing new code | Lens (skill) auto-activates |
-| Quick self-check before commit | Lens (skill) |
-| Reviewing someone's PR | Reviewer (subagent) |
-| Pre-merge thorough review | Reviewer (subagent) |
-| Security audit | Reviewer (subagent) |
+| Situation                      | Use                         |
+| ------------------------------ | --------------------------- |
+| Writing new code               | Lens (skill) auto-activates |
+| Quick self-check before commit | Lens (skill)                |
+| Reviewing someone's PR         | Reviewer (subagent)         |
+| Pre-merge thorough review      | Reviewer (subagent)         |
+| Security audit                 | Reviewer (subagent)         |
 
 #### Other Domains That Fit This Pattern
 
-| Domain | Lens (Skill) | Reviewer (Subagent) |
-|--------|--------------|---------------------|
-| Security | security-lens | security-auditor |
-| Performance | perf-awareness | perf-analyzer |
-| Accessibility | a11y-checklist | a11y-auditor |
-| Documentation | docs-standards | docs-reviewer |
-| Testing | test-guidance | test-coverage-analyzer |
+| Domain        | Lens (Skill)   | Reviewer (Subagent)    |
+| ------------- | -------------- | ---------------------- |
+| Security      | security-lens  | security-auditor       |
+| Performance   | perf-awareness | perf-analyzer          |
+| Accessibility | a11y-checklist | a11y-auditor           |
+| Documentation | docs-standards | docs-reviewer          |
+| Testing       | test-guidance  | test-coverage-analyzer |
 
 The lens keeps you aware. The reviewer does the deep work.
 
@@ -756,12 +767,12 @@ Claude Code uses procedural/organizational memory, not conversation history:
 
 ### Memory Isolation Boundaries
 
-| Layer | Scope | Shared With |
-|-------|-------|-------------|
-| Enterprise | Organization-wide | All users |
-| Project | Team | Repo collaborators |
-| User | Personal | No one |
-| Local | Machine-specific | No one |
+| Layer      | Scope             | Shared With        |
+| ---------- | ----------------- | ------------------ |
+| Enterprise | Organization-wide | All users          |
+| Project    | Team              | Repo collaborators |
+| User       | Personal          | No one             |
+| Local      | Machine-specific  | No one             |
 
 ### What Memory Stores
 
@@ -855,16 +866,16 @@ What kind of capability extension?
 
 ### Quick Reference
 
-| Need | Use |
-|------|-----|
-| Fetch from GitHub/DB/API | MCP Server |
-| Follow TDD process | Skill |
-| Debug complex issue | Subagent |
-| Standard code review checklist | Skill |
-| Security audit with findings | Subagent |
-| Query deployment status | MCP Server |
-| Brainstorming framework | Skill |
-| Explore unfamiliar codebase | Subagent |
+| Need                           | Use        |
+| ------------------------------ | ---------- |
+| Fetch from GitHub/DB/API       | MCP Server |
+| Follow TDD process             | Skill      |
+| Debug complex issue            | Subagent   |
+| Standard code review checklist | Skill      |
+| Security audit with findings   | Subagent   |
+| Query deployment status        | MCP Server |
+| Brainstorming framework        | Skill      |
+| Explore unfamiliar codebase    | Subagent   |
 
 ---
 
@@ -947,7 +958,7 @@ Together they enable scaling from simple conversations to complex multi-system w
     └─────────────────┘        └─────────────────┘
 ```
 
-**Summary**: Skills enhance *how* the main instance works. Subagents *offload* work to isolated instances. MCP servers *fetch* from external systems.
+**Summary**: Skills enhance _how_ the main instance works. Subagents _offload_ work to isolated instances. MCP servers _fetch_ from external systems.
 
 ---
 

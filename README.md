@@ -57,6 +57,31 @@ Managing the per-message token overhead from skills, plugins, and system configu
 
 **Key insight:** A setup with 20+ plugins can consume 4,000-5,000+ tokens per message just for the skill/subagent catalog -- before any actual work happens.
 
+### [The System Prompt: What Claude Reads Before You Say Anything](claude-code-system-prompt.md)
+
+Understanding the hidden instruction text assembled and sent on every API call:
+
+**Covered topics:**
+
+- What the system prompt is and how it's assembled
+- Anatomy of a Claude Code API call (system prompt + conversation + reminders)
+- Every component: core instructions, tool definitions, CLAUDE.md, skill/subagent catalogs, MCP, environment
+- Token cost implications and prompt caching
+- What you can and can't control
+
+**Quick reference:**
+
+| Component             | Source                   | Typical Size              |
+| --------------------- | ------------------------ | ------------------------- |
+| **Core instructions** | Claude Code built-in     | ~3,000-5,000 tokens       |
+| **Tool definitions**  | Built-in + MCP servers   | ~3,000-5,000 tokens       |
+| **CLAUDE.md files**   | All scopes               | ~2,000-4,000 tokens       |
+| **Skill catalog**     | Enabled skills + plugins | ~2,000-5,000 tokens       |
+| **Subagent catalog**  | Plugin descriptions      | ~1,000-2,000 tokens       |
+| **Typical total**     |                          | **~12,000-20,000 tokens** |
+
+**Key insight:** The system prompt is re-sent on every API call. Prompt caching mitigates cost (~90% discount after first message), but the context window space is consumed regardless.
+
 ---
 
 ## Future Topics

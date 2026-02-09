@@ -45,7 +45,7 @@
 - Too small for Accenture individually
 - Too infrastructure-heavy for Anthropic
 - Too Claude-specific for a generic AWS consultancy
-- **This is the gap a Tanzu-style platform engineering consultant with Claude Code expertise fills**
+- **This is the gap a platform engineering consultant with deep Claude Code expertise fills**
 
 ### Three Workstreams
 

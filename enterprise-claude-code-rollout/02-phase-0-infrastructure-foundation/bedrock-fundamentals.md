@@ -89,3 +89,38 @@ export ANTHROPIC_DEFAULT_HAIKU_MODEL='us.anthropic.claude-haiku-4-5-20251001-v1:
 ### Prompt Caching Differences
 
 Prompt caching behavior differs between direct API and Bedrock. Test caching behavior during Cohort 1 and adjust configuration accordingly.
+
+## Alternative Providers: Vertex AI and Azure Foundry
+
+Bedrock is the recommended path for AWS-native organizations, but Claude Code also supports two other cloud providers that offer the same "no code leaves your network" guarantee:
+
+### Google Vertex AI
+
+```bash
+export CLAUDE_CODE_USE_VERTEX=1
+export CLOUD_ML_REGION='us-east5'
+export ANTHROPIC_VERTEX_PROJECT_ID='your-gcp-project-id'
+```
+
+Same PrivateLink-equivalent pattern via [VPC Service Controls](https://cloud.google.com/vpc-service-controls) and Private Google Access. Use this for GCP-native organizations.
+
+### Microsoft Azure Foundry
+
+```bash
+export CLAUDE_CODE_USE_FOUNDRY=1
+export FOUNDRY_API_BASE='https://your-resource.services.ai.azure.com'
+export FOUNDRY_RESOURCE_ID='/subscriptions/{sub}/resourceGroups/{rg}/providers/Microsoft.CognitiveServices/accounts/{account}'
+```
+
+Uses Azure Private Endpoints for network isolation. Use this for Azure-native organizations.
+
+### Provider Selection
+
+| Factor                  | Bedrock                         | Vertex AI                      | Azure Foundry                   |
+| ----------------------- | ------------------------------- | ------------------------------ | ------------------------------- |
+| Set via                 | `CLAUDE_CODE_USE_BEDROCK=1`     | `CLAUDE_CODE_USE_VERTEX=1`     | `CLAUDE_CODE_USE_FOUNDRY=1`     |
+| Auth skip (for gateway) | `CLAUDE_CODE_SKIP_BEDROCK_AUTH` | `CLAUDE_CODE_SKIP_VERTEX_AUTH` | `CLAUDE_CODE_SKIP_FOUNDRY_AUTH` |
+| Network isolation       | VPC PrivateLink                 | VPC Service Controls           | Private Endpoints               |
+| Best for                | AWS-native orgs                 | GCP-native orgs                | Azure-native orgs               |
+
+The rest of this binder assumes Bedrock. The platform engineering layer (Phase 1) and rollout strategy (Phase 2) are provider-agnostic -- only Phase 0 infrastructure changes if you use a different provider.

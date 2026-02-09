@@ -100,6 +100,29 @@ Whether users can add their own hooks is controlled by `allowManagedHooksOnly` i
 - Supports `github`, `git`, `url`, `npm`, `file`, `directory`, and `hostPattern` source types
 - Public marketplace can be added if the security posture allows it
 
+## Claude Code Version Management
+
+`DISABLE_AUTOUPDATER` (bundled in `CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC`) prevents Claude Code from auto-updating, but you still need a strategy for controlled rollouts of new versions across 500 machines.
+
+### Recommended Approach
+
+1. **Pin the version in your devcontainer or package manager:**
+
+```json
+// devcontainer.json
+"postCreateCommand": "npm install -g @anthropic-ai/claude-code@2.1.37"
+```
+
+2. **Test new versions with Cohort 1 first.** Before upgrading everyone, have 2-3 power users run the new version for a week. New versions occasionally change behavior (tool calling patterns, skill loading, compaction thresholds).
+
+3. **Upgrade in waves.** Same cohort pattern as the initial rollout -- don't upgrade 500 developers simultaneously.
+
+4. **Track the current version in managed settings documentation.** When you push a version update, update the internal changelog so developers know what changed.
+
+### Version Update Cadence
+
+Claude Code releases frequently (weekly or more). You don't need to track every release. Quarterly updates are reasonable unless a release fixes a bug that affects your deployment or adds a feature you need.
+
 ## Platform Team Ownership Summary
 
 | Component             | Owner         | Distribution            |

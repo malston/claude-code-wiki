@@ -46,8 +46,8 @@ Teams can add their own deny rules on top of the enterprise baseline via `.claud
 {
   "permissions": {
     "deny": [
-      "Read(**/patient-data/**)",  // Team-specific sensitive paths
-      "Bash(docker push:*)"         // Prevent pushing images
+      "Read(**/patient-data/**)", // Team-specific sensitive paths
+      "Bash(docker push:*)" // Prevent pushing images
     ]
   }
 }
@@ -92,6 +92,68 @@ Never rely solely on AI-generated security review. LLM reviews are non-determini
 - Hardcoded secrets (with deterministic regex)
 - Dependency vulnerabilities
 - Configuration weaknesses with established signatures
+
+## Sandboxing
+
+Claude Code includes built-in sandboxing that restricts filesystem and process access beyond what deny rules provide.
+
+### macOS: Seatbelt (Built-In)
+
+On macOS, Claude Code automatically runs with Seatbelt sandboxing. No installation or configuration required. This restricts Claude Code's filesystem access to the working directory and common tool paths, preventing it from reading or writing files in unexpected locations even if deny rules don't cover them.
+
+### Linux: Bubblewrap + Socat
+
+On Linux, Claude Code supports sandboxing via `bubblewrap` and `socat`, but these must be installed separately:
+
+```bash
+# Debian/Ubuntu
+apt-get install bubblewrap socat
+
+# RHEL/Fedora
+dnf install bubblewrap socat
+```
+
+Include these in your devcontainer or Coder workspace templates so sandboxing is active by default for all developers.
+
+### Enterprise Recommendation
+
+Sandboxing is defense in depth -- it limits blast radius if a deny rule is missing or if Claude executes something unexpected. For the 500-developer rollout, ensure sandbox dependencies are included in all standardized developer environments.
+
+## Hooks as Security Controls
+
+Deny rules use pattern matching, which handles most cases but can't express complex conditions. For advanced security logic, use **PreToolUse hooks** -- they can inspect the full tool call and programmatically allow, block, or modify it.
+
+### Example: Block Writes Outside Repo Root
+
+```json
+{
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Write|Edit",
+        "hook": {
+          "type": "command",
+          "command": "python3 /opt/claude-hooks/enforce-repo-boundary.py"
+        }
+      }
+    ]
+  }
+}
+```
+
+The hook script receives the tool input as JSON on stdin and can exit with code 2 to block the action, or exit 0 with a JSON response to allow or modify it.
+
+### What Hooks Can Do That Deny Rules Can't
+
+- Inspect full file paths and resolve symlinks before allowing access
+- Check file content patterns (e.g., block writes containing API key formats)
+- Enforce multi-condition logic (allow `rm` only for files matching a specific pattern)
+- Log detailed audit events to your SIEM for specific tool calls
+- Call external APIs for dynamic policy decisions
+
+### Deployment
+
+Deploy managed hooks via `managed-settings.json` with `allowManagedHooksOnly: true` if you want to prevent project-level hooks from overriding your security hooks.
 
 ## Network Security
 

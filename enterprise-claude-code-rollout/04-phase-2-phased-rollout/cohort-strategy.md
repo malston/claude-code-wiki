@@ -129,6 +129,39 @@ Don't light up 500 developers at once. Each cohort discovers different classes o
 
 ---
 
+## Rollback Plan
+
+### Principle
+
+Rollback is cohort-level, not all-or-nothing. If a cohort encounters serious issues, pause that cohort while earlier cohorts continue operating.
+
+### Rollback Triggers
+
+- Security incident (deny rule bypass, data exposure)
+- Infrastructure instability (gateway outages, Bedrock throttling) affecting developer productivity
+- Cost significantly exceeding projections (>25% over forecast)
+- Widespread negative developer feedback (>40% reporting "gets in the way" rather than "makes me faster")
+
+### Rollback Actions by Severity
+
+**Pause (reversible):** Disable the gateway route for the affected cohort's users. Developers can't reach Claude Code but nothing is uninstalled. Resume when the issue is resolved.
+
+**Reconfigure:** Push updated managed-settings.json via MDM to tighten deny rules, change model routing, or adjust budgets. No developer action required.
+
+**Full rollback:** Remove Claude Code from developer machines via MDM. Remove managed-settings.json and managed CLAUDE.md. This is the nuclear option -- use only if a fundamental security concern is discovered.
+
+### What Rollback Does NOT Require
+
+- Reverting code already written with Claude Code -- it's in git like any other code
+- Removing CLAUDE.md files from repos -- they're inert without the CLI
+- Canceling the Bedrock account -- infrastructure can stay warm for re-engagement
+
+### Re-Engagement After Rollback
+
+If you roll back a cohort, fix the root cause and re-launch with a smaller pilot (5-10 developers) before re-expanding. Don't re-launch at the previous cohort size until the fix is validated.
+
+---
+
 ## Timeline Summary
 
 ```

@@ -8,11 +8,11 @@ Bedrock bills per-token. 500 developers using Opus for everything can cost $50Kâ
 
 The LLM gateway is the control point for cost management.
 
-| Use Case | Model | Approx. Cost | Access |
-|---|---|---|---|
-| Routine coding, quick edits | Sonnet | Lower per-token | Default for all developers |
-| Architecture, complex reasoning | Opus | Higher per-token | Gated to senior engineers or by request |
-| Summarization, classification | Haiku | Lowest per-token | Claude Code uses automatically as fast model |
+| Use Case                        | Model  | Approx. Cost     | Access                                       |
+| ------------------------------- | ------ | ---------------- | -------------------------------------------- |
+| Routine coding, quick edits     | Sonnet | Lower per-token  | Default for all developers                   |
+| Architecture, complex reasoning | Opus   | Higher per-token | Gated to senior engineers or by request      |
+| Summarization, classification   | Haiku  | Lowest per-token | Claude Code uses automatically as fast model |
 
 ### Implementation
 
@@ -67,6 +67,28 @@ Bedrock supports prompt caching, which can significantly reduce costs for repeat
 - Stable context (CLAUDE.md, rules) benefits most from caching
 - Frequently-changing context (code files) benefits less
 - Prompt caching behavior on Bedrock may differ from direct API â€” test explicitly
+
+## Extended Thinking Costs
+
+Opus uses **extended thinking** -- a reasoning phase where the model works through complex problems before responding. Thinking tokens are billed as output tokens at the full output rate.
+
+### Why This Matters for Cost Planning
+
+- Thinking tokens can be 2-10x the visible output tokens on complex tasks
+- A developer using Opus for architecture work might generate 50K+ thinking tokens per session
+- These tokens don't appear in Claude's response but show up in your bill
+- The `MAX_THINKING_TOKENS` env var can cap thinking budget (default: 31,999, max: 63,999)
+
+### Cost Mitigation
+
+- Default developers to Sonnet (no extended thinking cost)
+- Gate Opus access to senior engineers or specific use cases via the LLM gateway
+- Monitor thinking token consumption separately in gateway metrics -- if your gateway logs input/output tokens, thinking tokens appear in the output count
+- Set `MAX_THINKING_TOKENS` in managed-settings.json `env` to cap per-request thinking cost for Opus users
+
+### Rough Cost Impact
+
+At Bedrock Opus pricing, thinking tokens cost the same as output tokens. A heavy Opus user generating 100K thinking tokens/day adds measurable cost. Factor this into per-user budgets for Opus-authorized developers.
 
 ## Provisioned Throughput
 

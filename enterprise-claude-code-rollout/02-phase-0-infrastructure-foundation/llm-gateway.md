@@ -83,6 +83,64 @@ These are baked into the managed-settings.json and deployed via MDM — develope
 
 The gateway runs as an internal service (ECS, EKS, or a VM) within the same VPC that has the Bedrock endpoint. It's accessible to developer machines via the corporate network but not exposed to the internet.
 
+## Credential Management
+
+### Gateway Holds AWS Credentials
+
+The gateway authenticates to Bedrock using an IAM role (via instance profile or ECS task role). Developers never see AWS credentials. The `CLAUDE_CODE_SKIP_BEDROCK_AUTH` env var tells Claude Code to send requests without attempting AWS authentication -- the gateway adds credentials to the upstream request.
+
+### Dynamic Credential Rotation with apiKeyHelper
+
+If your gateway issues short-lived tokens to developers instead of using a shared gateway credential, use the `apiKeyHelper` setting in managed-settings.json:
+
+```json
+{
+  "apiKeyHelper": "python3 /opt/claude-tools/get-gateway-token.py"
+}
+```
+
+Claude Code calls this command to get a fresh API key. It's invoked on startup and automatically on 401 errors or when the cached token exceeds a 5-minute TTL. The command should output the token to stdout.
+
+Use this when:
+
+- The gateway requires per-user bearer tokens (not just SSO passthrough)
+- Credentials rotate more frequently than session duration
+- You need credential audit at the individual developer level beyond what SSO provides
+
+## High Availability and Disaster Recovery
+
+### Gateway HA
+
+The LLM gateway is a single point of failure for 500 developers. Deploy for high availability:
+
+- **ECS/EKS:** Minimum 2 replicas across 2 availability zones behind an internal Application Load Balancer
+- **Health checks:** Configure ALB health checks against the gateway's health endpoint
+- **Auto-scaling:** Scale based on request count and CPU utilization -- peak usage correlates with business hours
+
+### Bedrock Availability
+
+Bedrock is a managed service with AWS's standard SLA. Mitigations:
+
+- **Cross-region inference profiles:** Bedrock supports cross-region inference profiles (e.g., `us.anthropic.claude-*`) that automatically route to available regions. Use these instead of region-specific model IDs.
+- **Provisioned throughput:** Guarantees capacity and avoids throttling during peak usage (evaluate after Cohort 2)
+
+### Direct Connect / VPN Redundancy
+
+If the connection between corporate network and VPC goes down, all 500 developers lose access simultaneously.
+
+- **Redundant connections:** Two Direct Connect circuits from different providers, or Direct Connect + Site-to-Site VPN as backup
+- **Monitoring:** CloudWatch alarms on VPN tunnel status and Direct Connect connection state
+- **Failover testing:** Test failover quarterly
+
+### Degraded Mode
+
+Define what happens during an outage:
+
+- Developers fall back to manual coding (no AI assistance)
+- No "degraded mode" where Claude Code routes elsewhere -- the managed settings lock routing to the internal gateway
+- Communicate expected recovery time via Slack/status page
+- Post-incident review if outage exceeds 30 minutes
+
 ## Observability Integration
 
 The gateway is the ideal point to instrument **OpenTelemetry metrics** pushed to CloudWatch:

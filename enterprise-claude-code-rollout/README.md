@@ -55,7 +55,7 @@
 ### [Appendix](appendix/)
 
 - [Reference Configs](appendix/reference-configs.md) — Sample managed-settings.json, Terraform snippets, environment variables
-- [TAS to Claude Code Analogy Map](appendix/tas-analogy-map.md) — Tanzu Application Service concepts mapped to Claude Code equivalents
+- [Cloud Foundry to Claude Code Analogy Map](appendix/cf-analogy-map.md) — Cloud Foundry concepts mapped to Claude Code equivalents
 - [Build-Out Timeline](appendix/build-out-timeline.md) — Week-by-week implementation schedule
 
 ---

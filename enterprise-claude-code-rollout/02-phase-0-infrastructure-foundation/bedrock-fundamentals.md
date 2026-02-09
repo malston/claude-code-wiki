@@ -4,7 +4,7 @@
 
 Bedrock is AWS's managed API gateway for foundation models. Instead of going directly to Anthropic for model access, Bedrock gives you a single AWS-native service that brokers access to foundation models through the same IAM, billing, networking, and compliance infrastructure you already use for everything else in AWS.
 
-**Analogy for TAS practitioners:** If Tanzu Application Service abstracts away infrastructure for app developers, Bedrock does the same for model inference. Developers don't think about where Claude is running — they just call the API. The platform team controls the networking, access, cost, and compliance layer underneath.
+**Analogy for Cloud Foundry practitioners:** If Cloud Foundry abstracts away infrastructure for app developers, Bedrock does the same for model inference. Developers don't think about where Claude is running — they just call the API. The platform team controls the networking, access, cost, and compliance layer underneath.
 
 ## Key Properties for Enterprise Deployment
 

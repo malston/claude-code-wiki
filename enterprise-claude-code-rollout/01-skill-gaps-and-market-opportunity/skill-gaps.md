@@ -12,7 +12,7 @@ Most enterprise developers treat Claude Code like a slightly smarter autocomplet
 
 ### 2. Context Architecture
 
-Enterprises struggle with the question of *what context to feed and how to organize it.* They dump everything into a single prompt or provide nothing. The skill of decomposing domain knowledge into reusable, composable skills — separating reference material from behavioral instructions from style guides — is something most teams haven't developed. It's closer to API design thinking than traditional coding.
+Enterprises struggle with the question of _what context to feed and how to organize it._ They dump everything into a single prompt or provide nothing. The skill of decomposing domain knowledge into reusable, composable skills — separating reference material from behavioral instructions from style guides — is something most teams haven't developed. It's closer to API design thinking than traditional coding.
 
 ### 3. Workflow Integration (Not Replacement)
 
@@ -28,4 +28,4 @@ The gap between "I can use Claude Code in a terminal" and "Claude Code is wired 
 
 ### 6. Prompt Engineering ≠ Training
 
-The gap isn't solved by training sessions. It's solved by building the platform layer that makes good patterns the default — the same way TAS buildpacks made 12-factor app patterns the default without requiring every developer to understand the theory.
+The gap isn't solved by training sessions. It's solved by building the platform layer that makes good patterns the default — the same way Cloud Foundry buildpacks made 12-factor app patterns the default without requiring every developer to understand the theory.

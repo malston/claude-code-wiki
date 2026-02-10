@@ -10,6 +10,10 @@
 terraform/certs/generated/
 .envrc
 
+# Hugo
+public/
+resources/
+
 # OS files
 .DS_Store
 

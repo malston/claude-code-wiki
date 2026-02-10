@@ -30,3 +30,14 @@ aside.book-toc {
   flex: 1 1 auto;
   max-width: none;
 }
+
+/* Hide entire TOC sidebar when it has 1 or fewer items */
+/* This targets section landing pages with minimal content */
+aside.book-toc {
+  display: none;
+}
+
+/* Show TOC only when there are 2+ actual heading links */
+aside.book-toc:has(nav > ul > li:nth-child(2)) {
+  display: block;
+}

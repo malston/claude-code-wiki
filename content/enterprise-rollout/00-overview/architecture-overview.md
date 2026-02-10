@@ -76,6 +76,8 @@ weight: 2
 └─────────────────────────────────────────────────────────────────────┘
 ```
 
+**Note:** This diagram shows AWS Bedrock deployment. Equivalent architectures for GCP Vertex AI (VPC Service Controls, Private Service Connect, Cloud Logging) and Azure Foundry (Private Endpoints, VNet integration, Azure Monitor) are documented in the Phase 0 infrastructure guides.
+
 ## Configuration Hierarchy
 
 ```
@@ -84,7 +86,7 @@ weight: 2
 │                                                               │
 │  managed-settings.json                                        │
 │  • Deployed via MDM (Jamf, Kandji, Intune)                    │
-│  • Bedrock routing, security deny rules, disable bypass       │
+│  • LLM service routing, security deny rules, disable bypass   │
 │  • Location:                                                  │
 │    macOS:   /Library/Application Support/ClaudeCode/          │
 │    Linux:   /etc/claude-code/                                 │

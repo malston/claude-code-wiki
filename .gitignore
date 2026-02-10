@@ -1,6 +1,10 @@
 # Claude Code local settings
 .claude/settings.local.json
 .claude/conversation-*
+**/CLAUDE.md
+!.claude/CLAUDE.md
+!/CLAUDE.md
+.claude/*.local.md
 
 # Secrets
 **/secrets/

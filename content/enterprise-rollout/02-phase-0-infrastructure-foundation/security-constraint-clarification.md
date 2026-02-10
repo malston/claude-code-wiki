@@ -1,6 +1,6 @@
 ---
 title: "Security Constraint Clarification"
-weight: 4
+weight: 6
 ---
 
 # Security Constraint Clarification
@@ -41,14 +41,14 @@ weight: 4
 
 ## Decision Matrix
 
-| Requirement | Level 1 | Level 2 | Level 3 |
-|---|---|---|---|
-| Claude Code works | ✅ | ✅ | ❌ |
-| Data not sent to Anthropic | ✅ | ✅ | ✅ |
-| No public internet transit | ❌ | ✅ | ✅ |
-| Zero external connectivity | ❌ | ❌ | ✅ |
-| Infrastructure complexity | Low | Medium | High (different tool) |
-| Model quality | Full Claude | Full Claude | Significantly degraded |
+| Requirement                | Level 1     | Level 2     | Level 3                |
+| -------------------------- | ----------- | ----------- | ---------------------- |
+| Claude Code works          | ✅          | ✅          | ❌                     |
+| Data not sent to Anthropic | ✅          | ✅          | ✅                     |
+| No public internet transit | ❌          | ✅          | ✅                     |
+| Zero external connectivity | ❌          | ❌          | ✅                     |
+| Infrastructure complexity  | Low         | Medium      | High (different tool)  |
+| Model quality              | Full Claude | Full Claude | Significantly degraded |
 
 ## Recommendation
 

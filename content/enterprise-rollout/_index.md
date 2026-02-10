@@ -19,7 +19,7 @@ A consulting binder for deploying Claude Code to a 500-developer enterprise with
 
 ## The Four Phases
 
-**Phase 0: Infrastructure Foundation (Weeks 1--4)** -- Stand up Amazon Bedrock with VPC PrivateLink so all LLM traffic stays inside the customer's network. Includes security constraint clarification, LLM gateway design, and Terraform patterns.
+**Phase 0: Infrastructure Foundation (Weeks 1--4)** -- Stand up cloud provider infrastructure (Amazon Bedrock, Google Vertex AI, or Azure Foundry) with private networking so all LLM traffic stays inside the customer's network. Includes security constraint clarification, LLM gateway design, and Terraform patterns for all three providers.
 
 **Phase 1: Platform Engineering (Weeks 3--6)** -- Configure managed settings, CLAUDE.md architecture, skills libraries, and developer environment standardization. This is where the platform team builds the guardrails that make self-service safe.
 

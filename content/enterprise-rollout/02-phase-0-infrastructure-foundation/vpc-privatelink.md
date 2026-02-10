@@ -1,6 +1,6 @@
 ---
 title: "VPC Endpoint and PrivateLink Architecture"
-weight: 2
+weight: 4
 ---
 
 # VPC Endpoint and PrivateLink Architecture

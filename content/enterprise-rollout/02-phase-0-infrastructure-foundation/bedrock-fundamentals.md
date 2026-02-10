@@ -24,6 +24,17 @@ You don't deploy models, manage GPU clusters, or deal with scaling. You call `In
 - Data is **not** stored beyond immediate request processing (unless you explicitly enable logging)
 - Your code/prompts go to AWS, not to Anthropic directly
 
+### Data Retention Policy
+
+AWS Bedrock does not store prompt or completion data, but **logs are retained for approximately 30 days** by default through CloudTrail and CloudWatch. This retention period is customer-configurable but cannot be reduced to zero.
+
+**Critical difference from direct API:** Anthropic's [Zero Data Retention (ZDR)](https://platform.claude.com/docs/en/build-with-claude/zero-data-retention) offering is **not available** when using Claude through AWS Bedrock or GCP Vertex AI. Organizations with compliance requirements for immediate data deletion must use either:
+
+- **Anthropic's direct API** with ZDR enabled (7-day standard retention, or immediate discard with ZDR contract)
+- **Azure Foundry** (where Anthropic is the data processor and ZDR terms apply)
+
+For Bedrock deployments, the 30-day log retention is the minimum. Configure CloudTrail and CloudWatch retention policies to meet your compliance requirements, but understand that some logging window is inherent to the AWS integration.
+
 ### Inherits the AWS Security Stack
 
 - **IAM policies** control who can invoke which models
@@ -31,6 +42,16 @@ You don't deploy models, manage GPU clusters, or deal with scaling. You call `In
 - **VPC endpoints via PrivateLink** keep traffic off the public internet
 - **KMS encryption** for data at rest
 - **Compliance certifications:** SOC 2, HIPAA, FedRAMP, etc.
+
+### AWS Trainium Infrastructure Optimization
+
+Claude models on AWS Bedrock run on **AWS Trainium** (Amazon's custom ML accelerator chips), not Nvidia GPUs. This architectural choice delivers cost and efficiency advantages:
+
+- **Lower inference costs:** Trainium is purpose-built for transformer workloads and more cost-efficient than GPU-based alternatives
+- **Better economics at scale:** For 500-developer deployments with high token throughput, Trainium's cost structure compounds savings
+- **Tight AWS integration:** No cross-provider latency or egress costs
+
+This is a genuine AWS-specific advantage. Organizations comparing cloud providers should factor this into total cost of ownership calculations. See [Anthropic's announcement on Amazon Trainium](https://www.anthropic.com/news/anthropic-amazon-trainium) for technical details.
 
 ### Pricing Model
 

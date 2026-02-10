@@ -479,8 +479,8 @@ blockquote cite {
 
 .book-menu nav > ul > li > a {
   font-family: var(--font-display);
-  font-size: var(--text-base);
-  font-weight: 500;
+  font-size: 1.0625rem;
+  font-weight: 600;
   padding: 0.75rem 1rem;
   border-radius: 6px;
   margin: 0 0.5rem;

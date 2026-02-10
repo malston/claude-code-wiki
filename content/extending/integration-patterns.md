@@ -20,38 +20,50 @@ Claude Code connects to external systems through four integration mechanisms: MC
 
 ## Table of Contents
 
-- [The Integration Landscape](#the-integration-landscape)
-- [MCP Servers: Connecting External Tools](#mcp-servers-connecting-external-tools)
-  - [Transport Types](#transport-types)
-  - [Configuration Scopes](#configuration-scopes)
-  - [Authentication](#authentication)
-  - [Practical MCP Examples](#practical-mcp-examples)
-  - [MCP Tool Search](#mcp-tool-search)
-  - [MCP Resources](#mcp-resources)
-- [Hooks: Automating Workflows](#hooks-automating-workflows)
-  - [Hook Lifecycle](#hook-lifecycle)
-  - [Hook Types](#hook-types)
-  - [Common Hook Patterns](#common-hook-patterns)
-  - [Async Hooks](#async-hooks)
-  - [Hook Configuration Locations](#hook-configuration-locations)
-- [Headless Mode: CLI Automation](#headless-mode-cli-automation)
-  - [Basic Usage](#basic-usage)
-  - [Output Formats](#output-formats)
-  - [System Prompt Customization](#system-prompt-customization)
-  - [Piping and Composition](#piping-and-composition)
-  - [Automation Flags](#automation-flags)
-- [GitHub Actions: CI/CD Integration](#github-actions-cicd-integration)
-  - [The Official Action](#the-official-action)
-  - [Setup](#setup)
-  - [Common Workflows](#common-workflows)
-  - [Cost Considerations](#cost-considerations)
-- [Claude as MCP Server](#claude-as-mcp-server)
-- [Plugins: Packaging Integrations](#plugins-packaging-integrations)
-- [Integration Decision Framework](#integration-decision-framework)
-- [Combining Integration Patterns](#combining-integration-patterns)
-- [Best Practices](#best-practices)
-- [Anti-Patterns](#anti-patterns)
-- [References](#references)
+- [Integration Patterns: Connecting Claude Code with External Tools and Services](#integration-patterns-connecting-claude-code-with-external-tools-and-services)
+  - [Executive Summary](#executive-summary)
+  - [Table of Contents](#table-of-contents)
+  - [The Integration Landscape](#the-integration-landscape)
+  - [MCP Servers: Connecting External Tools](#mcp-servers-connecting-external-tools)
+    - [Transport Types](#transport-types)
+    - [Configuration Scopes](#configuration-scopes)
+    - [Authentication](#authentication)
+    - [Practical MCP Examples](#practical-mcp-examples)
+    - [MCP Tool Search](#mcp-tool-search)
+    - [MCP Resources](#mcp-resources)
+  - [Hooks: Automating Workflows](#hooks-automating-workflows)
+    - [Hook Lifecycle](#hook-lifecycle)
+    - [Hook Types](#hook-types)
+    - [Common Hook Patterns](#common-hook-patterns)
+    - [Async Hooks](#async-hooks)
+    - [Hook Configuration Locations](#hook-configuration-locations)
+  - [Headless Mode: CLI Automation](#headless-mode-cli-automation)
+    - [Basic Usage](#basic-usage)
+    - [Output Formats](#output-formats)
+    - [System Prompt Customization](#system-prompt-customization)
+    - [Piping and Composition](#piping-and-composition)
+    - [Automation Flags](#automation-flags)
+  - [GitHub Actions: CI/CD Integration](#github-actions-cicd-integration)
+    - [The Official Action](#the-official-action)
+    - [Setup](#setup)
+    - [Common Workflows](#common-workflows)
+    - [Cost Considerations](#cost-considerations)
+  - [Claude as MCP Server](#claude-as-mcp-server)
+  - [Plugins: Packaging Integrations](#plugins-packaging-integrations)
+  - [Integration Decision Framework](#integration-decision-framework)
+  - [Combining Integration Patterns](#combining-integration-patterns)
+    - [MCP + Hooks: Auto-Validated External Access](#mcp--hooks-auto-validated-external-access)
+    - [Headless + GitHub Actions: Automated PR Reviews](#headless--github-actions-automated-pr-reviews)
+    - [Hooks + Headless: Self-Correcting CI Pipeline](#hooks--headless-self-correcting-ci-pipeline)
+    - [Project-Scoped MCP + CLAUDE.md: Team Consistency](#project-scoped-mcp--claudemd-team-consistency)
+  - [Best Practices](#best-practices)
+  - [Anti-Patterns](#anti-patterns)
+    - [Using MCP When a Hook Would Suffice](#using-mcp-when-a-hook-would-suffice)
+    - [Headless Mode Without Turn Limits](#headless-mode-without-turn-limits)
+    - [Blocking Hooks That Should Be Async](#blocking-hooks-that-should-be-async)
+    - [Hardcoding Credentials in Project Config](#hardcoding-credentials-in-project-config)
+    - [Over-Broad Hook Matchers](#over-broad-hook-matchers)
+  - [References](#references)
 
 ---
 
@@ -59,24 +71,24 @@ Claude Code connects to external systems through four integration mechanisms: MC
 
 Claude Code integrates with external systems through four distinct mechanisms. Each operates at a different layer and serves a different purpose:
 
-```
+```sh
                     ┌──────────────────────────────────┐
-                    │          GitHub Events            │
-                    │   (PR, issue, push, schedule)     │
+                    │          GitHub Events           │
+                    │   (PR, issue, push, schedule)    │
                     └──────────────┬───────────────────┘
                                    │
                                    ▼
-┌────────────┐    ┌──────────────────────────────────┐
-│  Your       │───▶│         Claude Code               │
-│  Scripts    │    │                                    │
+┌─────────────┐    ┌──────────────────────────────────┐
+│  Your       │───▶│         Claude Code              │
+│  Scripts    │    │                                  │
 │  (claude -p)│    │  ┌────────┐    ┌──────────────┐  │
-└────────────┘    │  │ Hooks  │    │  MCP Servers  │  │
-                    │  │ (auto) │    │  (on demand)  │  │
-                    │  └───┬────┘    └──────┬───────┘  │
-                    │      │               │           │
-                    └──────┼───────────────┼───────────┘
-                           │               │
-                           ▼               ▼
+└─────────────┘    │  │ Hooks  │    │  MCP Servers │  │
+                   │  │ (auto) │    │  (on demand) │  │
+                   │  └───┬────┘    └─────┬────────┘  │
+                   │      │               │           │
+                   └──────┼───────────────┼───────────┘
+                          │               │
+                          ▼               ▼
                     ┌────────────┐  ┌──────────────┐
                     │ Local      │  │ External     │
                     │ Scripts    │  │ Services     │
@@ -639,7 +651,7 @@ This installs the Claude GitHub app and configures secrets automatically.
 
 **Manual setup:**
 
-1. Install the Claude GitHub app: https://github.com/apps/claude
+1. Install the Claude GitHub app: <https://github.com/apps/claude>
 2. Add `ANTHROPIC_API_KEY` to repository secrets
 3. Copy the workflow file from [examples/claude.yml](https://github.com/anthropics/claude-code-action/blob/main/examples/claude.yml)
 

@@ -19,54 +19,60 @@ Claude Code's capabilities can be extended through custom subagents (autonomous 
 
 ## Table of Contents
 
-- [Subagents](#subagents)
-  - [What Subagents Are](#what-subagents-are)
-  - [File Structure](#subagent-file-structure)
-  - [YAML Frontmatter Reference](#subagent-yaml-reference)
-  - [System Prompt Body](#system-prompt-body)
-  - [Tool Permissions](#tool-permissions)
-  - [Model Selection](#model-selection)
-  - [Permission Modes](#permission-modes)
-  - [Persistent Memory](#persistent-memory)
-  - [Hooks in Subagents](#hooks-in-subagents)
-  - [Preloading Skills](#preloading-skills)
-  - [CLI-Defined Subagents](#cli-defined-subagents)
-  - [Foreground vs Background](#foreground-vs-background)
-  - [Example: Code Reviewer](#example-code-reviewer)
-  - [Example: Test Runner](#example-test-runner)
-- [Skills](#skills)
-  - [What Skills Are](#what-skills-are)
-  - [File Structure](#skill-file-structure)
-  - [YAML Frontmatter Reference](#skill-yaml-reference)
-  - [Invocation Control](#invocation-control)
-  - [Auto-Discovery and Token Cost](#auto-discovery-and-token-cost)
-  - [String Substitutions](#string-substitutions)
-  - [Dynamic Context Injection](#dynamic-context-injection)
-  - [Running Skills in a Subagent](#running-skills-in-a-subagent)
-  - [Hooks in Skills](#hooks-in-skills)
-  - [Example: Commit Skill](#example-commit-skill)
-  - [Example: PR Review Skill](#example-pr-review-skill)
-- [The Lens + Reviewer Pattern](#the-lens--reviewer-pattern)
-  - [Architecture](#lens-reviewer-architecture)
-  - [When to Use Which](#when-to-use-which)
-  - [Domains That Fit](#domains-that-fit)
-  - [Example: Security Domain](#example-security-domain)
-- [Plugins](#plugins)
-  - [What Plugins Are](#what-plugins-are)
-  - [Directory Structure](#plugin-directory-structure)
-  - [The Plugin Manifest](#the-plugin-manifest)
-  - [MCP Servers in Plugins](#mcp-servers-in-plugins)
-  - [Hooks in Plugins](#hooks-in-plugins)
-  - [Plugin Namespacing](#plugin-namespacing)
-  - [Testing Locally](#testing-plugins-locally)
-  - [Installation and Management](#installation-and-management)
-- [Managing Extensions with claudeup](#managing-extensions-with-claudeup)
-  - [Commands](#claudeup-commands)
-  - [Directory Layout](#directory-layout)
-- [Scope and Priority](#scope-and-priority)
-- [Best Practices](#best-practices)
-- [Anti-Patterns](#anti-patterns)
-- [References](#references)
+- [Building Custom Subagents \& Skills: Extending Claude Code](#building-custom-subagents--skills-extending-claude-code)
+  - [Executive Summary](#executive-summary)
+  - [Table of Contents](#table-of-contents)
+  - [Subagents](#subagents)
+    - [What Subagents Are](#what-subagents-are)
+    - [Subagent File Structure](#subagent-file-structure)
+    - [Subagent YAML Reference](#subagent-yaml-reference)
+    - [System Prompt Body](#system-prompt-body)
+    - [Tool Permissions](#tool-permissions)
+    - [Model Selection](#model-selection)
+    - [Permission Modes](#permission-modes)
+    - [Persistent Memory](#persistent-memory)
+    - [Hooks in Subagents](#hooks-in-subagents)
+    - [Preloading Skills](#preloading-skills)
+    - [CLI-Defined Subagents](#cli-defined-subagents)
+    - [Foreground vs Background](#foreground-vs-background)
+    - [Example: Code Reviewer](#example-code-reviewer)
+    - [Example: Test Runner](#example-test-runner)
+  - [Skills](#skills)
+    - [What Skills Are](#what-skills-are)
+    - [Skill File Structure](#skill-file-structure)
+    - [Skill YAML Reference](#skill-yaml-reference)
+    - [Invocation Control](#invocation-control)
+    - [Auto-Discovery and Token Cost](#auto-discovery-and-token-cost)
+    - [String Substitutions](#string-substitutions)
+    - [Dynamic Context Injection](#dynamic-context-injection)
+    - [Running Skills in a Subagent](#running-skills-in-a-subagent)
+    - [Hooks in Skills](#hooks-in-skills)
+    - [Example: Commit Skill](#example-commit-skill)
+    - [Example: PR Review Skill](#example-pr-review-skill)
+  - [The Lens + Reviewer Pattern](#the-lens--reviewer-pattern)
+    - [Lens Reviewer Architecture](#lens-reviewer-architecture)
+    - [When to Use Which](#when-to-use-which)
+    - [Domains That Fit](#domains-that-fit)
+    - [Example: Security Domain](#example-security-domain)
+  - [Plugins](#plugins)
+    - [What Plugins Are](#what-plugins-are)
+    - [Plugin Directory Structure](#plugin-directory-structure)
+    - [The Plugin Manifest](#the-plugin-manifest)
+    - [MCP Servers in Plugins](#mcp-servers-in-plugins)
+    - [Hooks in Plugins](#hooks-in-plugins)
+    - [Plugin Namespacing](#plugin-namespacing)
+    - [Testing Plugins Locally](#testing-plugins-locally)
+    - [Installation and Management](#installation-and-management)
+  - [Managing Extensions with claudeup](#managing-extensions-with-claudeup)
+    - [claudeup Commands](#claudeup-commands)
+    - [Directory Layout](#directory-layout)
+  - [Scope and Priority](#scope-and-priority)
+    - [Subagents](#subagents-1)
+    - [Skills](#skills-1)
+    - [Permission Rules](#permission-rules)
+  - [Best Practices](#best-practices)
+  - [Anti-Patterns](#anti-patterns)
+  - [References](#references)
 
 ---
 
@@ -648,19 +654,19 @@ allowed-tools: Bash(gh *), Read, Grep, Glob
 
 For any domain (security, performance, accessibility), create two complementary components:
 
-```
-                    ┌─────────────────────────┐
-                    │   Main Conversation      │
-                    │                          │
-  Auto-activates   │   ┌─────────────────┐    │
-  during coding    │   │  Security Lens   │    │ Lightweight
-  ─────────────────┼──>│  (Skill)         │    │ awareness
-                   │   └─────────────────┘    │
-                   │                          │
-  Explicit         │   ┌─────────────────┐    │
-  delegation       │   │  Security Audit  │───┼──> Isolated
-  ─────────────────┼──>│  (Subagent)      │    │   deep analysis
-                   │   └─────────────────┘    │
+```sh
+                   ┌─────────────────────────┐
+                   │   Main Conversation     │
+                   │                         │
+  Auto-activates   │   ┌─────────────────┐   │
+  during coding    │   │  Security Lens  │   │ Lightweight
+  ─────────────────┼──>│  (Skill)        │   │ awareness
+                   │   └─────────────────┘   │
+                   │                         │
+  Explicit         │   ┌─────────────────┐   │
+  delegation       │   │  Security Audit │───┼──> Isolated
+  ─────────────────┼──>│  (Subagent)     │   │   deep analysis
+                   │   └─────────────────┘   │
                    └─────────────────────────┘
 ```
 
@@ -762,7 +768,7 @@ Plugins are packages that bundle subagents, skills, hooks, MCP servers, and othe
 
 ### Plugin Directory Structure
 
-```
+```sh
 my-plugin/
   .claude-plugin/
     plugin.json           # Plugin manifest (optional but recommended)
@@ -929,7 +935,7 @@ claudeup local view skills golang
 
 Items live in the library directory. Enablement works via symlinks:
 
-```
+```sh
 ~/.claude/.library/          # All available items
   skills/
     golang/SKILL.md

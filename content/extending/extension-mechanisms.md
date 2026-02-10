@@ -106,7 +106,7 @@ Subagents are specialized AI assistants spawned via the `Task` tool. Each operat
 
 **Context Flow**
 
-```
+```sh
 Main Instance
     │
     ├─ Delegates task via Task tool
@@ -146,7 +146,7 @@ Main Instance resumes (subagent work didn't pollute context)
 
 **Structure**:
 
-```
+```sh
 .claude/agents/
   compliance-reviewer/
     CLAUDE.md    # Your PCI-DSS rules, audit requirements, data policies
@@ -187,7 +187,7 @@ Return findings as:
 
 **Structure**:
 
-```
+```sh
 .claude/agents/
   migration-assistant/
     CLAUDE.md
@@ -231,7 +231,7 @@ You assist with Python 2 → Python 3 async migration.
 
 **Structure**:
 
-```
+```sh
 .claude/agents/
   incident-debugger/
     CLAUDE.md
@@ -301,7 +301,7 @@ This is analogous to dependency injection in software: behavior is injected into
 
 ### Technical Structure
 
-```
+```sh
 .claude/skills/
   my-skill/
     SKILL.md           # YAML frontmatter + markdown instructions
@@ -370,7 +370,7 @@ Skills are **lightweight context additions**:
 
 **Structure**:
 
-```
+```sh
 .claude/skills/
   api-design/
     SKILL.md
@@ -434,7 +434,7 @@ See @pagination-patterns.md for cursor-based pagination standards.
 
 **Structure**:
 
-```
+```sh
 
 .claude/skills/
   db-migrations/
@@ -498,7 +498,7 @@ description: Use when creating, reviewing, or planning database migrations. Ensu
 
 **Structure**:
 
-```
+```sh
 .claude/skills/
   security-lens/
     SKILL.md
@@ -602,7 +602,7 @@ A common question: "Should X be a skill or subagent?" Often the answer is **both
 
 #### Example: Code Review
 
-```
+```sh
 .claude/skills/
   code-review-lens/          # Light: catches issues while coding
     SKILL.md
@@ -696,7 +696,7 @@ External processes following the Model Context Protocol standard. They expose de
 
 **Architecture**
 
-```
+```sh
 Claude Code (Client)
     │
     ├─ HTTP/Stdio/SSE connection
@@ -760,7 +760,7 @@ Minimal overhead:
 
 Claude Code uses procedural/organizational memory, not conversation history:
 
-```
+```sh
 1. Enterprise Policy (highest precedence)
    ↓
 2. Project Memory (CLAUDE.md in version control)
@@ -801,7 +801,7 @@ Claude Code uses procedural/organizational memory, not conversation history:
 
 ### Subagent Flow
 
-```
+```sh
 User Request
     │
 Main Instance determines delegation needed
@@ -823,7 +823,7 @@ Main context preserved (no pollution)
 
 ### MCP Tool Flow
 
-```
+```sh
 Claude determines tool needed
     │
 Tool call prepared (input bounded)
@@ -843,7 +843,7 @@ Result incorporated into context
 
 ## Decision Matrix
 
-```
+```sh
 What kind of capability extension?
 │
 ├─ External data/API call?
@@ -929,7 +929,7 @@ Together they enable scaling from simple conversations to complex multi-system w
 
 ### The Three Extension Mechanisms
 
-```
+```sh
 ┌─────────────────────────────────────────────────────────────┐
 │                    Main Claude Instance                     │
 │                                                             │

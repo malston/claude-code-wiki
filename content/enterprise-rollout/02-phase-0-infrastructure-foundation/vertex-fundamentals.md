@@ -82,7 +82,7 @@ With Vertex AI + VPC Service Controls + Private Google Access:
 | --------------------------------- | -------------- |
 | `VERTEX_REGION_CLAUDE_3_5_HAIKU`  | `us-east5`     |
 | `VERTEX_REGION_CLAUDE_4_0_SONNET` | `us-east5`     |
-| `VERTEX_REGION_CLAUDE_4_1_OPUS`   | `europe-west1` |
+| `VERTEX_REGION_CLAUDE_4_0_OPUS`   | `europe-west1` |
 
 Authentication falls back through: `ANTHROPIC_VERTEX_PROJECT_ID` -> `GCLOUD_PROJECT` -> `GOOGLE_CLOUD_PROJECT` -> `GOOGLE_APPLICATION_CREDENTIALS`.
 
@@ -99,11 +99,11 @@ Both must be available in your Vertex AI project. Defaults on Vertex: Sonnet 4.5
 
 Vertex AI uses a different model ID format than Bedrock or the direct API:
 
-| Provider   | Format                                          | Example                                     |
-| ---------- | ----------------------------------------------- | ------------------------------------------- |
-| Vertex AI  | `claude-{tier}-{version}@{date}`                | `claude-sonnet-4-5@20250929`                |
-| Bedrock    | `anthropic.claude-{tier}-{version}-{date}-v1:0` | `anthropic.claude-sonnet-4-5-20250929-v1:0` |
-| Direct API | `claude-{tier}-{version}-{date}`                | `claude-sonnet-4-5-20250929`                |
+| Provider   | Format                                                   | Example                                        |
+| ---------- | -------------------------------------------------------- | ---------------------------------------------- |
+| Vertex AI  | `claude-{tier}-{version}@{date}`                         | `claude-sonnet-4-5@20250929`                   |
+| Bedrock    | `{region}.anthropic.claude-{tier}-{version}-{date}-v1:0` | `us.anthropic.claude-sonnet-4-5-20250929-v1:0` |
+| Direct API | `claude-{tier}-{version}-{date}`                         | `claude-sonnet-4-5-20250929`                   |
 
 Current Vertex AI model IDs:
 
@@ -195,8 +195,12 @@ This is the GCP equivalent of AWS VPC PrivateLink. VPC Service Controls create a
 
 ### Key Terraform Resources
 
+**IMPORTANT:** GCP enforces a hard limit of one Access Context Manager access policy per organization. If your org already has an access policy, you MUST use a `data` source to reference it instead of creating a new one. The example below assumes no existing policy -- for enterprise deployments, replace the `resource` with `data "google_access_context_manager_access_policy" "existing"` and reference `var.access_policy_name`.
+
 ```hcl
 # Access policy (organization-level, one per org)
+# WARNING: This will fail if your org already has an access policy
+# Use data source instead: data "google_access_context_manager_access_policy" "existing"
 resource "google_access_context_manager_access_policy" "policy" {
   parent = "organizations/${var.org_id}"
   title  = "Claude Code VPC-SC Policy"

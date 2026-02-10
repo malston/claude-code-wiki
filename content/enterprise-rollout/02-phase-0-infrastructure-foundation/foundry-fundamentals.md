@@ -77,7 +77,7 @@ With Foundry + Private Endpoint:
 | `ANTHROPIC_DEFAULT_HAIKU_MODEL`  | `claude-haiku-4-5`  | Overrides the Haiku model                                            |
 | `ANTHROPIC_DEFAULT_OPUS_MODEL`   | `claude-opus-4-6`   | Overrides the Opus model                                             |
 | `ANTHROPIC_MAX_TOKENS`           | `100000`            | Per-request token limit                                              |
-| `CLAUDE_CODE_SKIP_AUTH_LOGIN`    | `1`                 | Skips login prompt (for CI/CD)                                       |
+| `CLAUDE_CODE_SKIP_FOUNDRY_AUTH`  | `1`                 | Skips Foundry auth prompt (for CI/CD)                                |
 
 **Important:** All three model env vars (`SONNET`, `HAIKU`, `OPUS`) should be set even if you're only using one model tier, to prevent fallback errors.
 
@@ -229,9 +229,9 @@ resource "azurerm_cognitive_account" "claude" {
   }
 }
 
-# Private DNS zone for Cognitive Services
+# Private DNS zone for Azure AI Services
 resource "azurerm_private_dns_zone" "cognitive" {
-  name                = "privatelink.cognitiveservices.azure.com"
+  name                = "privatelink.services.ai.azure.com"
   resource_group_name = var.resource_group_name
 }
 
@@ -281,6 +281,12 @@ resource "azurerm_network_security_group" "claude_endpoint" {
     destination_address_prefix = "*"
   }
 }
+
+# Associate NSG with private endpoint subnet
+resource "azurerm_subnet_network_security_group_association" "claude_endpoint" {
+  subnet_id                 = var.private_endpoint_subnet_id
+  network_security_group_id = azurerm_network_security_group.claude_endpoint.id
+}
 ```
 
 ### Design Decisions
@@ -325,7 +331,8 @@ The LLM gateway pattern is the same regardless of cloud provider -- see [LLM Gat
 ```bash
 export CLAUDE_CODE_USE_FOUNDRY=1
 export ANTHROPIC_FOUNDRY_BASE_URL='https://llm-gateway.internal.corp.com/foundry'
-# No auth env vars needed -- gateway handles Azure auth
+export CLAUDE_CODE_SKIP_FOUNDRY_AUTH=1
+# Gateway handles Azure auth; Claude Code skips direct Foundry auth
 ```
 
 ### Deployment Topology

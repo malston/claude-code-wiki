@@ -1,6 +1,6 @@
-/* Increase content width to use more horizontal space */
+/* Increase content width to use available screen space */
 :root {
-  --container-max-width: 1400px; /* Increased from default 80rem (~1280px) */
+  --container-max-width: 95vw; /* Use 95% of viewport width */
   --body-min-width: 20rem; /* Keep minimum but allow expansion */
 }
 
@@ -9,7 +9,24 @@
   max-width: none;
 }
 
-/* Adjust aside (TOC) width for better balance */
+/* Make the container flexible for widescreen monitors */
+.container {
+  max-width: 95vw !important;
+}
+
+/* Adjust aside (TOC) width for better balance on wide screens */
 aside.book-toc {
-  max-width: 300px;
+  max-width: 350px;
+}
+
+/* Give the main content area more breathing room */
+.book-menu,
+.book-toc {
+  flex: 0 0 280px;
+}
+
+/* Let the page content expand to fill available space */
+.book-page {
+  flex: 1 1 auto;
+  max-width: none;
 }

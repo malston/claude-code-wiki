@@ -1,5 +1,6 @@
 ---
 title: "Enterprise Claude Code Adoption — Skill Gaps"
+linkTitle: "Skill Gaps"
 weight: 1
 ---
 

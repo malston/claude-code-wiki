@@ -1,5 +1,6 @@
 ---
 title: "Testing Strategies: TDD Patterns and Test Automation with Claude Code"
+linkTitle: "Testing Strategies"
 weight: 4
 ---
 

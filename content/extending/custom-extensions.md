@@ -1,5 +1,6 @@
 ---
 title: "Building Custom Subagents & Skills: Extending Claude Code"
+linkTitle: "Building Extensions"
 weight: 2
 ---
 

@@ -1,5 +1,6 @@
 ---
 title: "Memory Organization: Structuring CLAUDE.md and Rules for Scale"
+linkTitle: "Memory Organization"
 weight: 6
 ---
 

@@ -1,5 +1,6 @@
 ---
 title: "Extended Thinking: How Claude Reasons Through Complex Problems"
+linkTitle: "Extended Thinking"
 weight: 5
 ---
 

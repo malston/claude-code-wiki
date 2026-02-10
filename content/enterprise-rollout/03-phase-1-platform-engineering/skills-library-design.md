@@ -1,5 +1,6 @@
 ---
 title: "Skills Library Design — Three-Tier Architecture"
+linkTitle: "Skills Library Design"
 weight: 5
 ---
 
@@ -36,25 +37,30 @@ against this checklist. For each category, state PASS, FAIL, or N/A
 with a one-line explanation.
 
 ## Input Validation
+
 - Are all external inputs validated before use?
 - Are SQL queries parameterized (no string concatenation)?
 - Are file paths validated against path traversal?
 
 ## Authentication & Authorization
+
 - Do new endpoints require authentication?
 - Are authorization checks present for resource access?
 - Are there any privilege escalation vectors?
 
 ## Secrets & Configuration
+
 - Are there any hardcoded secrets, API keys, or passwords?
 - Are credentials read from environment/vault, not config files?
 - Are there any secrets in log statements?
 
 ## Dependencies
+
 - Do new dependencies have known CVEs? Run: `npm audit` or `go vuln check`
 - Are dependencies pinned to specific versions?
 
 ## Output
+
 Produce a summary table and flag any FAIL items for the developer
 to address before opening the PR. Do NOT auto-fix — explain the issue
 and let the developer decide.
@@ -80,22 +86,27 @@ allowed-tools: Bash, Read, Grep
 Generate a PR description with these sections:
 
 ## Summary
+
 Two to three sentences explaining WHAT changed and WHY.
 
 ## Changes
+
 Bullet list of specific changes, grouped by area.
 
 ## Testing
+
 How were these changes tested? List specific test commands run
 and their outcomes.
 
 ## Risk Assessment
+
 - What could break?
 - What downstream services are affected?
 - Is a database migration involved?
 - Does this require a config change in any environment?
 
 ## Rollback Plan
+
 If this change causes issues in production, what's the rollback procedure?
 ```
 

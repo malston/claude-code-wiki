@@ -1,5 +1,6 @@
 ---
 title: "Prompt Caching: Why Your System Prompt Doesn't Cost What You Think"
+linkTitle: "Prompt Caching"
 weight: 3
 ---
 

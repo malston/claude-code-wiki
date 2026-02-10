@@ -1,11 +1,12 @@
 ---
 title: "Skills vs. Slash Commands vs. Rules — Decision Framework"
+linkTitle: "Skills vs. Commands vs. Rules"
 weight: 4
 ---
 
 # Skills vs. Slash Commands vs. Rules — Decision Framework
 
-## When to Use Rules (.claude/rules/*.md)
+## When to Use Rules (.claude/rules/\*.md)
 
 Use rules when the instruction is:
 
@@ -78,10 +79,10 @@ Is the instruction about conventions/patterns that should apply automatically?
 
 For the 500-developer rollout: **default to skills for anything reusable, fall back to slash commands for simple invocations, use rules for always-on conventions.**
 
-| Mechanism | Scope | Loading | Best For |
-|---|---|---|---|
-| Rules | Per-repo | Automatic (path-scoped or global) | Conventions, constraints |
-| Skills | Global, per-repo, or personal | On invocation or auto-match | Workflows, procedures |
-| Slash Commands | Global or per-repo | Explicit invocation only | Simple repeatable actions |
-| CLAUDE.md | Per-repo | Always loaded | Universal project context |
-| agent_docs/ | Per-repo | On-demand (Claude reads when needed) | Deep reference material |
+| Mechanism      | Scope                         | Loading                              | Best For                  |
+| -------------- | ----------------------------- | ------------------------------------ | ------------------------- |
+| Rules          | Per-repo                      | Automatic (path-scoped or global)    | Conventions, constraints  |
+| Skills         | Global, per-repo, or personal | On invocation or auto-match          | Workflows, procedures     |
+| Slash Commands | Global or per-repo            | Explicit invocation only             | Simple repeatable actions |
+| CLAUDE.md      | Per-repo                      | Always loaded                        | Universal project context |
+| agent_docs/    | Per-repo                      | On-demand (Claude reads when needed) | Deep reference material   |

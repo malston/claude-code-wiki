@@ -1,5 +1,6 @@
 ---
 title: "Debugging Techniques: Systematic Troubleshooting with Claude Code"
+linkTitle: "Debugging Techniques"
 weight: 3
 ---
 

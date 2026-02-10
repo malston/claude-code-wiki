@@ -1,5 +1,6 @@
 ---
 title: "Developer Environment Standardization"
+linkTitle: "Developer Environment"
 weight: 2
 ---
 

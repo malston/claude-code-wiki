@@ -1,5 +1,6 @@
 ---
 title: "Effective Prompting: Getting Better Results from Claude Code"
+linkTitle: "Effective Prompting"
 weight: 1
 ---
 

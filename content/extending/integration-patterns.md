@@ -1,5 +1,6 @@
 ---
 title: "Integration Patterns: Connecting Claude Code with External Tools and Services"
+linkTitle: "Integration Patterns"
 weight: 4
 ---
 

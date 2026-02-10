@@ -1,5 +1,6 @@
 ---
 title: "Implementation Support Landscape"
+linkTitle: "Support Landscape"
 weight: 1
 ---
 

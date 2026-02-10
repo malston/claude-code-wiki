@@ -1,5 +1,6 @@
 ---
 title: "Cloud Foundry to Claude Code Analogy Map"
+linkTitle: "CF Analogy Map"
 weight: 2
 ---
 

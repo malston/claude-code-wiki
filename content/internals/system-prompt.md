@@ -1,5 +1,6 @@
 ---
 title: "The System Prompt: What Claude Reads Before You Say Anything"
+linkTitle: "The System Prompt"
 weight: 1
 ---
 

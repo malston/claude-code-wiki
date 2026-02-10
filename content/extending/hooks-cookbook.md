@@ -1,5 +1,6 @@
 ---
 title: "Custom Hooks Cookbook: Practical Recipes for Automating Claude Code"
+linkTitle: "Hooks Cookbook"
 weight: 3
 ---
 

@@ -510,7 +510,7 @@ blockquote cite {
 }
 
 .book-menu nav ul ul a {
-  font-size: var(--text-sm);
+  font-size: 0.8125rem;
   padding: 0.5rem 0.75rem;
 }
 

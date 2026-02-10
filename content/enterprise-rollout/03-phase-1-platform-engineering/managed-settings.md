@@ -1,5 +1,6 @@
 ---
 title: "Managed Settings and Security Policy"
+linkTitle: "Managed Settings"
 weight: 1
 ---
 

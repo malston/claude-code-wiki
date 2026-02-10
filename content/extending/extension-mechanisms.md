@@ -1,5 +1,6 @@
 ---
 title: "Subagents, Skills, and MCP Servers: Architecture Deep Dive"
+linkTitle: "Extension Architecture"
 weight: 1
 ---
 

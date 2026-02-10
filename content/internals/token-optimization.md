@@ -1,5 +1,6 @@
 ---
 title: "Optimizing Token Usage: Skills, Plugins, and Context Budget"
+linkTitle: "Token Optimization"
 weight: 4
 ---
 

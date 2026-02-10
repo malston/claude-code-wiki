@@ -1,5 +1,6 @@
 ---
 title: "Audit and Compliance — Three-Layer Architecture"
+linkTitle: "Audit & Compliance"
 weight: 1
 ---
 

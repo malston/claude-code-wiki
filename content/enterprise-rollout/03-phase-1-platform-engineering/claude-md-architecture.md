@@ -1,5 +1,6 @@
 ---
 title: "CLAUDE.md Architecture — Four-Layer Context Hierarchy"
+linkTitle: "CLAUDE.md Architecture"
 weight: 3
 ---
 
@@ -88,6 +89,7 @@ paths:
 # API Development Rules
 
 Endpoints in this service follow these patterns:
+
 - Input validation using the shared validation middleware (see src/middleware/validate.ts)
 - Consistent error response shape: { error: string, code: number, request_id: string }
 - All endpoints require authentication unless explicitly listed in src/api/public-routes.ts
@@ -95,6 +97,7 @@ Endpoints in this service follow these patterns:
 - OpenAPI annotations required on all handler functions
 
 For examples of well-structured endpoints, reference:
+
 - src/api/users/handlers.ts (CRUD with pagination)
 - src/api/orders/handlers.ts (async processing with status callbacks)
 ```

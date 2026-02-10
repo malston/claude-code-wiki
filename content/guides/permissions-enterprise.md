@@ -1,5 +1,6 @@
 ---
 title: "Permissions & Enterprise Deployment: Securing and Scaling Claude Code"
+linkTitle: "Permissions & Enterprise"
 weight: 7
 ---
 

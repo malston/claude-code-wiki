@@ -1,5 +1,6 @@
 ---
 title: "Model Selection & Cost Management: Choosing the Right Model and Controlling Spend"
+linkTitle: "Model Selection & Cost"
 weight: 5
 ---
 

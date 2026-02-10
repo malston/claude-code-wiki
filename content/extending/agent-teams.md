@@ -1,5 +1,6 @@
 ---
 title: "Agent Teams: Multi-Agent Orchestration in Claude Code"
+linkTitle: "Agent Teams"
 weight: 5
 ---
 

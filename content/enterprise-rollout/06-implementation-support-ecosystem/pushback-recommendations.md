@@ -1,5 +1,6 @@
 ---
 title: "Common Customer Requests — Pushback Recommendations"
+linkTitle: "Pushback Recommendations"
 weight: 2
 ---
 
@@ -34,7 +35,7 @@ Things the customer will probably ask for that should be redirected.
 
 **Answer:** No. Claude's security review is non-deterministic — the same code might pass one review and fail another. Audit teams can't rely on non-reproducible results.
 
-**Recommendation:** Use Claude's /security-review as a *complement* to deterministic SAST/DAST tools (Semgrep, Snyk, SonarQube) in CI/CD. AI catches business logic issues that rule-based tools miss. Rule-based tools catch known patterns reliably every time. Both together provide better coverage than either alone.
+**Recommendation:** Use Claude's /security-review as a _complement_ to deterministic SAST/DAST tools (Semgrep, Snyk, SonarQube) in CI/CD. AI catches business logic issues that rule-based tools miss. Rule-based tools catch known patterns reliably every time. Both together provide better coverage than either alone.
 
 ## "Can we default to Opus for everyone?"
 

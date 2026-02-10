@@ -1,5 +1,6 @@
 ---
 title: "Phased Rollout — Cohort Strategy"
+linkTitle: "Cohort Strategy"
 weight: 1
 ---
 

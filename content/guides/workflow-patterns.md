@@ -1,5 +1,6 @@
 ---
 title: "Workflow Patterns: Common Development Workflows with Claude Code"
+linkTitle: "Workflow Patterns"
 weight: 2
 ---
 

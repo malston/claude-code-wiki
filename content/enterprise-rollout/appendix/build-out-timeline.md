@@ -1,5 +1,6 @@
 ---
 title: "Build-Out Timeline — 12-Week Implementation"
+linkTitle: "Build-Out Timeline"
 weight: 1
 ---
 
@@ -158,10 +159,10 @@ weight: 1
 
 ## Effort Distribution
 
-| Workstream | % of Total Effort | Primary Owner |
-|---|---|---|
-| Infrastructure | 30% | Platform/DevOps team |
-| Platform Engineering | 40% | Consultant + platform team |
-| Change Management | 30% | Consultant + engineering leadership |
+| Workstream           | % of Total Effort | Primary Owner                       |
+| -------------------- | ----------------- | ----------------------------------- |
+| Infrastructure       | 30%               | Platform/DevOps team                |
+| Platform Engineering | 40%               | Consultant + platform team          |
+| Change Management    | 30%               | Consultant + engineering leadership |
 
 The infrastructure is 30% of effort but often gets 90% of attention. The other 70% — platform engineering and change management — is where the engagement delivers differentiated value.

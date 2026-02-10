@@ -1,6 +1,6 @@
 ---
 title: "Azure Foundry Fundamentals"
-weight: 6
+weight: 3
 ---
 
 # Azure Foundry Fundamentals

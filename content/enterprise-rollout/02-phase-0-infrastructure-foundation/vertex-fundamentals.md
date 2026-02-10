@@ -1,6 +1,6 @@
 ---
 title: "Google Vertex AI Fundamentals"
-weight: 5
+weight: 2
 ---
 
 # Google Vertex AI Fundamentals

@@ -49,6 +49,11 @@ The context window is Claude's working memory -- everything the model can refere
     - [How Subagents Help](#how-subagents-help)
     - [When to Delegate vs Stay in Main Context](#when-to-delegate-vs-stay-in-main-context)
   - [Extended Thinking and Context](#extended-thinking-and-context)
+  - [Why Claude Code Seems Inconsistent](#why-claude-code-seems-inconsistent)
+    - [Between Sessions: Total Amnesia](#between-sessions-total-amnesia)
+    - [Within Sessions: Death by Compaction](#within-sessions-death-by-compaction)
+    - [The Humanization Trap](#the-humanization-trap)
+    - [What You Can Do About It](#what-you-can-do-about-it)
   - [Practical Tips](#practical-tips)
   - [References](#references)
 
@@ -394,6 +399,47 @@ When extended thinking is enabled, thinking tokens count toward the context wind
 This design prevents thinking tokens from eating into your context budget over time. A turn with 10,000 thinking tokens will briefly use that space, but it's freed for the next turn.
 
 **Exception:** During tool use, thinking blocks must be preserved until the tool use cycle completes. They're stripped after the cycle ends.
+
+---
+
+## Why Claude Code Seems Inconsistent
+
+A common complaint: Claude Code seems to "get dumber" over a long session, or forgets things it should obviously know -- like that it already created a branch, or what approach it tried twenty minutes ago. The natural reaction is frustration: _you just did this, why are you doing it again?_
+
+The explanation is entirely mechanical. There's no degradation in the model's reasoning ability -- what changes is the information available to it.
+
+### Between Sessions: Total Amnesia
+
+Every new session starts with zero conversation history. The model has no memory of previous sessions except what's written to persistent files (CLAUDE.md, auto memory, journal entries). If you spent an hour debugging a tricky issue yesterday, Claude knows nothing about it today unless you or it wrote something down.
+
+This is unlike working with a human colleague who retains subconscious patterns and context even when they can't recall specifics. Claude has literally nothing between sessions unless something wrote it to disk. The memory system -- CLAUDE.md, auto memory, episodic memory -- exists specifically to compensate for this, but it's opt-in and lossy.
+
+### Within Sessions: Death by Compaction
+
+Even within a single session, context loss is continuous. Compaction summarizes away details that seemed important at the time. After two or three compaction cycles, Claude may have lost:
+
+- The specific file paths it explored earlier
+- Which approaches it tried and rejected
+- Exact error messages from failed attempts
+- The reasoning behind a choice it made 40 turns ago
+
+It's not that the model is getting worse -- it's that the desk is being cleared and only a summary remains. The model works with whatever context it has, and after compaction, that context is thinner.
+
+### The Humanization Trap
+
+We instinctively attribute human-like memory to things that converse fluently. When Claude writes articulate code and explanations, it feels like it "knows" things in the way a person does. When it then forgets something obvious, the gap between expectation and reality feels like stupidity.
+
+But the model doesn't have a bad memory -- it has no memory at all beyond its current context window. Every response is generated from scratch using only what's visible in that window right now. Understanding this reframes the problem from "Claude is unreliable" to "I need to manage what's in the context window."
+
+### What You Can Do About It
+
+- **Write important decisions to files** -- CLAUDE.md instructions survive compaction and session boundaries
+- **Use auto memory and journals** -- These persist across sessions and give future sessions a head start
+- **Front-load context in new sessions** -- Reference relevant files and state your goals explicitly at session start
+- **Compact strategically** -- Use `/compact` with custom instructions to preserve specific details
+- **Keep sessions focused** -- One task per session means less context pressure and fewer compactions
+
+The model's reasoning capability is constant. What varies is how much relevant information it can see. Context management isn't a workaround -- it's the primary skill that separates effective Claude Code usage from frustrating sessions.
 
 ---
 

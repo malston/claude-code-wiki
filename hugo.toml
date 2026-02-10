@@ -1,0 +1,25 @@
+baseURL = 'https://malston.github.io/claude-code-wiki/'
+languageCode = 'en-us'
+title = 'Claude Code Wiki'
+theme = 'hugo-book'
+ignoreFiles = ['CLAUDE\.md$']
+
+[params]
+  BookTheme = 'auto'
+  BookToC = true
+  BookSection = '*'
+  BookRepo = 'https://github.com/malston/claude-code-wiki'
+  BookSearch = true
+  BookDateFormat = 'January 2, 2006'
+
+[markup]
+  [markup.goldmark]
+    [markup.goldmark.renderer]
+      unsafe = true
+  [markup.highlight]
+    style = 'monokai'
+    lineNos = false
+    noClasses = false
+  [markup.tableOfContents]
+    startLevel = 2
+    endLevel = 4

@@ -1,0 +1,15 @@
+/* Increase content width to use more horizontal space */
+:root {
+  --container-max-width: 1400px; /* Increased from default 80rem (~1280px) */
+  --body-min-width: 20rem; /* Keep minimum but allow expansion */
+}
+
+/* Ensure the main content area expands */
+.book-page {
+  max-width: none;
+}
+
+/* Adjust aside (TOC) width for better balance */
+aside.book-toc {
+  max-width: 300px;
+}

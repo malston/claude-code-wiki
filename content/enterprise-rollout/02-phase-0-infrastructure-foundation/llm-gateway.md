@@ -157,3 +157,12 @@ The gateway is the ideal point to instrument **OpenTelemetry metrics** pushed to
 - Budget utilization per team
 
 These metrics feed the dashboards that leadership and finance will want in Phase 3.
+
+## Multi-Cloud Gateway Deployment
+
+The gateway architecture described above uses AWS-specific deployment examples (ECS/EKS, ALB, Direct Connect). The same gateway pattern applies to other cloud providers, but the deployment resources and credential management differ:
+
+- **Google Cloud:** Deploy on Cloud Run or GKE, use Workload Identity for credentials, push metrics to Cloud Monitoring. See [Google Vertex AI Fundamentals](../vertex-fundamentals/) for GCP-specific details.
+- **Azure:** Deploy on Container Apps or AKS, use managed identities for credentials, push metrics to Azure Monitor. See [Azure Foundry Fundamentals](../foundry-fundamentals/) for Azure-specific details.
+
+The gateway's core functionality -- per-user budgets, centralized auth, request logging, provider abstraction -- is identical regardless of cloud provider.

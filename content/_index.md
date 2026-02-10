@@ -4,7 +4,9 @@ title: "Claude Code Wiki"
 
 # Claude Code Wiki
 
-Browse the sections in the sidebar:
+Deep dives into Claude Code internals, patterns, and optimization techniques.
 
-- **[Claude Code Wiki](/claude-code-wiki/claude-code-wiki/)** -- Deep dives into Claude Code internals, patterns, and optimization
-- **[Enterprise Rollout](/claude-code-wiki/enterprise-rollout/)** -- Architecture and implementation guide for enterprise Claude Code deployment
+- **[Internals](/claude-code-wiki/internals/)** -- System prompt, context window, caching, token economics, reasoning
+- **[Guides](/claude-code-wiki/guides/)** -- Prompting, workflows, debugging, testing, model selection, configuration
+- **[Extending](/claude-code-wiki/extending/)** -- Subagents, skills, hooks, MCP servers, integration patterns, agent teams
+- **[Enterprise Rollout](/claude-code-wiki/enterprise-rollout/)** -- Architecture and implementation guide for 500-developer deployment

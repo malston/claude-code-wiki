@@ -1,6 +1,6 @@
 ---
 title: "Enterprise Claude Code Rollout"
-weight: 2
+weight: 4
 bookCollapseSection: false
 ---
 

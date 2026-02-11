@@ -470,7 +470,7 @@ This way all worktrees share the same personal instructions.
 
 ### Every Line Has a Price
 
-Every memory file loaded into the system prompt consumes context window space on every message. This is the same cost model described in the [token optimization](claude-code-token-optimization.md) and [system prompt](claude-code-system-prompt.md) articles.
+Every memory file loaded into the system prompt consumes context window space on every message. This is the same cost model described in the [token optimization]({{< relref "/internals/token-optimization" >}}) and [system prompt]({{< relref "/internals/system-prompt" >}}) articles.
 
 ```
 Context window budget (e.g., 200K tokens):
@@ -484,7 +484,7 @@ Context window budget (e.g., 200K tokens):
 └─────────────────────────────────────────────────┘
 ```
 
-[Prompt caching](claude-code-prompt-caching.md) means this content is cheap to re-send (90% discount after the first message), but the context window space is consumed regardless. A 4,000-token CLAUDE.md costs ~$0.40 per 200-message session with caching -- not expensive, but those 4,000 tokens are unavailable for actual work.
+[Prompt caching]({{< relref "/internals/prompt-caching" >}}) means this content is cheap to re-send (90% discount after the first message), but the context window space is consumed regardless. A 4,000-token CLAUDE.md costs ~$0.40 per 200-message session with caching -- not expensive, but those 4,000 tokens are unavailable for actual work.
 
 ### Measuring Your Memory Footprint
 
@@ -601,7 +601,7 @@ The rules directory exists for this case. Use it when CLAUDE.md exceeds ~100 lin
 ## References
 
 - [Manage Claude's Memory (Claude Code Docs)](https://code.claude.com/docs/en/memory) -- Official documentation on the memory system
-- [System Prompt Article](claude-code-system-prompt.md) -- How CLAUDE.md files become part of the system prompt
-- [Token Optimization Article](claude-code-token-optimization.md) -- Managing per-message token overhead
-- [Context Management Article](claude-code-context-management.md) -- Working within the context window budget
-- [Effective Prompting Article](claude-code-effective-prompting.md) -- CLAUDE.md as persistent prompting
+- [System Prompt Article]({{< relref "/internals/system-prompt" >}}) -- How CLAUDE.md files become part of the system prompt
+- [Token Optimization Article]({{< relref "/internals/token-optimization" >}}) -- Managing per-message token overhead
+- [Context Management Article]({{< relref "/internals/context-management" >}}) -- Working within the context window budget
+- [Effective Prompting Article]({{< relref "effective-prompting" >}}) -- CLAUDE.md as persistent prompting

@@ -603,6 +603,6 @@ Prompt caching is always net positive for Claude Code usage patterns. Don't disa
 - [Model Configuration (Claude Code Docs)](https://code.claude.com/docs/en/model-config) -- Model aliases, effort levels, environment variables
 - [Models Overview (Claude API Docs)](https://platform.claude.com/docs/en/about-claude/models/overview) -- Full model comparison and pricing
 - [Prompt Caching (Claude API Docs)](https://platform.claude.com/docs/en/build-with-claude/prompt-caching) -- Cache mechanics and pricing
-- [Prompt Caching Article](claude-code-prompt-caching.md) -- Wiki deep dive on caching economics
-- [Context Management Article](claude-code-context-management.md) -- Wiki guide to managing context window
-- [Token Optimization Article](claude-code-token-optimization.md) -- Wiki guide to reducing per-message overhead
+- [Prompt Caching Article]({{< relref "/internals/prompt-caching" >}}) -- Wiki deep dive on caching economics
+- [Context Management Article]({{< relref "/internals/context-management" >}}) -- Wiki guide to managing context window
+- [Token Optimization Article]({{< relref "/internals/token-optimization" >}}) -- Wiki guide to reducing per-message overhead

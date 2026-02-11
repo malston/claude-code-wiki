@@ -17,7 +17,7 @@ The context window is Claude's working memory -- everything the model can refere
 | Claude Sonnet 4   | 200K tokens     | 1M tokens       | 2x input, 1.5x output above 200K |
 | Claude Haiku 4.5  | 200K tokens     | --              | --                               |
 
-**Key insight:** [Prompt caching](claude-code-prompt-caching.md) reduces the _cost_ of repeated content, but every token still occupies context window _space_. You can afford a 20,000-token system prompt financially, but those 20,000 tokens are unavailable for conversation content regardless.
+**Key insight:** [Prompt caching]({{< relref "prompt-caching" >}}) reduces the _cost_ of repeated content, but every token still occupies context window _space_. You can afford a 20,000-token system prompt financially, but those 20,000 tokens are unavailable for conversation content regardless.
 
 ---
 
@@ -94,16 +94,16 @@ The system prompt is constant. The conversation history grows with every turn. T
 
 Not all content is equal. Some things consume far more tokens than expected:
 
-| Content Type          | Typical Size         | Notes                                                                                    |
-| --------------------- | -------------------- | ---------------------------------------------------------------------------------------- |
-| System prompt         | 12,000-20,000 tokens | Fixed overhead every message (see [system prompt article](claude-code-system-prompt.md)) |
-| User message          | 10-200 tokens        | Your typed input                                                                         |
-| Assistant response    | 100-2,000 tokens     | Explanations, reasoning                                                                  |
-| Tool call + result    | Varies widely        | A `Read` of a 500-line file can be 5,000+ tokens                                         |
-| File read (@-mention) | 100-10,000+ tokens   | Entire file contents injected                                                            |
-| Grep/Glob results     | 100-5,000 tokens     | Depends on match count                                                                   |
-| Web search results    | 500-3,000 tokens     | Search snippets                                                                          |
-| System reminders      | 50-500 tokens        | Hook outputs, plugin status                                                              |
+| Content Type          | Typical Size         | Notes                                                                                      |
+| --------------------- | -------------------- | ------------------------------------------------------------------------------------------ |
+| System prompt         | 12,000-20,000 tokens | Fixed overhead every message (see [system prompt article]({{< relref "system-prompt" >}})) |
+| User message          | 10-200 tokens        | Your typed input                                                                           |
+| Assistant response    | 100-2,000 tokens     | Explanations, reasoning                                                                    |
+| Tool call + result    | Varies widely        | A `Read` of a 500-line file can be 5,000+ tokens                                           |
+| File read (@-mention) | 100-10,000+ tokens   | Entire file contents injected                                                              |
+| Grep/Glob results     | 100-5,000 tokens     | Depends on match count                                                                     |
+| Web search results    | 500-3,000 tokens     | Search snippets                                                                            |
+| System reminders      | 50-500 tokens        | Hook outputs, plugin status                                                                |
 
 **The biggest consumers are tool results** -- especially file reads. Reading a large file dumps its entire contents into the context. In an active coding session, multiple file reads and their associated tool call metadata can consume the majority of your context budget.
 
@@ -237,7 +237,7 @@ Compaction is a lossy process. The summary captures the gist of the conversation
 
 The system prompt is a fixed cost on every message. Reducing it frees space for conversation:
 
-- **Disable unused plugins** -- Each plugin adds skills and subagent descriptions (see [token optimization article](claude-code-token-optimization.md))
+- **Disable unused plugins** -- Each plugin adds skills and subagent descriptions (see [token optimization article]({{< relref "token-optimization" >}}))
 - **Keep CLAUDE.md concise** -- Every line is re-sent every message
 - **Remove unused MCP servers** -- Each adds tool definitions
 
@@ -469,7 +469,7 @@ The model's reasoning capability is constant. What varies is how much relevant i
 - [Context Windows (Anthropic Docs)](https://platform.claude.com/docs/en/build-with-claude/context-windows) -- Context window sizes, long context, context awareness
 - [Compaction (Anthropic Docs)](https://platform.claude.com/docs/en/build-with-claude/compaction) -- Server-side compaction API
 - [Context Editing (Anthropic Docs)](https://platform.claude.com/docs/en/build-with-claude/context-editing) -- Tool result clearing, thinking block clearing
-- [System Prompt Article](claude-code-system-prompt.md) -- What occupies the fixed portion of your context
-- [Token Optimization Article](claude-code-token-optimization.md) -- Reducing system prompt overhead
-- [Prompt Caching Article](claude-code-prompt-caching.md) -- Cost reduction (distinct from context space)
-- [Extension Mechanisms Article](claude-code-extension-mechanisms.md) -- Subagents for context isolation
+- [System Prompt Article]({{< relref "system-prompt" >}}) -- What occupies the fixed portion of your context
+- [Token Optimization Article]({{< relref "token-optimization" >}}) -- Reducing system prompt overhead
+- [Prompt Caching Article]({{< relref "prompt-caching" >}}) -- Cost reduction (distinct from context space)
+- [Extension Mechanisms Article]({{< relref "/extending/extension-mechanisms" >}}) -- Subagents for context isolation

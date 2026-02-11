@@ -369,4 +369,4 @@ Changing thinking parameters invalidates prompt cache for messages, though syste
 - [Model Configuration (Claude Code)](https://code.claude.com/docs/en/model-config) -- effort levels, model aliases, thinking settings
 - [Cost Management (Claude Code)](https://code.claude.com/docs/en/costs) -- pricing, typical costs
 - [Pricing](https://platform.claude.com/docs/en/about-claude/pricing) -- token pricing per model
-- [Model Selection Article](claude-code-model-selection.md) -- model comparison and cost strategies
+- [Model Selection Article]({{< relref "/guides/model-selection" >}}) -- model comparison and cost strategies

@@ -388,7 +388,7 @@ fix(auth): handle duplicate email in registration
 Benefits:
 
 - **Git bisect** finds the exact task that introduced a regression
-- **Each task** is independently revertable
+- **Each task** can be reverted independently
 - **Clean history** gives future sessions clear context for what was built and why
 
 ### Checkpoint Protocols

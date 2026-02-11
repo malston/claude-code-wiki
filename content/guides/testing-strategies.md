@@ -657,6 +657,6 @@ Test output often reveals that tests pass for the wrong reasons -- skipped tests
 - [Common Workflows: Testing (Claude Code Docs)](https://code.claude.com/docs/en/common-workflows) -- Testing workflow recipes
 - [TDD with Claude Code (Steve Kinney)](https://stevekinney.com/courses/ai-development/test-driven-development-with-claude) -- Practical TDD patterns
 - [Hooks Guide (Claude Code Docs)](https://code.claude.com/docs/en/hooks-guide) -- Auto-testing with PostToolUse hooks
-- [Workflow Patterns Article](claude-code-workflow-patterns.md) -- TDD and verification workflows
-- [Debugging Techniques Article](claude-code-debugging-techniques.md) -- Writing tests to reproduce bugs
-- [Effective Prompting Article](claude-code-effective-prompting.md) -- Tests as durable requirements across context windows
+- [Workflow Patterns Article]({{< relref "workflow-patterns" >}}) -- TDD and verification workflows
+- [Debugging Techniques Article]({{< relref "debugging-techniques" >}}) -- Writing tests to reproduce bugs
+- [Effective Prompting Article]({{< relref "effective-prompting" >}}) -- Tests as durable requirements across context windows

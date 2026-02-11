@@ -160,7 +160,7 @@ Example catalog entry:
 
 That single entry is ~25 tokens. With 60+ skills enabled, the catalog can reach 4,000-5,000 tokens.
 
-**Important:** This is just the catalog (names and descriptions). The full skill content only loads when the Skill tool is invoked. See the [token optimization article](claude-code-token-optimization.md) for details on the two-phase cost model.
+**Important:** This is just the catalog (names and descriptions). The full skill content only loads when the Skill tool is invoked. See the [token optimization article]({{< relref "token-optimization" >}}) for details on the two-phase cost model.
 
 **Typical size:** ~2,000-5,000 tokens (depends on number of enabled skills)
 
@@ -265,7 +265,7 @@ The system prompt is re-sent on every API call. For a 15,000-token system prompt
 - **At Opus 4.6 input pricing ($5/MTok):** ~$15 without caching
 - **At Sonnet 4.5 input pricing ($3/MTok):** ~$9 without caching
 
-This is the baseline cost before conversation content. Prompt caching dramatically reduces this (see the [prompt caching article](claude-code-prompt-caching.md)), but managing system prompt size still matters for context window space.
+This is the baseline cost before conversation content. Prompt caching dramatically reduces this (see the [prompt caching article]({{< relref "prompt-caching" >}})), but managing system prompt size still matters for context window space.
 
 ### Behavior Shaping
 
@@ -312,7 +312,7 @@ The biggest optimization levers:
 3. **Remove unused MCP servers** -- Each adds tool definitions to the baseline
 4. **Disable unused local skills** -- Removes catalog entries
 
-See the [token optimization article](claude-code-token-optimization.md) for a detailed audit process.
+See the [token optimization article]({{< relref "token-optimization" >}}) for a detailed audit process.
 
 ---
 

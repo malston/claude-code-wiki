@@ -17,15 +17,16 @@ A consulting binder for deploying Claude Code to a 500-developer enterprise with
 
 ---
 
-## The Four Phases
+## Sections
 
-**Phase 0: Infrastructure Foundation (Weeks 1--4)** -- Stand up cloud provider infrastructure (Amazon Bedrock, Google Vertex AI, or Azure Foundry) with private networking so all LLM traffic stays inside the customer's network. Includes security constraint clarification, LLM gateway design, and Terraform patterns for all three providers.
-
-**Phase 1: Platform Engineering (Weeks 3--6)** -- Configure managed settings, CLAUDE.md architecture, skills libraries, and developer environment standardization. This is where the platform team builds the guardrails that make self-service safe.
-
-**Phase 2: Phased Rollout (Weeks 5--12)** -- Three cohorts of increasing size, each with a learning loop. Cohort 1 (platform engineers) discovers friction; Cohort 2 (willing early adopters) validates the developer experience; Cohort 3 (general availability) proves the model at scale.
-
-**Phase 3: Observability & Governance (Ongoing)** -- Cost tracking with token budgets and model tiering, three-layer audit architecture, and security controls including permission models and SAST/DAST integration.
+- **[Overview]({{< relref "enterprise-rollout/00-overview" >}})** -- Executive summary and architecture overview for stakeholder alignment.
+- **[Skill Gaps and Market Opportunity]({{< relref "enterprise-rollout/01-skill-gaps-and-market-opportunity" >}})** -- Where developer teams struggle today and the consulting engagement opportunity.
+- **[Phase 0: Infrastructure Foundation]({{< relref "enterprise-rollout/02-phase-0-infrastructure-foundation" >}})** (Weeks 1--4) -- Stand up cloud provider infrastructure (Bedrock, Vertex AI, or Foundry) with private networking so all LLM traffic stays inside the customer's network.
+- **[Phase 1: Platform Engineering]({{< relref "enterprise-rollout/03-phase-1-platform-engineering" >}})** (Weeks 3--6) -- Configure managed settings, CLAUDE.md architecture, skills libraries, and developer environment standardization.
+- **[Phase 2: Phased Rollout]({{< relref "enterprise-rollout/04-phase-2-phased-rollout" >}})** (Weeks 5--12) -- Three cohorts of increasing size, each with a learning loop from platform engineers through early adopters to general availability.
+- **[Phase 3: Observability & Governance]({{< relref "enterprise-rollout/05-phase-3-observability-and-governance" >}})** (Ongoing) -- Cost tracking with token budgets, three-layer audit architecture, and security controls.
+- **[Implementation Support Ecosystem]({{< relref "enterprise-rollout/06-implementation-support-ecosystem" >}})** -- Support landscape and recommendations for handling organizational pushback.
+- **[Appendix]({{< relref "enterprise-rollout/appendix" >}})** -- Build-out timeline, Cloud Foundry analogy map, and reference configurations.
 
 ---
 

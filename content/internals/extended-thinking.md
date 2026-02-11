@@ -23,32 +23,36 @@ Extended thinking gives Claude the ability to reason step-by-step before respond
 
 ## Table of Contents
 
-- [How Extended Thinking Works](#how-extended-thinking-works)
-  - [The Thinking Process](#the-thinking-process)
-  - [Adaptive Thinking (Opus 4.6)](#adaptive-thinking-opus-46)
-  - [Summarized Thinking](#summarized-thinking)
-  - [Interleaved Thinking](#interleaved-thinking)
-- [Effort Levels](#effort-levels)
-  - [Available Levels](#available-levels)
-  - [What Effort Controls](#what-effort-controls)
-  - [Setting Effort in Claude Code](#setting-effort-in-claude-code)
-- [Configuration](#configuration)
-  - [Toggle Thinking On/Off](#toggle-thinking-onoff)
-  - [MAX_THINKING_TOKENS](#max_thinking_tokens)
-  - [Thinking Budget vs Output Budget](#thinking-budget-vs-output-budget)
-  - [Context Window Interaction](#context-window-interaction)
-  - [Thinking in Subagents](#thinking-in-subagents)
-- [When to Use Extended Thinking](#when-to-use-extended-thinking)
-  - [Tasks That Benefit](#tasks-that-benefit)
-  - [Tasks Where It's Overkill](#tasks-where-its-overkill)
-- [Cost Management](#cost-management)
-  - [How Thinking Tokens Are Billed](#how-thinking-tokens-are-billed)
-  - [Cost Control Levers](#cost-control-levers)
-  - [Cost Estimates](#cost-estimates)
-- [Model Support](#model-support)
-- [Best Practices](#best-practices)
-- [Anti-Patterns](#anti-patterns)
-- [References](#references)
+- [Extended Thinking: How Claude Reasons Through Complex Problems](#extended-thinking-how-claude-reasons-through-complex-problems)
+  - [Executive Summary](#executive-summary)
+  - [Table of Contents](#table-of-contents)
+  - [How Extended Thinking Works](#how-extended-thinking-works)
+    - [The Thinking Process](#the-thinking-process)
+    - [Adaptive Thinking (Opus 4.6)](#adaptive-thinking-opus-46)
+    - [Summarized Thinking](#summarized-thinking)
+    - [Interleaved Thinking](#interleaved-thinking)
+  - [Effort Levels](#effort-levels)
+    - [Available Levels](#available-levels)
+    - [What Effort Controls](#what-effort-controls)
+    - [Setting Effort in Claude Code](#setting-effort-in-claude-code)
+  - [Configuration](#configuration)
+    - [Toggle Thinking On/Off](#toggle-thinking-onoff)
+    - [MAX\_THINKING\_TOKENS](#max_thinking_tokens)
+    - [Thinking Budget vs Output Budget](#thinking-budget-vs-output-budget)
+    - [Context Window Interaction](#context-window-interaction)
+    - [Thinking in Subagents](#thinking-in-subagents)
+  - [When to Use Extended Thinking](#when-to-use-extended-thinking)
+    - [Tasks That Benefit](#tasks-that-benefit)
+    - [Tasks Where It's Overkill](#tasks-where-its-overkill)
+  - [Cost Management](#cost-management)
+    - [How Thinking Tokens Are Billed](#how-thinking-tokens-are-billed)
+    - [Cost Control Levers](#cost-control-levers)
+    - [Cost Estimates](#cost-estimates)
+  - [Model Support](#model-support)
+    - [Feature Compatibility](#feature-compatibility)
+  - [Best Practices](#best-practices)
+  - [Anti-Patterns](#anti-patterns)
+  - [References](#references)
 
 ---
 
@@ -63,23 +67,23 @@ User prompt arrives
     │
     ▼
 ┌─────────────────────┐
-│  Thinking Phase      │  Claude reasons step-by-step:
-│  (thinking tokens)   │  - Explores approaches
-│                      │  - Analyzes edge cases
-│                      │  - Self-corrects mistakes
-│                      │  - Evaluates tradeoffs
+│  Thinking Phase     │  Claude reasons step-by-step:
+│  (thinking tokens)  │  - Explores approaches
+│                     │  - Analyzes edge cases
+│                     │  - Self-corrects mistakes
+│                     │  - Evaluates tradeoffs
 └──────────┬──────────┘
            │
            ▼
 ┌─────────────────────┐
-│  Summary Phase       │  Full thinking summarized
-│  (no extra charge)   │  for user visibility
+│  Summary Phase      │  Full thinking summarized
+│  (no extra charge)  │  for user visibility
 └──────────┬──────────┘
            │
            ▼
 ┌─────────────────────┐
-│  Response Phase      │  Final answer informed
-│  (output tokens)     │  by thinking insights
+│  Response Phase     │  Final answer informed
+│  (output tokens)    │  by thinking insights
 └─────────────────────┘
 ```
 

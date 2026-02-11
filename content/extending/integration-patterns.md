@@ -1064,6 +1064,6 @@ Use the most specific matcher possible to minimize unnecessary hook executions.
 - [GitHub Actions (Claude Code)](https://code.claude.com/docs/en/github-actions) -- Official GitHub Actions integration
 - [claude-code-action Repository](https://github.com/anthropics/claude-code-action) -- Source and examples for the GitHub Action
 - [Model Context Protocol](https://modelcontextprotocol.io/introduction) -- MCP specification and SDK
-- [Extension Mechanisms Article](claude-code-extension-mechanisms.md) -- Subagents, skills, and MCP architecture overview
-- [Workflow Patterns Article](claude-code-workflow-patterns.md) -- Headless mode and parallel work patterns
-- [Testing Strategies Article](claude-code-testing-strategies.md) -- Auto-testing with hooks
+- [Extension Mechanisms Article]({{< relref "extension-mechanisms" >}}) -- Subagents, skills, and MCP architecture overview
+- [Workflow Patterns Article]({{< relref "/guides/workflow-patterns" >}}) -- Headless mode and parallel work patterns
+- [Testing Strategies Article]({{< relref "/guides/testing-strategies" >}}) -- Auto-testing with hooks

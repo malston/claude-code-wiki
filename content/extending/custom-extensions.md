@@ -1048,5 +1048,5 @@ You can restrict which skills and subagents are available:
 - [Official Skills Reference](https://code.claude.com/docs/en/skills) -- skill structure, frontmatter fields, invocation control
 - [Official Plugins Reference](https://code.claude.com/docs/en/plugins-reference) -- plugin manifest, directory structure, MCP integration
 - [Official Plugins Guide](https://code.claude.com/docs/en/plugins) -- installation, scoping, testing
-- [Extension Mechanisms Article](claude-code-extension-mechanisms.md) -- architectural overview of subagents, skills, and MCP servers
-- [Token Optimization Article](claude-code-token-optimization.md) -- token cost of skills and subagent descriptions
+- [Extension Mechanisms Article]({{< relref "extension-mechanisms" >}}) -- architectural overview of subagents, skills, and MCP servers
+- [Token Optimization Article]({{< relref "/internals/token-optimization" >}}) -- token cost of skills and subagent descriptions

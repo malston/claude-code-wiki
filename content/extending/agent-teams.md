@@ -578,5 +578,5 @@ Teammates inherit the lead's permission settings at spawn time:
 - [Official Subagents Reference](https://code.claude.com/docs/en/sub-agents) -- subagent configuration, comparison with teams
 - [Official Hooks Reference](https://code.claude.com/docs/en/hooks) -- TeammateIdle, TaskCompleted events
 - [Official CLI Reference](https://code.claude.com/docs/en/cli-reference) -- `--agent`, `--agents`, `--teammate-mode` flags
-- [Custom Extensions Article](claude-code-custom-extensions.md) -- building subagents and skills
-- [Integration Patterns Article](claude-code-integration-patterns.md) -- hooks and headless mode
+- [Custom Extensions Article]({{< relref "custom-extensions" >}}) -- building subagents and skills
+- [Integration Patterns Article]({{< relref "integration-patterns" >}}) -- hooks and headless mode

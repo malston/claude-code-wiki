@@ -81,7 +81,7 @@ This has practical implications:
 1. **Claude already knows your rules** -- Your CLAUDE.md instructions are literally in the prompt. You don't need to repeat them in every message.
 2. **Claude has full conversation context** -- It remembers what you discussed earlier in the session. You can say "fix the issue we just discussed" and Claude knows what you mean.
 3. **File contents are in context** -- If Claude read a file earlier, that content is still in the conversation. You don't need to tell it to read the file again (unless the file changed).
-4. **Context is finite** -- The conversation history grows with each turn. Very long sessions eventually trigger [compaction](claude-code-context-management.md), which summarizes older turns. New sessions start with fresh context.
+4. **Context is finite** -- The conversation history grows with each turn. Very long sessions eventually trigger [compaction]({{< relref "/internals/context-management" >}}), which summarizes older turns. New sessions start with fresh context.
 
 ---
 
@@ -360,7 +360,7 @@ Avoid putting these in CLAUDE.md:
 
 ### Keeping It Concise
 
-Every line of CLAUDE.md is re-sent on every API call. A 200-line CLAUDE.md is roughly 1,500-2,000 tokens consumed from your context window on every message. This cost is mitigated by [prompt caching](claude-code-prompt-caching.md) (90% discount after the first message), but the context window space is consumed regardless.
+Every line of CLAUDE.md is re-sent on every API call. A 200-line CLAUDE.md is roughly 1,500-2,000 tokens consumed from your context window on every message. This cost is mitigated by [prompt caching]({{< relref "/internals/prompt-caching" >}}) (90% discount after the first message), but the context window space is consumed regardless.
 
 ```
 Context window budget:
@@ -633,6 +633,6 @@ Giant prompts with multiple unrelated tasks produce worse results than focused, 
 - [Prompting Best Practices (Anthropic Docs)](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices) -- Official prompting guide for Claude 4.x models
 - [Prompt Engineering Overview](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/overview) -- General prompt engineering techniques
 - [Memory System](https://code.claude.com/docs/en/memory.md) -- CLAUDE.md file hierarchy and scopes
-- [Context Management Article](claude-code-context-management.md) -- Working within the token budget
-- [System Prompt Article](claude-code-system-prompt.md) -- What Claude reads before your first message
-- [Token Optimization Article](claude-code-token-optimization.md) -- Managing per-message token overhead
+- [Context Management Article]({{< relref "/internals/context-management" >}}) -- Working within the token budget
+- [System Prompt Article]({{< relref "/internals/system-prompt" >}}) -- What Claude reads before your first message
+- [Token Optimization Article]({{< relref "/internals/token-optimization" >}}) -- Managing per-message token overhead

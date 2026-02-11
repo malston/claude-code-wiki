@@ -614,7 +614,7 @@ fi
 exit 0
 ```
 
-See the [Custom Hooks Cookbook](claude-code-hooks-cookbook.md) for complete security hook recipes.
+See the [Custom Hooks Cookbook]({{< relref "/extending/hooks-cookbook" >}}) for complete security hook recipes.
 
 ---
 
@@ -685,4 +685,4 @@ See the [Custom Hooks Cookbook](claude-code-hooks-cookbook.md) for complete secu
 - [Headless Mode](https://code.claude.com/docs/en/headless) -- CI/CD usage, tool restrictions, output formats
 - [CLI Reference](https://code.claude.com/docs/en/cli-reference) -- permission flags, provider flags
 - [Example Settings](https://github.com/anthropics/claude-code/tree/main/examples/settings) -- starter configurations (lax, strict, sandbox)
-- [Custom Hooks Cookbook](claude-code-hooks-cookbook.md) -- security hook recipes
+- [Custom Hooks Cookbook]({{< relref "/extending/hooks-cookbook" >}}) -- security hook recipes

@@ -253,7 +253,7 @@ Session 2 (fresh context):
   → Claude discovers requirements from the tests
 ```
 
-This pattern is especially powerful for multi-session work. See [Working Across Context Windows](claude-code-effective-prompting.md#working-across-context-windows) in the effective prompting article.
+This pattern is especially powerful for multi-session work. See [Working Across Context Windows]({{< relref "effective-prompting#working-across-context-windows" >}}) in the effective prompting article.
 
 ---
 
@@ -593,6 +593,6 @@ Use subagents when tasks can run in parallel, require isolated context, or invol
 
 - [Best Practices (Claude Code Docs)](https://code.claude.com/docs/en/best-practices) -- Official best practices guide
 - [Common Workflows (Claude Code Docs)](https://code.claude.com/docs/en/common-workflows) -- Step-by-step workflow recipes
-- [Effective Prompting Article](claude-code-effective-prompting.md) -- Structuring requests for better results
-- [Context Management Article](claude-code-context-management.md) -- Working within the token budget
-- [Extension Mechanisms Article](claude-code-extension-mechanisms.md) -- Subagents, skills, and MCP servers
+- [Effective Prompting Article]({{< relref "effective-prompting" >}}) -- Structuring requests for better results
+- [Context Management Article]({{< relref "/internals/context-management" >}}) -- Working within the token budget
+- [Extension Mechanisms Article]({{< relref "/extending/extension-mechanisms" >}}) -- Subagents, skills, and MCP servers

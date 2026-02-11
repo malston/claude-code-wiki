@@ -592,5 +592,5 @@ After two failed fix attempts, the context is polluted. Start fresh with a bette
 - [Common Workflows: Fix Bugs (Claude Code Docs)](https://code.claude.com/docs/en/common-workflows) -- Official debugging workflow recipes
 - [Best Practices (Claude Code Docs)](https://code.claude.com/docs/en/best-practices) -- Verification-driven development patterns
 - [Troubleshooting (Claude Code Docs)](https://code.claude.com/docs/en/troubleshooting) -- Diagnosing Claude Code itself
-- [Workflow Patterns Article](claude-code-workflow-patterns.md) -- Fix with verification workflow
-- [Effective Prompting Article](claude-code-effective-prompting.md) -- How to share errors and context effectively
+- [Workflow Patterns Article]({{< relref "workflow-patterns" >}}) -- Fix with verification workflow
+- [Effective Prompting Article]({{< relref "effective-prompting" >}}) -- How to share errors and context effectively

@@ -110,7 +110,7 @@ Cacheable content includes:
 
 Claude Code is uniquely positioned to benefit from prompt caching because its system prompt is:
 
-1. **Large** -- Typically 12,000-20,000 tokens (see the [system prompt article](claude-code-system-prompt.md))
+1. **Large** -- Typically 12,000-20,000 tokens (see the [system prompt article]({{< relref "system-prompt" >}}))
 2. **Stable** -- The same content is sent on every message within a session
 3. **Repeated frequently** -- Sessions routinely involve 50-200+ API calls
 
@@ -309,7 +309,7 @@ Context window budget (e.g., 200K tokens):
 └──────────────────────────────────────────────┘
 ```
 
-This is why the [token optimization article](claude-code-token-optimization.md) still matters even with caching. Disabling unused plugins saves context window space, not just money.
+This is why the [token optimization article]({{< relref "token-optimization" >}}) still matters even with caching. Disabling unused plugins saves context window space, not just money.
 
 ### When to Worry About Caching
 
@@ -331,5 +331,5 @@ You generally don't need to think about prompt caching in Claude Code -- it's ha
 
 - [Prompt Caching (Anthropic Docs)](https://platform.claude.com/docs/en/build-with-claude/prompt-caching) -- Full API documentation
 - [Pricing](https://platform.claude.com/docs/en/about-claude/pricing) -- Current model pricing with caching multipliers
-- [System Prompt Article](claude-code-system-prompt.md) -- What gets cached in Claude Code
-- [Token Optimization Article](claude-code-token-optimization.md) -- Context window optimization (complementary to caching)
+- [System Prompt Article]({{< relref "system-prompt" >}}) -- What gets cached in Claude Code
+- [Token Optimization Article]({{< relref "token-optimization" >}}) -- Context window optimization (complementary to caching)

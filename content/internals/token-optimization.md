@@ -287,7 +287,7 @@ Starting configuration:
 | Cache-read cost, 200 msgs (Opus 4.6)    | ~$0.61 | ~$0.38 | ~$0.23 |
 | Without-cache cost, 200 msgs (Opus 4.6) | ~$6.10 | ~$3.80 | ~$2.30 |
 
-The dollar savings from catalog reduction are modest with [prompt caching](claude-code-prompt-caching.md) (cache reads are 10x cheaper than base input). The real win is **context window space** -- those ~2,300 tokens freed up per message are available for actual conversation content.
+The dollar savings from catalog reduction are modest with [prompt caching]({{< relref "prompt-caching" >}}) (cache reads are 10x cheaper than base input). The real win is **context window space** -- those ~2,300 tokens freed up per message are available for actual conversation content.
 
 ---
 

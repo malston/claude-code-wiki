@@ -42,7 +42,7 @@ At a recent vibe coding meetup, the recurring theme was "why can't it just do wh
 
 That attitude hits a wall fast. You can absolutely code yourself into a corner on larger projects. The tools amplify what you already understand. They don't substitute for understanding.
 
-### SaaS isn't dead
+### SaaS Isn't Dead
 
 SaaS isn't expensive because writing code is hard. It's expensive because reliability, security, compliance, support, integrations, multi-tenancy, and operations are hard. None of that goes away because someone vibe-coded a Streamlit app.
 
@@ -81,7 +81,7 @@ The job market for junior devs is shrinking. That said, they're learning the the
 
 ## The Bottleneck Shift
 
-The part most people in the AI hype cycle aren't talking about: the bottleneck has moved. Code production used to be the constraint. Now it's:
+The bottleneck has moved. Code production used to be the constraint. Now it's:
 
 - **Review bandwidth** -- generating code faster doesn't help if review can't keep up
 - **Testing confidence** -- more code means more surface area to verify
@@ -114,7 +114,7 @@ They miss agentic tools entirely. Claude Code reading your codebase, running com
 
 Similarly, the over-engineered prompting guides that prescribe rigid multi-phase role-playing workflows fight against how these models work best. Writing stories as a product owner and letting the AI figure out implementation is more effective than any "10 ChatGPT prompts that will 10x your productivity" system.
 
-The genuine insight buried in these posts: AI tools give generic advice while production requires specific answers. That's real. But the solution isn't to dismiss AI tools -- it's to give them specific context ([memory organization]({{< relref "guides/memory-organization" >}}), codebase access, [MCP servers]({{< relref "guides/essential-plugins" >}})) so they can give specific answers.
+The genuine insight buried in these posts: AI tools give generic advice while production requires specific answers. That's real. The fix is to give them specific context -- [memory organization]({{< relref "guides/memory-organization" >}}), codebase access, [MCP servers]({{< relref "guides/essential-plugins" >}}) -- so they can give specific answers.
 
 ---
 

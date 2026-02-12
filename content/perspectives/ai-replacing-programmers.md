@@ -1,5 +1,5 @@
 ---
-title: 'The "AI Will Replace Programmers" Narrative'
+title: "The 'AI Will Replace Programmers' Narrative"
 linkTitle: "AI Replacing Programmers"
 weight: 1
 ---
@@ -114,7 +114,7 @@ They miss agentic tools entirely. Claude Code reading your codebase, running com
 
 Similarly, the over-engineered prompting guides that prescribe rigid multi-phase role-playing workflows fight against how these models work best. Writing stories as a product owner and letting the AI figure out implementation is more effective than any "10 ChatGPT prompts that will 10x your productivity" system.
 
-The genuine insight buried in these posts: AI tools give generic advice while production requires specific answers. That's real. But the solution isn't to dismiss AI tools -- it's to give them specific context ([CLAUDE.md]({{< relref "guides/memory-organization" >}}), codebase access, [MCP servers]({{< relref "guides/essential-plugins" >}})) so they can give specific answers.
+The genuine insight buried in these posts: AI tools give generic advice while production requires specific answers. That's real. But the solution isn't to dismiss AI tools -- it's to give them specific context ([memory organization]({{< relref "guides/memory-organization" >}}), codebase access, [MCP servers]({{< relref "guides/essential-plugins" >}})) so they can give specific answers.
 
 ---
 

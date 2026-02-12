@@ -90,7 +90,7 @@ Both must be enabled in Bedrock's model access settings.
 
 Bedrock requires **inference profiles** (cross-region model identifiers) rather than bare model IDs for on-demand throughput:
 
-```
+```text
 # Won't work:
 anthropic.claude-sonnet-4-5
 

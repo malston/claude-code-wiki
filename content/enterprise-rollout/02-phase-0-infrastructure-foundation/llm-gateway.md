@@ -73,7 +73,7 @@ These are baked into the managed-settings.json and deployed via MDM -- developer
 
 ## Deployment Topology
 
-```
+```text
 ┌─────────────────────────────────┐
 │  LLM Gateway (internal service) │
 │                                 │

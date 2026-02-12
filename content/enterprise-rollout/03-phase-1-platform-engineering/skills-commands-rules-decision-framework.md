@@ -56,7 +56,7 @@ Use commands when the instruction is:
 
 ## Decision Flowchart
 
-```
+```text
 Is the instruction about conventions/patterns that should apply automatically?
   YES → Use a Rule (.claude/rules/)
     └── Does it apply only to specific file types?

@@ -138,7 +138,7 @@ Checked into each repo at `.claude/skills/`. Team-specific workflows and pattern
 
 ### Skills with Supporting Files
 
-```
+```text
 .claude/skills/
 └── new-endpoint/
     ├── SKILL.md              # Instructions

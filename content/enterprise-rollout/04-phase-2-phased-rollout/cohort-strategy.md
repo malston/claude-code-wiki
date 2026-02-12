@@ -170,7 +170,7 @@ If you roll back a cohort, fix the root cause and re-launch with a smaller pilot
 
 ## Timeline Summary
 
-```
+```text
 Week 1-4:  Phase 0 -- Infrastructure build
 Week 3-6:  Phase 1 -- Platform engineering (overlapping)
 Week 5-6:  Cohort 1 -- 25 power users

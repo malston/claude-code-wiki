@@ -3,6 +3,7 @@
 .claude/conversation-*
 **/CLAUDE.md
 !.claude/CLAUDE.md
+!.github/workflows/CLAUDE.md
 !/CLAUDE.md
 .claude/*.local.md
 

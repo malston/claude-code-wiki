@@ -1,4 +1,4 @@
-.PHONY: help server build clean
+.PHONY: help server build clean lint
 
 help: ## Show this help message
 	@echo 'Usage: make [target]'
@@ -14,3 +14,6 @@ build: ## Build static site to public/ directory
 
 clean: ## Remove generated files
 	rm -rf public/
+
+lint: ## Run style checks on all content
+	bash scripts/check-style.sh content/

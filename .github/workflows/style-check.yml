@@ -1,0 +1,21 @@
+name: Style Check
+
+on:
+  pull_request:
+    paths:
+      - "content/**/*.md"
+
+jobs:
+  style-check:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Run style checks
+        env:
+          GITHUB_BASE_REF: ${{ github.event.pull_request.base.ref }}
+        run: bash scripts/check-style.sh

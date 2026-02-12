@@ -12,14 +12,14 @@ Claude Code out of the box has no memory across sessions, no access to library d
 
 This guide covers the plugins that provide the highest value relative to their token cost, with practical setup and usage guidance.
 
-| Plugin                | Type                   | What It Adds                             | Token Cost                          | Value       |
-| --------------------- | ---------------------- | ---------------------------------------- | ----------------------------------- | ----------- |
-| **claude-mem**        | MCP server             | Structured cross-session memory          | ~120 tokens (4 tools)               | High        |
-| **episodic-memory**   | MCP server + subagent  | Raw conversation search                  | ~200 tokens (3 tools + 1 subagent)  | High        |
-| **context7**          | MCP server             | Library documentation lookup             | ~60 tokens (2 tools)                | Medium      |
-| **claude-in-chrome**  | MCP server             | Browser automation                       | ~600+ tokens (15+ tools)            | Situational |
-| **hookify**           | Skill pack + subagent  | Hook creation from conversation analysis | ~250 tokens (5 skills + 1 subagent) | Medium      |
-| **pr-review-toolkit** | Skill pack + subagents | Specialized code review agents           | ~600+ tokens (6 subagents)          | Medium      |
+| Plugin                | Type                   | What It Adds                             | Token Cost                              | Value       |
+| --------------------- | ---------------------- | ---------------------------------------- | --------------------------------------- | ----------- |
+| **claude-mem**        | MCP server             | Structured cross-session memory          | ~120-320 tokens (4 tools)               | High        |
+| **episodic-memory**   | MCP server + subagent  | Raw conversation search                  | ~200-400 tokens (3 tools + 1 subagent)  | High        |
+| **context7**          | MCP server             | Library documentation lookup             | ~60-160 tokens (2 tools)                | Medium      |
+| **claude-in-chrome**  | MCP server             | Browser automation                       | ~600+ tokens (15+ tools)                | Situational |
+| **hookify**           | Skill pack + subagent  | Hook creation from conversation analysis | ~250-500 tokens (5 skills + 1 subagent) | Medium      |
+| **pr-review-toolkit** | Skill pack + subagents | Specialized code review agents           | ~600+ tokens (6 subagents)              | Medium      |
 
 ---
 
@@ -401,7 +401,7 @@ For most development work, two plugins provide the highest return:
 1. **claude-mem** -- Cross-session memory with token-efficient retrieval
 2. **episodic-memory** -- Conversation search for when you need the full story
 
-These two together cost under 600 tokens per message and solve Claude Code's biggest limitation (no memory across sessions).
+Together they typically add ~320-720 tokens per message and solve Claude Code's biggest limitation (no memory across sessions).
 
 ### Full Development Setup
 
@@ -462,5 +462,5 @@ Is this plugin worth its token cost?
 - [Custom Extensions]({{< relref "extending/custom-extensions" >}}) -- Building your own plugins
 - [Hooks Cookbook]({{< relref "extending/hooks-cookbook" >}}) -- Hook recipes and automation patterns
 - [Token Optimization]({{< relref "/internals/token-optimization" >}}) -- Auditing and managing token overhead
-- [Memory Organization]({{< relref "guides/memory-organization" >}}) -- Structuring CLAUDE.md and rules
+- [Memory Organization]({{< relref "memory-organization" >}}) -- Structuring CLAUDE.md and rules
 - [Model Context Protocol (MCP)](https://modelcontextprotocol.io/) -- The protocol that MCP servers implement

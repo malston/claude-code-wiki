@@ -1,7 +1,7 @@
 ---
 title: "Spec-Driven Development: Structured Planning for AI-Assisted Projects"
 linkTitle: "Spec-Driven Development"
-weight: 8
+weight: 9
 ---
 
 # Spec-Driven Development: Structured Planning for AI-Assisted Projects

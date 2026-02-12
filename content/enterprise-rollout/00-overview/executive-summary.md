@@ -41,13 +41,13 @@ Cost tracking via the LLM gateway and cloud provider cost tools (AWS Cost Explor
 
 ## The Key Insight
 
-Infrastructure is a solved problem -- any competent cloud engineer can set up private LLM connectivity on their chosen provider. **The difference between "we deployed Claude Code" and "500 developers are actually more productive" is the platform engineering layer:** the context architecture, the skills library, the managed conventions, and the phased change management. That's where the consulting value concentrates.
+Infrastructure is a solved problem — any competent cloud engineer can set up private LLM connectivity on their chosen provider. **The difference between "we deployed Claude Code" and "500 developers are actually more productive" is the platform engineering layer:** the context architecture, the skills library, the managed conventions, and the phased change management. That's where the consulting value concentrates.
 
 ## The Market Gap
 
 - **Cloud providers** (AWS, GCP, Azure) handle infrastructure plumbing but have no depth on Claude Code configuration, skills, or developer experience
 - **Anthropic** knows the product deeply but doesn't do infrastructure implementation
-- **Large SIs (Accenture, Cognizant)** target $2M+ full-stack transformation -- too expensive for a focused 12-week engagement
-- **Nobody** is doing the middle layer well -- infrastructure + Claude Code platform engineering + phased rollout
+- **Large SIs (Accenture, Cognizant)** target $2M+ full-stack transformation — too expensive for a focused 12-week engagement
+- **Nobody** is doing the middle layer well — infrastructure + Claude Code platform engineering + phased rollout
 
 This gap represents a 6–12 week consulting engagement at $150K–$300K, ideal for a platform engineering consultant with deep Claude Code expertise and multi-cloud deployment experience.

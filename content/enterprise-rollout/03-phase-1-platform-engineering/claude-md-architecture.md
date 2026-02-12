@@ -1,16 +1,16 @@
 ---
-title: "CLAUDE.md Architecture — Four-Layer Context Hierarchy"
+title: "CLAUDE.md Architecture -- Four-Layer Context Hierarchy"
 linkTitle: "CLAUDE.md Architecture"
 weight: 3
 ---
 
-# CLAUDE.md Architecture — Four-Layer Context Hierarchy
+# CLAUDE.md Architecture -- Four-Layer Context Hierarchy
 
 ## The Core Design Problem
 
 Claude Code has a context window of ~200K tokens. Every CLAUDE.md file, every rule, every skill description, every file Claude reads, every conversation turn competes for space. The context window is the scarce resource, and the platform engineer's job is to manage it like memory in a constrained system.
 
-Unlike human developers who can skim past irrelevant instructions, Claude treats everything in its context with roughly equal attention. Irrelevant instructions don't just waste tokens — they actively dilute the signal.
+Unlike human developers who can skim past irrelevant instructions, Claude treats everything in its context with roughly equal attention. Irrelevant instructions don't just waste tokens -- they actively dilute the signal.
 
 **Design principle: progressive disclosure of context.** Load the minimum viable instructions unconditionally. Load everything else conditionally based on what the developer is actually working on.
 
@@ -45,7 +45,7 @@ Treating the org CLAUDE.md as a coding standards document. A 200-line org CLAUDE
 
 Two mechanisms work together:
 
-### .claude/CLAUDE.md — Project Main Instructions
+### .claude/CLAUDE.md -- Project Main Instructions
 
 Checked into git, shared by the team. **Budget: 60–80 lines.**
 
@@ -56,7 +56,7 @@ Contents:
 - Key directories and their purposes
 - Pointer to deeper documentation: "Read files in `agent_docs/` for detailed patterns before making architectural changes"
 
-### .claude/rules/ — Modular, Path-Scoped Instructions
+### .claude/rules/ -- Modular, Path-Scoped Instructions
 
 Rules are markdown files that can be **conditionally loaded** based on which files Claude is working on:
 
@@ -113,13 +113,13 @@ As of January 2026, there's a known bug where rules with `paths` frontmatter loa
 - Glob patterns in YAML frontmatter **must be quoted**: `"**/*.ts"` not `**/*.ts`
 - Rules without a `paths` field load unconditionally
 - Rules support subdirectory organization (auto-discovered recursively)
-- Symlinks are supported — use for sharing rules across repos
+- Symlinks are supported -- use for sharing rules across repos
 
 ---
 
 ## Layer 2: agent_docs/ and Reference Files (Loaded On-Demand)
 
-Deep knowledge layer — architecture documents, design decisions, API specs, domain models. These files are **NOT** loaded automatically. CLAUDE.md tells Claude they exist, and Claude reads them when relevant.
+Deep knowledge layer -- architecture documents, design decisions, API specs, domain models. These files are **NOT** loaded automatically. CLAUDE.md tells Claude they exist, and Claude reads them when relevant.
 
 ```sh
 repo/
@@ -145,14 +145,14 @@ repo/
 Before making architectural changes, read the relevant files in `agent_docs/`.
 See `agent_docs/README.md` for an index of available documentation.
 Architecture Decision Records in `agent_docs/adr/` explain why key decisions
-were made — read these before proposing alternatives to established patterns.
+were made -- read these before proposing alternatives to established patterns.
 ```
 
 ### Writing Guidelines
 
-- **Prefer pointers to copies.** Don't embed code snippets — they go stale. Instead: "See `src/api/users/handlers.ts:45-80` for the standard handler pattern."
+- **Prefer pointers to copies.** Don't embed code snippets -- they go stale. Instead: "See `src/api/users/handlers.ts:45-80` for the standard handler pattern."
 - **Write for Claude, not humans.** Be explicit about constraints and patterns. Claude follows specific instructions better than vague guidance.
-- **Keep files focused.** One topic per file. Claude reads files on-demand — a focused file is more likely to be read when relevant.
+- **Keep files focused.** One topic per file. Claude reads files on-demand -- a focused file is more likely to be read when relevant.
 
 ### Who Writes These?
 

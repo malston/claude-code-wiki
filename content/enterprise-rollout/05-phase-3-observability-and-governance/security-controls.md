@@ -19,7 +19,7 @@ This is the first line of defense. Developers see what Claude wants to do before
 
 ### Bypass Mode Disabled
 
-`disableBypassPermissionsMode: "disable"` in managed-settings.json prevents `--dangerously-skip-permissions`. This flag removes all permission prompts and lets Claude execute freely — never use in production or enterprise environments, regardless of developer convenience arguments.
+`disableBypassPermissionsMode: "disable"` in managed-settings.json prevents `--dangerously-skip-permissions`. This flag removes all permission prompts and lets Claude execute freely -- never use in production or enterprise environments, regardless of developer convenience arguments.
 
 ### Deny Rules (Managed Settings)
 
@@ -70,13 +70,13 @@ Over-restricting file access makes Claude dramatically less useful. The better p
 
 ### Pushback: "Can We Restrict Which Files Claude Can See?"
 
-Yes, via deny rules. But be thoughtful — Claude needs to read code to be useful. Block specific sensitive paths, don't blanket-deny read access. The better approach is ensuring sensitive data isn't in the codebase at all.
+Yes, via deny rules. But be thoughtful -- Claude needs to read code to be useful. Block specific sensitive paths, don't blanket-deny read access. The better approach is ensuring sensitive data isn't in the codebase at all.
 
 ## Deterministic Security Tools
 
 ### Critical Principle
 
-Never rely solely on AI-generated security review. LLM reviews are non-deterministic — the same code might pass one review and fail another.
+Never rely solely on AI-generated security review. LLM reviews are non-deterministic -- the same code might pass one review and fail another.
 
 ### Layered Approach
 

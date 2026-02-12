@@ -1,10 +1,10 @@
 ---
-title: "Build-Out Timeline — 12-Week Implementation"
+title: "Build-Out Timeline -- 12-Week Implementation"
 linkTitle: "Build-Out Timeline"
 weight: 1
 ---
 
-# Build-Out Timeline — 12-Week Implementation
+# Build-Out Timeline -- 12-Week Implementation
 
 ## Week-by-Week Schedule
 
@@ -91,7 +91,7 @@ weight: 1
 **Platform Engineering Workstream**
 
 - Finalize managed CLAUDE.md based on Cohort 1 feedback
-- Finalize org skills library — package as plugin or shared repo
+- Finalize org skills library -- package as plugin or shared repo
 - Create agent_docs/ template and style guide
 - Create .claude/rules/ template with path-scoping examples
 - Write developer onboarding guide: "How to write effective CLAUDE.md and skills"
@@ -114,7 +114,7 @@ weight: 1
 **Platform Engineering Workstream**
 
 - Each Cohort 2 team writes project CLAUDE.md and team skills using templates
-- Platform team reviews and coaches — first pass usually too long, too vague, or mixing declarative/procedural
+- Platform team reviews and coaches -- first pass usually too long, too vague, or mixing declarative/procedural
 - Iterate based on developer feedback and token usage metrics
 - Finalize all configuration for full rollout
 
@@ -165,4 +165,4 @@ weight: 1
 | Platform Engineering | 40%               | Consultant + platform team          |
 | Change Management    | 30%               | Consultant + engineering leadership |
 
-The infrastructure is 30% of effort but often gets 90% of attention. The other 70% — platform engineering and change management — is where the engagement delivers differentiated value.
+The infrastructure is 30% of effort but often gets 90% of attention. The other 70% -- platform engineering and change management -- is where the engagement delivers differentiated value.

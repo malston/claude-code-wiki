@@ -52,4 +52,4 @@ weight: 6
 
 ## Recommendation
 
-Assume Level 2 unless told otherwise. Schedule a 30-minute CISO alignment meeting before any architecture work begins. Get the decision documented in writing — it will be referenced throughout the engagement.
+Assume Level 2 unless told otherwise. Schedule a 30-minute CISO alignment meeting before any architecture work begins. Get the decision documented in writing -- it will be referenced throughout the engagement.

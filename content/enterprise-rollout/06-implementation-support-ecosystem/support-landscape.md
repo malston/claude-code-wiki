@@ -14,11 +14,11 @@ Every enterprise account gets assigned SAs who can help design networking. They'
 
 ### AWS Professional Services (Paid)
 
-Hands-on implementation engagements. Now have people specifically focused on Bedrock deployment patterns. The "Guidance for Claude Code with Amazon Bedrock" reference architecture implements proven patterns deployable in hours — ProServ uses this as a starting point.
+Hands-on implementation engagements. Now have people specifically focused on Bedrock deployment patterns. The "Guidance for Claude Code with Amazon Bedrock" reference architecture implements proven patterns deployable in hours -- ProServ uses this as a starting point.
 
 ### AWS Partner Network Consultancies
 
-Accenture, Deloitte, Slalom, etc. all have AWS practices for networking and security work. VPC + PrivateLink is the same pattern used for any private connectivity to AWS managed services — routine work.
+Accenture, Deloitte, Slalom, etc. all have AWS practices for networking and security work. VPC + PrivateLink is the same pattern used for any private connectivity to AWS managed services -- routine work.
 
 **Gap:** Great at infrastructure plumbing. No depth on Claude Code configuration, skills architecture, or developer experience.
 
@@ -33,7 +33,7 @@ Accenture, Deloitte, Slalom, etc. all have AWS practices for networking and secu
 
 ### Enterprise Sales Team
 
-Handles contractual/compliance side — data processing agreements, security questionnaires, Compliance API access. Helps navigate Bedrock vs. direct API decisions.
+Handles contractual/compliance side -- data processing agreements, security questionnaires, Compliance API access. Helps navigate Bedrock vs. direct API decisions.
 
 **Gap:** Model company, not consulting firm. Won't Terraform your VPC or deploy your LLM gateway.
 

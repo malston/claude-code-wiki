@@ -61,7 +61,7 @@ With `private_dns_enabled = true`, Claude Code's standard Bedrock URLs resolve i
 
 ### Endpoint Policy Scoping
 
-The VPC endpoint policy is scoped to **only** `InvokeModel` and `InvokeModelWithResponseStream`. This prevents the endpoint from being used for other Bedrock operations (model management, training jobs, etc.) — defense in depth.
+The VPC endpoint policy is scoped to **only** `InvokeModel` and `InvokeModelWithResponseStream`. This prevents the endpoint from being used for other Bedrock operations (model management, training jobs, etc.) -- defense in depth.
 
 ### Security Group Restrictions
 

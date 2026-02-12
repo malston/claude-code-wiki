@@ -55,10 +55,10 @@ The `managed-settings.json` file is the enterprise-level configuration that sits
 
 `CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC` bundles four flags into one:
 
-- `DISABLE_AUTOUPDATER` — prevents auto-update checks
-- `DISABLE_BUG_COMMAND` — disables bug reporting
-- `DISABLE_ERROR_REPORTING` — prevents error telemetry
-- `DISABLE_TELEMETRY` — disables usage telemetry
+- `DISABLE_AUTOUPDATER` -- prevents auto-update checks
+- `DISABLE_BUG_COMMAND` -- disables bug reporting
+- `DISABLE_ERROR_REPORTING` -- prevents error telemetry
+- `DISABLE_TELEMETRY` -- disables usage telemetry
 
 Combined with Bedrock routing, the **only** outbound traffic from Claude Code is to the internal LLM gateway.
 
@@ -68,7 +68,7 @@ Combined with Bedrock routing, the **only** outbound traffic from Claude Code is
 
 ### Permission Bypass Disabled
 
-`disableBypassPermissionsMode: "disable"` prevents anyone from using `--dangerously-skip-permissions`. Non-negotiable for regulated environments. Developers get permission prompts — that's the point.
+`disableBypassPermissionsMode: "disable"` prevents anyone from using `--dangerously-skip-permissions`. Non-negotiable for regulated environments. Developers get permission prompts -- that's the point.
 
 ### Deny Rules
 
@@ -80,8 +80,8 @@ Blocks access to secrets, credentials, SSH keys. Prevents Claude from making arb
 
 ### Hook and Plugin Control
 
-- `allowManagedHooksOnly: false` — allows project-level hooks initially. Set to `true` if hook execution is a security concern.
-- `strictKnownMarketplaces: []` — empty array blocks all plugin marketplaces. To allow vetted plugins, add source objects (e.g., `{"source": "github", "repo": "acme-corp/approved-plugins"}`).
+- `allowManagedHooksOnly: false` -- allows project-level hooks initially. Set to `true` if hook execution is a security concern.
+- `strictKnownMarketplaces: []` -- empty array blocks all plugin marketplaces. To allow vetted plugins, add source objects (e.g., `{"source": "github", "repo": "acme-corp/approved-plugins"}`).
 
 ## Distribution
 

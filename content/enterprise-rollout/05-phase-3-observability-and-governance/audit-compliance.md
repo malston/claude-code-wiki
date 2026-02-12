@@ -1,10 +1,10 @@
 ---
-title: "Audit and Compliance — Three-Layer Architecture"
+title: "Audit and Compliance -- Three-Layer Architecture"
 linkTitle: "Audit & Compliance"
 weight: 1
 ---
 
-# Audit and Compliance — Three-Layer Architecture
+# Audit and Compliance -- Three-Layer Architecture
 
 ## Layer 1: AWS CloudTrail
 

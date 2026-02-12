@@ -94,7 +94,7 @@ Until the verification and integration pipeline catches up to the generation pip
 
 ## The Wrong Optimization
 
-There's a deeper critique of the "AI for coding" wave that deserves attention. Mark Fisher -- creator of Spring Integration and one of the earliest contributors to the Spring Framework -- put it this way: "Generating 10x more code 10x as fast is not the answer to building better software. The greater potential of AI is to deliver 10x better experiences with 10x LESS code."
+There's a deeper critique of the "AI for coding" wave that deserves attention. [Mark Fisher](https://www.linkedin.com/posts/markrfisher_im-looking-forward-to-a-time-when-developers-activity-7422981475064508416-qLwD) -- creator of Spring Integration and one of the earliest contributors to the Spring Framework -- put it this way: "Generating 10x more code 10x as fast is not the answer to building better software. The greater potential of AI is to deliver 10x better experiences with 10x LESS code."
 
 This lands differently coming from someone who's lived through the cycle. Spring's entire arc was about removing code, not adding it. J2EE was drowning in ceremony -- XML config files that could rival a novel in length, 200-line `pom.xml` files just to get a REST endpoint running. Spring didn't generate the XML faster; it eliminated the need for XML. Spring Boot didn't scaffold better; it made scaffolding unnecessary. Each step was about stripping away layers of ceremony until `@SpringBootApplication` and go was all you needed.
 

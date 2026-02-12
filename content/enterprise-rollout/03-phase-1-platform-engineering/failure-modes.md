@@ -21,7 +21,7 @@ Patterns to watch for and coach against during the rollout.
 
 **Effect:** Wastes context tokens on things a linter can enforce deterministically. Claude may inconsistently follow style guidance but a formatter will always enforce it.
 
-**Fix:** Use linters and code formatters (ESLint, Prettier, gofmt, Black). Use Hooks to run them automatically on file changes. Reserve CLAUDE.md for things that *can't* be expressed as linter rules: architectural patterns, domain conventions, workflow expectations.
+**Fix:** Use linters and code formatters (ESLint, Prettier, gofmt, Black). Use Hooks to run them automatically on file changes. Reserve CLAUDE.md for things that _can't_ be expressed as linter rules: architectural patterns, domain conventions, workflow expectations.
 
 ## 3. The Copy-Paste Skill
 
@@ -29,11 +29,11 @@ Patterns to watch for and coach against during the rollout.
 
 **Effect:** Claude struggles because the instructions assume human context, use ambiguous language, and don't specify which tools to use or what output format to produce.
 
-**Fix:** Skills need to be written *for Claude* — explicit about which tools to use, which files to read, what output format to produce, and what decisions to make vs. defer to the developer. A human procedure doc and a Claude skill have very different structures.
+**Fix:** Skills need to be written _for Claude_ -- explicit about which tools to use, which files to read, what output format to produce, and what decisions to make vs. defer to the developer. A human procedure doc and a Claude skill have very different structures.
 
 ## 4. Over-Scoping Path Rules
 
-**Symptom:** Teams create a separate rule file for every file extension — `.ts`, `.tsx`, `.css`, `.html`, `.json`, `.yaml` all get their own rules.
+**Symptom:** Teams create a separate rule file for every file extension -- `.ts`, `.tsx`, `.css`, `.html`, `.json`, `.yaml` all get their own rules.
 
 **Effect:** 20 rule files means 20 descriptions Claude must evaluate for relevance. The context overhead of rule discovery outweighs the benefit of fine-grained scoping.
 
@@ -45,7 +45,7 @@ Patterns to watch for and coach against during the rollout.
 
 **Effect:** Instructions drift from reality. New patterns aren't captured. Claude follows outdated conventions.
 
-**Fix:** Treat CLAUDE.md and rules like code — they live in the repo, go through PR review, and get updated when patterns change. Add a quarterly review cadence: "Is our CLAUDE.md still accurate? Are developers ignoring any instructions? Should rules be added or removed?"
+**Fix:** Treat CLAUDE.md and rules like code -- they live in the repo, go through PR review, and get updated when patterns change. Add a quarterly review cadence: "Is our CLAUDE.md still accurate? Are developers ignoring any instructions? Should rules be added or removed?"
 
 ## 6. Everything is a Skill
 
@@ -61,7 +61,7 @@ Patterns to watch for and coach against during the rollout.
 
 **Effect:** LLM-based reviews are non-deterministic. The same code might pass one review and fail another. Audit teams can't rely on non-reproducible results.
 
-**Fix:** LLM security review is a *complement* to deterministic tools, not a replacement. Integrate Semgrep, Snyk, or equivalent in CI/CD for the deterministic baseline. Use /security-review as an additional layer during development, not as the gate.
+**Fix:** LLM security review is a _complement_ to deterministic tools, not a replacement. Integrate Semgrep, Snyk, or equivalent in CI/CD for the deterministic baseline. Use /security-review as an additional layer during development, not as the gate.
 
 ## 8. Ignoring the Context Budget
 

@@ -71,7 +71,7 @@ Bedrock supports prompt caching, which can significantly reduce costs for repeat
 
 - Stable context (CLAUDE.md, rules) benefits most from caching
 - Frequently-changing context (code files) benefits less
-- Prompt caching behavior on Bedrock may differ from direct API — test explicitly
+- Prompt caching behavior on Bedrock may differ from direct API -- test explicitly
 
 ## Extended Thinking Costs
 

@@ -1,19 +1,19 @@
 ---
-title: "Skills vs. Slash Commands vs. Rules — Decision Framework"
+title: "Skills vs. Slash Commands vs. Rules -- Decision Framework"
 linkTitle: "Skills vs. Commands vs. Rules"
 weight: 4
 ---
 
-# Skills vs. Slash Commands vs. Rules — Decision Framework
+# Skills vs. Slash Commands vs. Rules -- Decision Framework
 
 ## When to Use Rules (.claude/rules/\*.md)
 
 Use rules when the instruction is:
 
-- **Declarative** — "when working on X files, follow Y conventions"
-- **Automatic** — should apply without the developer invoking anything
+- **Declarative** -- "when working on X files, follow Y conventions"
+- **Automatic** -- should apply without the developer invoking anything
 - **About patterns and constraints**, not step-by-step procedures
-- **Path-scopable** — different rules for different parts of the codebase
+- **Path-scopable** -- different rules for different parts of the codebase
 
 **Examples:**
 
@@ -26,10 +26,10 @@ Use rules when the instruction is:
 
 Use skills when the instruction is:
 
-- **Procedural** — a multi-step workflow with a clear sequence
-- **Rich** — includes supporting files (templates, examples, scripts)
-- **Auto-detectable** — Claude should recognize when it's relevant based on the description
-- **Cross-platform** — needs to work across Claude Code, claude.ai, and Claude Desktop
+- **Procedural** -- a multi-step workflow with a clear sequence
+- **Rich** -- includes supporting files (templates, examples, scripts)
+- **Auto-detectable** -- Claude should recognize when it's relevant based on the description
+- **Cross-platform** -- needs to work across Claude Code, claude.ai, and Claude Desktop
 
 **Examples:**
 
@@ -42,21 +42,21 @@ Use skills when the instruction is:
 
 Use commands when the instruction is:
 
-- **Explicitly invoked** — developer types the command intentionally
-- **Single-file** — a prompt without supporting materials
-- **Argument-driven** — accepts `$ARGUMENTS` (e.g., `/fix-issue 1234`)
-- **Discovery-friendly** — benefits from terminal autocomplete
+- **Explicitly invoked** -- developer types the command intentionally
+- **Single-file** -- a prompt without supporting materials
+- **Argument-driven** -- accepts `$ARGUMENTS` (e.g., `/fix-issue 1234`)
+- **Discovery-friendly** -- benefits from terminal autocomplete
 
 **Examples:**
 
-- `/deploy-staging` — explicit deployment trigger
-- `/fix-issue 1234` — issue-specific workflow with argument
-- `/run-tests` — simple repeatable command
-- `/commit` — standardized commit message generation
+- `/deploy-staging` -- explicit deployment trigger
+- `/fix-issue 1234` -- issue-specific workflow with argument
+- `/run-tests` -- simple repeatable command
+- `/commit` -- standardized commit message generation
 
 ## Decision Flowchart
 
-```
+```text
 Is the instruction about conventions/patterns that should apply automatically?
   YES → Use a Rule (.claude/rules/)
     └── Does it apply only to specific file types?

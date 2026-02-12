@@ -21,7 +21,7 @@ Deploy **LiteLLM** (open-source or enterprise cloud) or **Kong AI Gateway** as a
 
 ### Centralized Authentication
 
-- The gateway holds AWS credentials for Bedrock — developers don't need AWS access
+- The gateway holds AWS credentials for Bedrock -- developers don't need AWS access
 - Developers authenticate to the gateway via corporate SSO
 - Eliminates 500 sets of AWS credentials on developer machines
 
@@ -47,7 +47,7 @@ export ANTHROPIC_BEDROCK_BASE_URL='https://llm-gateway.internal.corp.com/bedrock
 export CLAUDE_CODE_SKIP_BEDROCK_AUTH=1  # Gateway handles AWS auth
 ```
 
-These are baked into the managed-settings.json and deployed via MDM — developers don't configure them manually.
+These are baked into the managed-settings.json and deployed via MDM -- developers don't configure them manually.
 
 ## Product Options
 
@@ -61,7 +61,7 @@ These are baked into the managed-settings.json and deployed via MDM — develope
 
 ### Kong AI Gateway
 
-- Extension of Kong API Gateway — many enterprises already use Kong
+- Extension of Kong API Gateway -- many enterprises already use Kong
 - Enterprise support contracts available
 - Good fit for organizations already in the Kong ecosystem
 
@@ -69,11 +69,11 @@ These are baked into the managed-settings.json and deployed via MDM — develope
 
 - Managed gateway focused on observability
 - Good analytics and monitoring dashboards
-- SaaS-first approach — less control than self-hosted options
+- SaaS-first approach -- less control than self-hosted options
 
 ## Deployment Topology
 
-```
+```text
 ┌─────────────────────────────────┐
 │  LLM Gateway (internal service) │
 │                                 │

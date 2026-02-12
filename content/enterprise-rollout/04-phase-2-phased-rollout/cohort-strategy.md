@@ -1,10 +1,10 @@
 ---
-title: "Phased Rollout — Cohort Strategy"
+title: "Phased Rollout -- Cohort Strategy"
 linkTitle: "Cohort Strategy"
 weight: 1
 ---
 
-# Phased Rollout — Cohort Strategy
+# Phased Rollout -- Cohort Strategy
 
 ## Principle
 
@@ -24,7 +24,7 @@ Don't light up 500 developers at once. Each cohort discovers different classes o
 ### Objectives
 
 - Validate infrastructure end-to-end (Bedrock routing, gateway, PrivateLink)
-- Test managed-settings.json enforcement — do the deny rules work? Does bypass mode stay disabled?
+- Test managed-settings.json enforcement -- do the deny rules work? Does bypass mode stay disabled?
 - Write the first project CLAUDE.md and agent_docs/ files for their repos
 - Co-create the initial 5–8 org-wide skills based on real workflows
 - Become internal champions who can support Cohort 2
@@ -60,7 +60,7 @@ Don't light up 500 developers at once. Each cohort discovers different classes o
 ### Selection Criteria
 
 - Expand to complete teams (not just individual developers)
-- Include at least one team that's skeptical — they'll surface real objections
+- Include at least one team that's skeptical -- they'll surface real objections
 - Include the team with the most complex codebase
 
 ### Objectives
@@ -170,11 +170,11 @@ If you roll back a cohort, fix the root cause and re-launch with a smaller pilot
 
 ## Timeline Summary
 
-```
-Week 1-4:  Phase 0 — Infrastructure build
-Week 3-6:  Phase 1 — Platform engineering (overlapping)
-Week 5-6:  Cohort 1 — 25 power users
-Week 7-9:  Cohort 2 — 100 full teams
-Week 10-12: Cohort 3 — 375 remaining developers
-Week 12+:  Phase 3 — Ongoing governance and optimization
+```text
+Week 1-4:  Phase 0 -- Infrastructure build
+Week 3-6:  Phase 1 -- Platform engineering (overlapping)
+Week 5-6:  Cohort 1 -- 25 power users
+Week 7-9:  Cohort 2 -- 100 full teams
+Week 10-12: Cohort 3 -- 375 remaining developers
+Week 12+:  Phase 3 -- Ongoing governance and optimization
 ```

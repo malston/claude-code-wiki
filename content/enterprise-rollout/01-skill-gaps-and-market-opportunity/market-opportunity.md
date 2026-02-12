@@ -17,7 +17,7 @@ weight: 2
 ### Layer 2: Anthropic (Product Expertise)
 
 - **Claude for Enterprise plan:** SSO, domain capture, RBAC, Compliance API, managed policy settings for org-wide Claude Code configs
-- **Enterprise sales team:** Contractual/compliance side — DPAs, security questionnaires, Compliance API
+- **Enterprise sales team:** Contractual/compliance side -- DPAs, security questionnaires, Compliance API
 - **Gap:** Model company, not consulting firm. Won't Terraform your VPC or deploy your LLM gateway.
 
 ### Layer 3: Strategic System Integrators (Enterprise Relationships)
@@ -30,14 +30,14 @@ weight: 2
 
 ### Layer 4: LLM Gateway Products
 
-- **LiteLLM:** Enterprise cloud with SOC 2/ISO 27001 — or self-hosted open-source
+- **LiteLLM:** Enterprise cloud with SOC 2/ISO 27001 -- or self-hosted open-source
 - **Kong AI Gateway:** Enterprise support contracts, existing Kong customers
 - **Portkey:** Managed gateway with observability focus
 - **Gap:** Products, not consultancies. Enterprises self-host with platform engineering team or hire separately.
 
 ## The Unserved Middle Layer
 
-**Nobody** is doing the middle layer well — the consultant who understands:
+**Nobody** is doing the middle layer well -- the consultant who understands:
 
 1. Infrastructure (VPC endpoints, IAM, networking)
 2. Claude Code platform engineering (skills, CLAUDE.md hierarchy, MCP server design, developer experience)
@@ -58,4 +58,4 @@ weight: 2
 2. **Platform engineering (40% effort):** Managed configs, skills library, developer environments
 3. **Change management (30% effort):** Phased rollout, champion program, productivity measurement
 
-Infrastructure is the minority of effort. The other 70% is platform and people work — where enterprises consistently underinvest.
+Infrastructure is the minority of effort. The other 70% is platform and people work -- where enterprises consistently underinvest.

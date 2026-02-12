@@ -70,7 +70,7 @@ if ! command -v node &> /dev/null || [[ $(node -v | cut -d. -f1 | tr -d v) -lt 1
 fi
 ```
 
-Less ideal — more support burden — but sometimes the pragmatic choice.
+Less ideal -- more support burden -- but sometimes the pragmatic choice.
 
 ## MCP Server Configuration
 
@@ -82,10 +82,10 @@ Anthropic recommends that one central team configures MCP servers and checks `.m
 
 Approved MCP servers for a typical enterprise:
 
-- **Jira/Confluence** — ticket management and documentation lookup
-- **Sentry/Datadog** — error and monitoring integration
-- **Internal APIs** — company-specific tooling
-- **Database** — read-only access to staging/dev schemas
+- **Jira/Confluence** -- ticket management and documentation lookup
+- **Sentry/Datadog** -- error and monitoring integration
+- **Internal APIs** -- company-specific tooling
+- **Database** -- read-only access to staging/dev schemas
 
 ## Hooks
 

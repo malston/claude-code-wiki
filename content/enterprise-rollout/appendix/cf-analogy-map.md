@@ -13,7 +13,7 @@ For consultants coming from a Cloud Foundry background, these analogies help tra
 | Cloud Foundry                             | Claude Code                                                | Explanation                                                                                          |
 | ----------------------------------------- | ---------------------------------------------------------- | ---------------------------------------------------------------------------------------------------- |
 | **Org/Space structure**                   | Settings hierarchy (managed → project → user)              | Multi-level configuration with inheritance and isolation between teams                               |
-| **Buildpacks**                            | Skills and CLAUDE.md conventions                           | Opinionated frameworks that encode best practices — developers get patterns by default               |
+| **Buildpacks**                            | Skills and CLAUDE.md conventions                           | Opinionated frameworks that encode best practices -- developers get patterns by default              |
 | **Service Broker catalog**                | Approved MCP servers                                       | Curated set of external integrations available to developers, centrally managed                      |
 | **App manifest (manifest.yml)**           | Project `.claude/settings.json` + `CLAUDE.md`              | Declarative configuration checked into the repo that defines how the tool interacts with the project |
 | **Platform operator**                     | Platform engineering team managing `managed-settings.json` | Central team that owns the platform layer, sets policies, and enables developer self-service         |

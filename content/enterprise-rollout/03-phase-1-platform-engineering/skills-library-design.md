@@ -1,10 +1,10 @@
 ---
-title: "Skills Library Design — Three-Tier Architecture"
+title: "Skills Library Design -- Three-Tier Architecture"
 linkTitle: "Skills Library Design"
 weight: 5
 ---
 
-# Skills Library Design — Three-Tier Architecture
+# Skills Library Design -- Three-Tier Architecture
 
 ## Overview
 
@@ -18,7 +18,7 @@ Distributed via plugin marketplace (internal) or symlink from a shared repo. Ins
 
 **Start with 5–8 org-wide skills at launch. Don't build 30.**
 
-### /security-review — Highest-Value Enterprise Skill
+### /security-review -- Highest-Value Enterprise Skill
 
 ```markdown
 ---
@@ -62,11 +62,11 @@ with a one-line explanation.
 ## Output
 
 Produce a summary table and flag any FAIL items for the developer
-to address before opening the PR. Do NOT auto-fix — explain the issue
+to address before opening the PR. Do NOT auto-fix -- explain the issue
 and let the developer decide.
 ```
 
-### /pr-description — Standardizes PR Quality
+### /pr-description -- Standardizes PR Quality
 
 ```markdown
 ---
@@ -112,10 +112,10 @@ If this change causes issues in production, what's the rollback procedure?
 
 ### Additional Org-Wide Skills
 
-- **/test-scaffold** — Generates test files following org testing conventions for the current file
-- **/onboard-repo** — Reads agent_docs/ and gives a new developer a codebase walkthrough
-- **/incident-doc** — Structured incident documentation template
-- **/changelog-entry** — Generates changelog entries from recent commits
+- **/test-scaffold** -- Generates test files following org testing conventions for the current file
+- **/onboard-repo** -- Reads agent_docs/ and gives a new developer a codebase walkthrough
+- **/incident-doc** -- Structured incident documentation template
+- **/changelog-entry** -- Generates changelog entries from recent commits
 
 ### Design Properties of Good Org Skills
 
@@ -131,14 +131,14 @@ Checked into each repo at `.claude/skills/`. Team-specific workflows and pattern
 
 ### Examples
 
-- **/deploy-staging** — Team's specific deployment workflow including environment-specific configs
-- **/new-endpoint** — Scaffolds an API endpoint following this project's patterns, using actual shared middleware and types
-- **/db-migration** — Generates a migration file following the team's ORM conventions with correct naming scheme
-- **/new-component** — For frontend teams: scaffolds a React component with team's state management, styling, and test patterns
+- **/deploy-staging** -- Team's specific deployment workflow including environment-specific configs
+- **/new-endpoint** -- Scaffolds an API endpoint following this project's patterns, using actual shared middleware and types
+- **/db-migration** -- Generates a migration file following the team's ORM conventions with correct naming scheme
+- **/new-component** -- For frontend teams: scaffolds a React component with team's state management, styling, and test patterns
 
 ### Skills with Supporting Files
 
-```
+```text
 .claude/skills/
 └── new-endpoint/
     ├── SKILL.md              # Instructions
@@ -152,7 +152,7 @@ Checked into each repo at `.claude/skills/`. Team-specific workflows and pattern
 
 The SKILL.md references these files: "Use the template in `templates/handler.ts.md` as your starting structure. See `examples/sample-crud.md` for a complete working example."
 
-This turns tribal knowledge into executable procedures. The senior engineer who always scaffolds endpoints the right way — their knowledge is now codified in a skill that any developer on the team can invoke.
+This turns tribal knowledge into executable procedures. The senior engineer who always scaffolds endpoints the right way -- their knowledge is now codified in a skill that any developer on the team can invoke.
 
 ---
 

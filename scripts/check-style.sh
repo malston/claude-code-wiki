@@ -98,13 +98,18 @@ gather_files() {
             fi
         done
     else
-        # CI mode -- diff against base branch
+        # CI mode -- diff against base branch.
+        # Run git diff separately so its errors are not masked by grep.
         local base_ref="${GITHUB_BASE_REF:-main}"
-        git -C "$REPO_ROOT" diff --name-only --diff-filter=ACMR "origin/${base_ref}...HEAD" \
-            | grep '^content/.*\.md$' \
-            | grep -v 'CLAUDE\.md' \
-            | grep -v '_index\.md' \
-            || true
+        local changed
+        changed="$(git -C "$REPO_ROOT" diff --name-only --diff-filter=ACMR "origin/${base_ref}...HEAD")"
+        if [[ -n "$changed" ]]; then
+            echo "$changed" \
+                | grep '^content/.*\.md$' \
+                | grep -v 'CLAUDE\.md' \
+                | grep -v '_index\.md' \
+                || true
+        fi
     fi
 }
 

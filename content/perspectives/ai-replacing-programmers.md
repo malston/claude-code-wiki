@@ -92,6 +92,20 @@ Until the verification and integration pipeline catches up to the generation pip
 
 ---
 
+## The Wrong Optimization
+
+There's a deeper critique of the "AI for coding" wave that deserves attention. Mark Fisher -- creator of Spring Integration and one of the earliest contributors to the Spring Framework -- put it this way: "Generating 10x more code 10x as fast is not the answer to building better software. The greater potential of AI is to deliver 10x better experiences with 10x LESS code."
+
+This lands differently coming from someone who's lived through the cycle. Spring's entire arc was about removing code, not adding it. J2EE was drowning in ceremony -- XML config files that could rival a novel in length, 200-line `pom.xml` files just to get a REST endpoint running. Spring didn't generate the XML faster; it eliminated the need for XML. Spring Boot didn't scaffold better; it made scaffolding unnecessary. Each step was about stripping away layers of ceremony until `@SpringBootApplication` and go was all you needed.
+
+And now the AI-for-coding wave is celebrating that it can generate boilerplate at machine speed. Fisher would say that's the J2EE mistake all over again. The vibe coders at the meetup are generating full-stack apps with 47 files. The right question isn't "can AI write this code for me?" It's "should this code exist at all?"
+
+Fisher's distinction between "AI for coding" (use AI to generate more code faster) and "coding for AI" (build primitives that agents compose dynamically) is where the real opportunity lies. His company, Modulewise, is exploring composable integration for intelligent systems -- small, well-defined building blocks that agents can wire together at runtime based on intent, rather than statically configured full-stack applications. Less like scaffolding a Rails app and more like how UNIX pipes work, but with agents that understand what you're trying to accomplish.
+
+This is still more manifesto than shipped product. But the architectural thesis is sound, and it maps to a pattern that's worked before: raise the abstraction, eliminate the ceremony, let the platform figure out the how while you express the what. Spring proved that approach works. The question is whether the AI tooling ecosystem will learn the same lesson or keep selling "generate more stuff faster" because that's the easier pitch.
+
+---
+
 ## On the "I Tested 17 AI Tools" Genre
 
 There's a whole genre of blog posts where someone "tests" every AI coding tool and concludes that only 2-3 are useful, but only for limited tasks (code analysis, boilerplate, documentation). These evaluations are almost always based on pasting code into a chat window and evaluating the response -- the state of the art circa early 2024.

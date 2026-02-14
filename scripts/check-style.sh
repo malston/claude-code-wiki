@@ -95,6 +95,7 @@ check_triple_hyphen_em_dashes() {
         fi
         # Remove inline code (backticked content) before checking for ---
         # This prevents false positives for literal --- in code examples
+        # Note: Does not handle escaped backticks (\`) - not currently used in this codebase
         local line_without_inline_code="$line"
         while [[ "$line_without_inline_code" =~ (.*)\`[^\`]*\`(.*) ]]; do
             line_without_inline_code="${BASH_REMATCH[1]}${BASH_REMATCH[2]}"

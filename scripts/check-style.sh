@@ -16,6 +16,12 @@ readonly SCRIPT_DIR
 REPO_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
 readonly REPO_ROOT
 
+# Files exempt from style checks (e.g. external transcripts, quoted material).
+# Patterns are matched against the filename only (not the full path).
+EXEMPT_FILES=(
+    "2026-02-12-dario-we-dont-know-ai-conscious.md"
+)
+
 violations=0
 
 # --- Helpers ---
@@ -171,6 +177,19 @@ main() {
         fi
         if [[ ! -f "$file" ]]; then
             echo "Warning: ${file} not found, skipping" >&2
+            continue
+        fi
+        local basename
+        basename="$(basename "$file")"
+        local exempt=false
+        for pattern in "${EXEMPT_FILES[@]}"; do
+            if [[ "$basename" == "$pattern" ]]; then
+                exempt=true
+                break
+            fi
+        done
+        if [[ "$exempt" == true ]]; then
+            echo "Skipping exempt file: ${file}"
             continue
         fi
         check_em_dashes "$file"

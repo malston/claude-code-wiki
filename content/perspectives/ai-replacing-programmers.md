@@ -53,6 +53,12 @@ This cycle repeats:
 
 Each wave democratized the simple tier and pushed professionals toward harder problems. The bottom of the market gets commoditized. The middle and top get more valuable because expectations rise.
 
+The pattern still holds with AI. What's different is the clock speed.
+
+Spreadsheets played out over decades. WordPress over a decade. No-code over years. AI is compressing the cycle into months. The pattern was never reassuring because of what happened -- it was reassuring because of how long people had to adapt between waves. Accountants had a generation to move up the value chain. Web developers had a decade to shift from static HTML to full-stack engineering.
+
+AI isn't giving people that runway. The adaptive mechanisms that made previous waves manageable -- retraining programs, career pivots, industry restructuring -- assume years of lead time. When the cycle compresses to months, those mechanisms don't disappear, but they stop working for anyone who isn't already in motion. The people most at risk aren't those who refuse to adapt. They're the ones operating on the assumption that they have the same runway previous generations had.
+
 ## Who Wins
 
 **Multi-disciplinary people who combine product sense with technical understanding will be the most sought after.** Product AND technical skills become the requirement. The bar goes up because more people are competing for fewer roles.

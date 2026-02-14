@@ -8,8 +8,6 @@ weight: 1
 
 What's actually happening vs. what people think is happening, based on conversations with colleagues, observations from local meetups, and the steady stream of hot takes online.
 
----
-
 ## The Claim
 
 Non-technical people are building personal tools with AI and concluding:
@@ -18,15 +16,11 @@ Non-technical people are building personal tools with AI and concluding:
 2. Anyone can vibe-code an application
 3. SaaS is dead because why pay for something you can build yourself
 
----
-
 ## What's Actually True
 
 The barrier to building personal tools has genuinely collapsed. Someone who couldn't code two years ago can now build something that solves their specific problem. That's real and worth taking seriously.
 
 AI coding tools have made producing code almost trivially fast. Code production is no longer the constraint. What hasn't kept pace is everything around it: review bandwidth, testing, deployment confidence, operational readiness. I'm feeling this personally -- I can spin up changes faster than ever, but then they sit waiting for review, or I'm blocked on validating them properly, or the release process can't absorb the pace.
-
----
 
 ## What's Not True
 
@@ -48,8 +42,6 @@ SaaS isn't expensive because writing code is hard. It's expensive because reliab
 
 If anything, more people building increases demand for infrastructure and platforms -- auth services, database hosting, payment processing, deployment pipelines. The picks-and-shovels layer grows.
 
----
-
 ## The Historical Pattern
 
 This cycle repeats:
@@ -61,8 +53,6 @@ This cycle repeats:
 
 Each wave democratized the simple tier and pushed professionals toward harder problems. The bottom of the market gets commoditized. The middle and top get more valuable because expectations rise.
 
----
-
 ## Who Wins
 
 **Multi-disciplinary people who combine product sense with technical understanding will be the most sought after.** Product AND technical skills become the requirement. The bar goes up because more people are competing for fewer roles.
@@ -71,13 +61,9 @@ The right pattern for using AI effectively: treat it as a capable assistant that
 
 People who understand the system but use the tools to accelerate will be the real winners. People who skip the understanding part will keep hitting walls.
 
----
-
 ## The Junior Developer Problem
 
 The job market for junior devs is shrinking. That said, they're learning the theory and using these tools in school, which isn't wasted. The theory matters more now, not less -- when code generation is cheap, the ability to evaluate whether generated code is correct becomes the differentiating skill.
-
----
 
 ## The Bottleneck Shift
 
@@ -89,8 +75,6 @@ The bottleneck has moved. Code production used to be the constraint. Now it's:
 - **Operational maturity** -- running the thing is still hard
 
 Until the verification and integration pipeline catches up to the generation pipeline, faster code production just moves the pileup downstream.
-
----
 
 ## The Wrong Optimization
 
@@ -104,8 +88,6 @@ Fisher's distinction between "AI for coding" (use AI to generate more code faste
 
 This is still more manifesto than shipped product. But the architectural thesis is sound, and it maps to a pattern that's worked before: raise the abstraction, eliminate the ceremony, let the platform figure out the how while you express the what. Spring proved that approach works. The question is whether the AI tooling ecosystem will learn the same lesson or keep selling "generate more stuff faster" because that's the easier pitch.
 
----
-
 ## On the "I Tested 17 AI Tools" Genre
 
 There's a whole genre of blog posts where someone "tests" every AI coding tool and concludes that only 2-3 are useful, but only for limited tasks (code analysis, boilerplate, documentation). These evaluations are almost always based on pasting code into a chat window and evaluating the response -- the state of the art circa early 2024.
@@ -115,8 +97,6 @@ They miss agentic tools entirely. Claude Code reading your codebase, running com
 Similarly, the over-engineered prompting guides that prescribe rigid multi-phase role-playing workflows fight against how these models work best. Writing stories as a product owner and letting the AI figure out implementation is more effective than any "10 ChatGPT prompts that will 10x your productivity" system.
 
 The genuine insight buried in these posts: AI tools give generic advice while production requires specific answers. That's real. The fix is to give them specific context -- [memory organization]({{< relref "guides/memory-organization" >}}), codebase access, [MCP servers]({{< relref "guides/essential-plugins" >}}) -- so they can give specific answers.
-
----
 
 ## Bottom Line
 

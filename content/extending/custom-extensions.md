@@ -89,7 +89,7 @@ This isolation is the key property: a subagent can read 50 files and analyze tho
 
 Subagents are Markdown files with YAML frontmatter:
 
-```
+```text
 .claude/agents/
   code-reviewer.md
   test-runner.md
@@ -98,7 +98,7 @@ Subagents are Markdown files with YAML frontmatter:
 
 Or for personal (cross-project) subagents:
 
-```
+```text
 ~/.claude/agents/
   code-reviewer.md
   research-assistant.md
@@ -398,7 +398,7 @@ Skills serve two purposes:
 
 Skills are directories containing a `SKILL.md` file:
 
-```
+```text
 .claude/skills/
   commit/
     SKILL.md
@@ -414,7 +414,7 @@ Skills are directories containing a `SKILL.md` file:
 
 Or for personal (cross-project) skills:
 
-```
+```text
 ~/.claude/skills/
   golang/
     SKILL.md

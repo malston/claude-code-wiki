@@ -93,8 +93,15 @@ check_triple_hyphen_em_dashes() {
         if [[ "$line" =~ ^\|.*---.*\| ]]; then
             continue
         fi
+        # Strip inline code (backticked content) before checking for ---
+        # to avoid false positives on literal --- in code references.
+        # Does not handle escaped backticks (\`) -- not used in this codebase.
+        local stripped="$line"
+        while [[ "$stripped" =~ (.*)\`[^\`]*\`(.*) ]]; do
+            stripped="${BASH_REMATCH[1]}${BASH_REMATCH[2]}"
+        done
         # Flag lines with --- that have other text (inline em dash usage)
-        if [[ "$line" == *"---"* ]]; then
+        if [[ "$stripped" == *"---"* ]]; then
             report "$file" "$line_num" "triple-hyphen em dash (---) found; use -- instead" "$line"
         fi
     done < "$file"

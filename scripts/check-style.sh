@@ -67,6 +67,39 @@ check_bare_code_fences() {
     done < "$file"
 }
 
+check_triple_hyphen_em_dashes() {
+    local file="$1"
+    local line_num=0
+    local in_code_block=false
+    while IFS= read -r line; do
+        line_num=$((line_num + 1))
+        if [[ "$line" =~ ^[[:space:]]*\`\`\` ]]; then
+            if [[ "$in_code_block" == false ]]; then
+                in_code_block=true
+            else
+                in_code_block=false
+            fi
+            continue
+        fi
+        if [[ "$in_code_block" == true ]]; then
+            continue
+        fi
+        # Skip lines made entirely of hyphens and spaces (horizontal rules,
+        # setext heading underlines, pandoc table separators)
+        if [[ "$line" =~ ^[[:space:]]*[-]+([[:space:]][-]*)*[[:space:]]*$ ]]; then
+            continue
+        fi
+        # Skip pipe-table separator lines
+        if [[ "$line" =~ ^\|.*---.*\| ]]; then
+            continue
+        fi
+        # Flag lines with --- that have other text (inline em dash usage)
+        if [[ "$line" == *"---"* ]]; then
+            report "$file" "$line_num" "triple-hyphen em dash (---) found; use -- instead" "$line"
+        fi
+    done < "$file"
+}
+
 check_banned_openers() {
     local file="$1"
     local line_num=0
@@ -134,6 +167,7 @@ main() {
             continue
         fi
         check_em_dashes "$file"
+        check_triple_hyphen_em_dashes "$file"
         check_bare_code_fences "$file"
         check_banned_openers "$file"
     done <<< "$files"

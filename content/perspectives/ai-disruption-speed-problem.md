@@ -42,7 +42,7 @@ The question is whether the production-complexity moat is a permanent structural
 
 Practitioners identify a specific bottleneck shift that Amodei doesn't engage with at all: review bandwidth, testing confidence, deployment readiness, operational maturity. Generating code faster doesn't help if review can't keep up.
 
-Mark Fisher's critique -- that we should be generating less code, not more -- is entirely absent from Amodei's framing. Amodei talks about AI doing "the whole thing from end to end." Fisher says the right question isn't "can AI write this code for me?" but "should this code exist at all?"
+Mark Fisher's critique -- that we should be generating less code, not more -- is entirely absent from Amodei's framing. Amodei talks about AI doing "the whole thing from end to end." Fisher argues the primary question is whether the code should exist at all. "Can AI write this for me?" is secondary.
 
 ### Who Wins
 
@@ -50,7 +50,7 @@ Practitioners say multi-disciplinary people who combine product sense with techn
 
 ## The Speed Problem
 
-Both perspectives converge on one point: **the speed of disruption is the real concern, not the disruption itself.**
+Both perspectives converge on one point: **the speed of disruption outpaces the mechanisms that help people adapt.**
 
 Amodei says it directly: "People adapted. But that happened over centuries or decades. This is happening over low single-digit numbers of years."
 

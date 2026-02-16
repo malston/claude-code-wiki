@@ -248,7 +248,7 @@ Configure with the `ENABLE_TOOL_SEARCH` environment variable:
 
 MCP servers can expose resources that you reference with `@` mentions:
 
-```
+```text
 # Reference an issue directly
 > Can you analyze @github:issue://123 and suggest a fix?
 
@@ -268,7 +268,7 @@ Hooks are shell commands or LLM prompts that execute automatically at specific p
 
 Hooks fire at specific points during a session:
 
-```
+```text
 SessionStart ──▶ UserPromptSubmit ──▶ PreToolUse ──▶ [tool executes]
                                                           │
                   Stop ◀── PostToolUse/PostToolUseFailure ◀┘
@@ -835,7 +835,7 @@ Hooks are defined in `hooks/hooks.json` within the plugin:
 
 Use this flowchart to choose the right integration mechanism:
 
-```
+```text
 Need Claude to access an external service?
   YES ──▶ MCP server
   NO  ──▼
@@ -875,7 +875,7 @@ Decision matrix for common scenarios:
 
 ## Combining Integration Patterns
 
-The real power comes from combining mechanisms. Here are practical multi-mechanism patterns:
+The mechanisms become more useful in combination. Here are practical multi-mechanism patterns:
 
 ### MCP + Hooks: Auto-Validated External Access
 
@@ -991,7 +991,7 @@ using the sentry MCP server before looking at logs.
 
 ### Using MCP When a Hook Would Suffice
 
-```
+```text
 Bad:  Building an MCP server to run linters after file edits
       (Claude has to decide to call it)
 
@@ -1003,7 +1003,7 @@ MCP servers are for when Claude needs on-demand access to external data or servi
 
 ### Headless Mode Without Turn Limits
 
-```
+```text
 Bad:  claude -p "Fix all the bugs in this codebase"
       (could run indefinitely, consuming unlimited tokens)
 
@@ -1016,7 +1016,7 @@ Always set `--max-turns` and/or `--max-budget-usd` in automated contexts.
 
 ### Blocking Hooks That Should Be Async
 
-```
+```text
 Bad:  A PostToolUse hook that runs the full test suite
       synchronously after every file write
       (Claude waits minutes between each edit)
@@ -1029,7 +1029,7 @@ If a hook doesn't need to block Claude's next action, make it async.
 
 ### Hardcoding Credentials in Project Config
 
-```
+```text
 Bad:  .mcp.json with "Authorization": "Bearer sk-ant-abc123..."
       (committed to git, visible to everyone)
 
@@ -1041,7 +1041,7 @@ Credentials belong in environment variables or local-scoped configuration, not i
 
 ### Over-Broad Hook Matchers
 
-```
+```text
 Bad:  A PreToolUse hook with no matcher that runs
       on every single tool call
       (adds latency to reads, searches, everything)

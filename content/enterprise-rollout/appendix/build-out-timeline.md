@@ -165,4 +165,4 @@ weight: 1
 | Platform Engineering | 40%               | Consultant + platform team          |
 | Change Management    | 30%               | Consultant + engineering leadership |
 
-The infrastructure is 30% of effort but often gets 90% of attention. The other 70% -- platform engineering and change management -- is where the engagement delivers differentiated value.
+The infrastructure is 30% of effort but often gets 90% of attention. The other 70% -- platform engineering and change management -- is where the engagement has the most impact.

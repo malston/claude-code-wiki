@@ -126,7 +126,7 @@ Opus 4.6 is strictly better and cheaper than Opus 4.1 and Opus 4. There's no rea
 
 ### Decision Framework
 
-```
+```text
 Is the task complex reasoning, architecture, or multi-step planning?
   YES ──▶ Opus 4.6
   NO  ──▼
@@ -271,7 +271,7 @@ CLAUDE_CODE_SUBAGENT_MODEL=haiku claude
 
 **In the Task tool** (inline):
 
-```
+```text
 "use a subagent with model haiku to search for all TODO comments"
 ```
 
@@ -285,7 +285,7 @@ Running subagents on Haiku is one of the highest-leverage cost optimizations. Mo
 
 Every message in Claude Code sends the full conversation context to the API. Costs scale with:
 
-```
+```text
 Cost per message ≈ (system prompt + conversation history + new input) × input price
                   + (response length) × output price
                   + (thinking tokens) × output price
@@ -351,7 +351,7 @@ Context size is the primary cost driver. Smaller context = cheaper messages.
 
 **Clear between tasks:**
 
-```
+```sh
 /clear    # Reset context when switching to unrelated work
 ```
 
@@ -359,7 +359,7 @@ Stale context wastes tokens on every subsequent message. Use `/rename` before cl
 
 **Compact proactively:**
 
-```
+```sh
 /compact Focus on code changes and test results
 ```
 
@@ -367,7 +367,7 @@ Auto-compaction triggers at ~75-92% usage, but manual compaction lets you contro
 
 **Use subagents for investigation:**
 
-```
+```text
 "use a subagent to investigate how authentication works"
 ```
 
@@ -416,13 +416,13 @@ Each MCP server adds tool definitions to context, even when idle. Each plugin ad
 
 **Check what's consuming space:**
 
-```
+```sh
 /context    # See context breakdown
 ```
 
 **Disable unused MCP servers:**
 
-```
+```sh
 /mcp    # View and manage servers
 ```
 
@@ -482,7 +482,7 @@ claude -p \
 
 ### Session-Level Tracking
 
-```
+```sh
 /cost    # Show current session token usage and cost
 /stats   # Usage patterns (for subscribers)
 ```
@@ -516,7 +516,7 @@ TPM per user decreases with team size because fewer users are active concurrentl
 
 1. **Default to Sonnet.** Most coding tasks don't need Opus. Switch up only when you need deeper reasoning.
 
-2. **Use opusplan for features.** Plan with Opus, execute with Sonnet -- best of both worlds without paying Opus rates for implementation.
+2. **Use opusplan for features.** Plan with Opus, execute with Sonnet -- Opus-quality architecture at Sonnet-level cost.
 
 3. **Run subagents on Haiku.** File searches, pattern matching, and codebase exploration are Haiku-level tasks. Set `CLAUDE_CODE_SUBAGENT_MODEL=haiku` or configure per-agent.
 
@@ -540,7 +540,7 @@ TPM per user decreases with team size because fewer users are active concurrentl
 
 ### Using Opus for Everything
 
-```
+```text
 Bad:  claude --model opus
       "rename this variable from foo to bar"
       (Opus costs 1.7x more for a task Sonnet handles perfectly)
@@ -553,7 +553,7 @@ Reserve Opus for tasks that actually benefit from its reasoning capabilities.
 
 ### Never Clearing Context
 
-```
+```text
 Bad:  One continuous session for a full day of varied work.
       By afternoon, every message processes 150K tokens of
       stale context from morning tasks.
@@ -564,7 +564,7 @@ Good: /clear between unrelated tasks. Start fresh with
 
 ### Running Subagents on Opus
 
-```
+```text
 Bad:  "use a subagent to find all files containing TODO"
       (runs on your main model -- Opus at $5/MTok input)
 
@@ -575,7 +575,7 @@ Good: Configure subagent model:
 
 ### No Budget Controls in CI
 
-```
+```text
 Bad:  claude -p "Fix all bugs in the codebase"
       (unbounded turns, unbounded cost)
 
@@ -585,7 +585,7 @@ Good: claude -p --max-turns 10 --max-budget-usd 5.00 \
 
 ### Ignoring Prompt Caching
 
-```
+```text
 Bad:  Disabling prompt caching to "save money"
       (DISABLE_PROMPT_CACHING=1)
 

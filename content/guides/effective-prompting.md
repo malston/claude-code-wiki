@@ -56,7 +56,7 @@ The quality of your results from Claude Code depends heavily on how you structur
 
 Every message you type becomes part of an API call that includes the full system prompt, entire conversation history, and your new message. Claude reads all of this -- the system prompt instructions, your CLAUDE.md rules, the skill catalog, every previous turn -- before generating a response.
 
-```
+```text
 What Claude sees when you send a message:
 ┌──────────────────────────────────────────────────┐
 │ System Prompt (~12,000-20,000 tokens)            │
@@ -91,7 +91,7 @@ This has practical implications:
 
 Claude Code's models follow instructions precisely. Vague prompts leave room for interpretation; specific prompts get specific results.
 
-```
+```text
 Vague (Claude has to guess what you want):
   "make the auth better"
 
@@ -100,7 +100,7 @@ Specific (Claude knows exactly what to do):
    attempts within 10 minutes, return 429 with a Retry-After header"
 ```
 
-```
+```text
 Vague:
   "clean up this code"
 
@@ -109,7 +109,7 @@ Specific:
    server.go into a separate function"
 ```
 
-```
+```text
 Vague:
   "write some tests"
 
@@ -127,7 +127,7 @@ If you want Claude to go above and beyond, say so explicitly. Instead of "create
 
 A subtle but important distinction: how you phrase a request determines whether Claude acts or advises.
 
-```
+```text
 Gets suggestions (Claude will recommend, not implement):
   "can you suggest some improvements to this function?"
   "what changes would you recommend for the error handling?"
@@ -143,7 +143,7 @@ If you say "can you suggest," Claude takes you literally and suggests. If you wa
 
 This also applies to exploration vs implementation:
 
-```
+```text
 Exploration (Claude investigates and reports):
   "how does the caching layer work in this codebase?"
   "what's causing the test failure in auth_test.go?"
@@ -159,7 +159,7 @@ Both are valid -- just be intentional about which mode you want.
 
 Telling Claude **why** you want something helps it make better decisions, especially when judgment calls arise.
 
-```
+```text
 Without context (Claude follows the letter):
   "never use fmt.Println in this codebase"
 
@@ -171,7 +171,7 @@ With context (Claude follows the spirit):
 
 With the context, Claude understands the underlying goal. If it encounters a situation your rule doesn't cover (say, `log.Println`), it can reason that the same principle applies.
 
-```
+```text
 Without context:
   "split this into two files"
 
@@ -187,7 +187,7 @@ The context helps Claude make the right call about where to draw the boundary.
 
 When you can point Claude to exact locations, everything gets faster and more accurate.
 
-```
+```text
 Imprecise (Claude has to search):
   "fix the nil pointer bug"
 
@@ -196,7 +196,7 @@ Precise (Claude goes straight to the issue):
    can be nil when the token is expired"
 ```
 
-```
+```text
 Imprecise:
   "update the config struct"
 
@@ -221,7 +221,7 @@ Useful specifics to include:
 
 Not every task needs decomposition. Here's a quick decision guide:
 
-```
+```text
 Is the task straightforward and localized?
 │
 ├── YES (single file, clear change) → One message is fine
@@ -247,7 +247,7 @@ Large, ambiguous tasks are where Claude Code is most likely to make mistakes or 
 
 The most effective Claude Code workflow is iterative, not one-shot:
 
-```
+```text
 1. Give a focused instruction
        │
 2. Review the result
@@ -265,7 +265,7 @@ Each iteration is a chance to verify Claude is on the right track. This is faste
 - You can change direction without wasted work
 - Claude has the results of previous steps as context
 
-```
+```text
 Iteration 1: "add a /health endpoint that returns 200 OK"
   → Review: looks good, but no database check
 
@@ -293,7 +293,7 @@ For tasks where you're unsure about the approach, plan mode lets Claude explore 
 
 **How it works:**
 
-```
+```text
 You: "add WebSocket support for real-time notifications"
 
 Claude enters plan mode:
@@ -325,23 +325,26 @@ Effective CLAUDE.md content includes:
 - **Tool preferences** -- "Use bun instead of npm," "Use structured logger"
 - **Common commands** -- Build commands, test commands, deployment commands
 
-```
+```markdown
 Example: project-level CLAUDE.md
 
 # Project: API Server
 
 ## Stack
+
 - Go 1.22, Chi router, sqlc for database queries
 - PostgreSQL 16 with pgx driver
 - Tests: go test with testcontainers for integration
 
 ## Conventions
+
 - All handlers go in internal/handler/
 - All database queries go in internal/db/queries/
 - Error responses use the ErrResponse struct from internal/api/
 - Use structured logging (slog) -- never fmt.Println
 
 ## Commands
+
 - Run tests: go test ./...
 - Run integration tests: go test -tags=integration ./...
 - Generate sqlc: sqlc generate
@@ -362,7 +365,7 @@ Avoid putting these in CLAUDE.md:
 
 Every line of CLAUDE.md is re-sent on every API call. A 200-line CLAUDE.md is roughly 1,500-2,000 tokens consumed from your context window on every message. This cost is mitigated by [prompt caching]({{< relref "/internals/prompt-caching" >}}) (90% discount after the first message), but the context window space is consumed regardless.
 
-```
+```text
 Context window budget:
 ┌───────────────────────────────────────┐
 │ System prompt (including CLAUDE.md)   │ ← Bigger CLAUDE.md = less
@@ -389,7 +392,7 @@ For tasks that span beyond a single context window (very long sessions or multi-
 
 Write tests before implementation. Tests serve as both specification and verification that survives context transitions.
 
-```
+```text
 Session 1:
   "Write tests for the user notification feature:
    - test that notifications are created on new comments
@@ -411,7 +414,7 @@ The tests act as durable requirements -- they survive compaction, fresh sessions
 
 For long-running tasks, have Claude maintain progress notes:
 
-```
+```text
 "Track your progress in progress.md as you work through
  the migration. Note what's done, what's next, and any
  issues you've found."
@@ -431,15 +434,16 @@ Structured state (like test results) works well in JSON:
 
 Unstructured progress works well in plain text:
 
-```
+```markdown
 ## Progress
+
 - Completed auth module migration
 - Fixed user model edge cases
 - Next: investigate notification test failures
 - Issue: the email service mock needs updating
 ```
 
-Git also serves as natural state tracking -- commit messages and diffs tell Claude what was done in previous steps.
+Git doubles as state tracking -- commit messages and diffs tell Claude what was done in previous steps.
 
 ### Starting Fresh vs Compaction
 
@@ -453,7 +457,7 @@ Good for tasks where the recent context is what matters. Compaction preserves th
 
 Good for tasks with a clear checkpoint. Save state to files, commit your progress, and start a new conversation. Claude discovers state from the filesystem:
 
-```
+```text
 New session prompt:
   "Review progress.md and the recent git log. Continue
    implementing the migration from where the last session
@@ -468,7 +472,7 @@ Claude's latest models are effective at discovering state from the local filesys
 
 ### Subagent Delegation
 
-Claude Code can delegate work to subagent processes that run in isolated context windows. This is powerful for parallel work, but Claude (especially Opus 4.6) sometimes over-uses subagents where a direct approach would be faster.
+Claude Code can delegate work to subagent processes that run in isolated context windows. This works well for parallel work, but Claude (especially Opus 4.6) sometimes over-uses subagents where a direct approach would be faster.
 
 **When subagents help:**
 
@@ -484,7 +488,7 @@ Claude Code can delegate work to subagent processes that run in isolated context
 
 If you notice excessive subagent spawning, be direct:
 
-```
+```text
 "Don't use subagents for this -- just grep for the function
  name directly"
 
@@ -495,7 +499,7 @@ If you notice excessive subagent spawning, be direct:
 
 Claude can make multiple tool calls simultaneously. For independent operations, this is significantly faster:
 
-```
+```text
 "Read server.go, handler.go, and config.go -- I need to
  understand how requests flow through the system"
 
@@ -509,7 +513,7 @@ You don't usually need to ask for this explicitly -- Claude parallelizes indepen
 
 Opus 4.6 tends to do extensive upfront exploration -- reading many files and searching broadly before acting. This thoroughness often produces better results, but sometimes you want a faster, more targeted approach.
 
-```
+```text
 If Claude is reading too many files:
   "Just fix the typo on line 12 of config.go -- you don't
    need to read the rest of the codebase"
@@ -530,7 +534,7 @@ The pattern: tell Claude the scope of the task. If it's small, say it's small. I
 
 ### The Vague Request
 
-```
+```text
 Bad:  "fix the bug"
 Good: "fix the nil pointer in auth.go:47 when the user
        token is expired"
@@ -540,7 +544,7 @@ Vague requests make Claude search for what you might mean, read files to underst
 
 ### Over-Constraining
 
-```
+```text
 Bad:  "change line 47 to read: if user != nil && user.Token !=
        '' && time.Now().Before(user.Token.Expiry) {"
        (dictating exact implementation)
@@ -556,7 +560,7 @@ Over-constraining means writing the code in your prompt and asking Claude to typ
 
 When Claude does something you didn't expect, the instinct is to add more rules:
 
-```
+```text
 Round 1: "add error handling" → Claude adds try/catch everywhere
 Round 2: "not like that, only at the boundaries"
 Round 3: "but you missed the HTTP handler"
@@ -565,7 +569,7 @@ Round 4: "and remove the ones in internal functions"
 
 A single, clear prompt is better than iterative corrections:
 
-```
+```text
 "Add error handling at the HTTP handler layer only.
  Internal functions should return errors, not catch them.
  The handlers should catch errors and return appropriate
@@ -578,7 +582,7 @@ If you find yourself correcting Claude repeatedly, step back and give a clearer 
 
 Claude's tool results and error messages often contain exactly the information needed to solve a problem. A common mistake is ignoring test output, compiler errors, or log messages and asking Claude to "try again."
 
-```
+```text
 Bad:  "the test still fails, try something else"
 
 Good: "the test fails with 'expected 200 but got 401' --
@@ -590,7 +594,7 @@ The error message tells you what's wrong. Sharing it (or letting Claude read it)
 
 ### The Kitchen-Sink Prompt
 
-```
+```text
 Bad:  "Refactor the entire auth module, add OAuth support,
        implement rate limiting, update the tests, add
        documentation, and deploy to staging"

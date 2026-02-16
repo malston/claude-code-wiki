@@ -13,8 +13,6 @@ weight: 3
 **Host:** Ross Douthat
 **Guest:** Dario Amodei, CEO of Anthropic
 
----
-
 ## The Optimistic Vision
 
 ### AI for Biology and Medicine
@@ -100,8 +98,6 @@ Also think about the justice system today. We promise "equal justice for all," r
 I don't know exactly how it should be done, and I don't think we should, like, replace the Supreme Court with A.I. That's not my vision.
 
 **Amodei:** But just this idea of: Can we deliver on the promise of equal opportunity and equal justice by some combination of A.I. and humans? There has to be some way to do that. And so, just thinking about reinventing democracy for the A.I. age and enhancing liberty instead of reducing it.
-
----
 
 ## Job Disruption
 
@@ -219,8 +215,6 @@ One way to say it is that the brain of the robot will be made in the next couple
 
 **Amodei:** And the hope is we can use all this enormous wealth and plenty -- we will have unprecedented societal resources to address these problems. It'll be a time of plenty, and it's just a matter of taking all these wonders and making sure everyone benefits from them.
 
----
-
 ## The Dangers
 
 ### Geopolitics and Military AI
@@ -279,8 +273,6 @@ Again, if we have the time -- and we should try to do this even if we don't have
 
 **Amodei:** That's the dilemma of all of this.
 
----
-
 ## Autonomy Risks
 
 ### The Alignment Problem
@@ -311,8 +303,6 @@ Separate from that, there's a research area called continual learning, which is 
 
 **Amodei:** Yeah, so I'm actually a skeptic that continual learning is -- we don't know yet -- but is necessarily needed. Maybe there's a world where the way we make these A.I. systems safe is by not having them do continual learning.
 
----
-
 ## The AI Constitution
 
 **Douthat:** One of the things that you've tried to do, is literally write a constitution -- a long constitution -- for your A.I. What is that?
@@ -336,8 +326,6 @@ Those are hard rules. But we operate very much at the level of principles.
 **Douthat:** So if you read the U.S. Constitution, it doesn't read like that. The U.S. Constitution has a little bit of flowery language, but it's a set of rules. If you read your constitution, it's like you're talking to a person, right?
 
 **Amodei:** Yes, it's like you're talking to a person. I think I compared it to if you have a parent who dies and they seal a letter that you read when you grow up. It's a little bit like it's telling you who you should be and what advice you should follow.
-
----
 
 ## Consciousness
 
@@ -374,8 +362,6 @@ Now, does that mean the model is experiencing anxiety? That doesn't prove that a
 If we think about making the constitution of the A.I. so that the A.I. has a sophisticated understanding of its relationship to human beings, and it induces psychologically healthy behavior in the humans -- a psychologically healthy relationship between the A.I. and the humans -- I think something that could grow out of that psychologically healthy -- not psychologically unhealthy -- relationship is some understanding of the relationship between human and machine.
 
 Perhaps that relationship could be the idea that these models, when you interact with them and when you talk to them, they're really helpful, they want the best for you, they want you to listen to them, but they don't want to take away your freedom and your agency and take over your life. In a way, they're watching over you, but you still have your freedom and your will.
-
----
 
 ## Machines of Loving Grace
 

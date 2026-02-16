@@ -66,7 +66,7 @@ This replaces the "rules" directories that frameworks provide. It's plain markdo
 
 ### Workflow Injection: Skills
 
-[Skills]({{< relref "extending/extension-mechanisms" >}}) inject specific workflows into the AI's behavior when invoked. A TDD skill doesn't just tell the AI to write tests -- it enforces a specific sequence: write a failing test, run it, implement until it passes, refactor.
+[Skills]({{< relref "extending/extension-mechanisms" >}}) inject specific workflows into the AI's behavior when invoked. A TDD skill enforces a specific sequence: write a failing test, run it, implement until it passes, refactor.
 
 ```text
 You invoke: /tdd

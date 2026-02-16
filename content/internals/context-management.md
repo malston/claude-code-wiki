@@ -70,7 +70,7 @@ Think of it as a fixed-size desk. The system prompt is a permanent stack of pape
 
 Every API call in a Claude Code session sends:
 
-```
+```text
 Context Window (200K tokens)
 ┌──────────────────────────────────────────────────┐
 │ System prompt (fixed)             ~15,000-20,000 │
@@ -111,7 +111,7 @@ Not all content is equal. Some things consume far more tokens than expected:
 
 For a 200K context window with a 15,000-token system prompt:
 
-```
+```text
 Available for conversation: 200,000 - 15,000 = 185,000 tokens
 
 At ~100 tokens per typical message exchange:
@@ -132,13 +132,13 @@ Claude Sonnet 4.5 and Haiku 4.5 have a built-in feature called **context awarene
 
 At session start, Claude receives its total budget:
 
-```
+```text
 <budget:token_budget>200000</budget:token_budget>
 ```
 
 After each tool call, Claude receives an update:
 
-```
+```text
 <system_warning>Token usage: 35000/200000; 165000 remaining</system_warning>
 ```
 
@@ -161,7 +161,7 @@ The process:
 3. The summary replaces the original conversation history
 4. The session continues with the compressed context
 
-```
+```text
 Before compaction:
 ┌──────────────────────────────────────────────────┐
 │ System prompt                          15,000    │
@@ -192,7 +192,7 @@ Claude Code handles compaction automatically. You don't need to configure anythi
 
 You'll see a message like:
 
-```
+```text
 Auto-compact: Summarizing conversation to free up context...
 ```
 
@@ -202,7 +202,7 @@ This is normal and expected in long sessions. The session continues without inte
 
 You can also trigger compaction manually at any time using the `/compact` command:
 
-```
+```sh
 /compact                              # Default summarization
 /compact Focus on the API changes     # Custom instructions
 ```
@@ -247,7 +247,7 @@ A 20K system prompt leaves 180K for conversation. A 12K system prompt leaves 188
 
 Subagents (the Task tool) run in their own isolated context windows. This means their work doesn't consume your main context:
 
-```
+```text
 Main context (200K)          Subagent context (200K)
 ┌────────────────────┐       ┌────────────────────┐
 │ System prompt      │       │ Subagent prompt     │
@@ -294,7 +294,7 @@ For sessions that will be particularly long or context-heavy, the 1M token conte
 
 When you send a message, here's what happens to the context:
 
-```
+```text
 You type: "Read the main.go file and add error handling to the HTTP handler"
 
 API call sent:
@@ -322,7 +322,7 @@ Each turn adds the user message, all tool calls and their results, and the assis
 
 ### Growth Over a Session
 
-```
+```text
 Turn  1: 15,000 (system) +  1,000 (conversation) = ~16,000 tokens
 Turn 10: 15,000 (system) + 25,000 (conversation) = ~40,000 tokens
 Turn 30: 15,000 (system) + 80,000 (conversation) = ~95,000 tokens
@@ -336,7 +336,7 @@ The sawtooth pattern: context grows linearly, compaction drops it, then it grows
 
 ### The Compaction Cycle
 
-```
+```text
 Context
 Usage
   ▲

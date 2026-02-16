@@ -516,7 +516,7 @@ TPM per user decreases with team size because fewer users are active concurrentl
 
 1. **Default to Sonnet.** Most coding tasks don't need Opus. Switch up only when you need deeper reasoning.
 
-2. **Use opusplan for features.** Plan with Opus, execute with Sonnet -- best of both worlds without paying Opus rates for implementation.
+2. **Use opusplan for features.** Plan with Opus, execute with Sonnet -- Opus-quality architecture at Sonnet-level cost.
 
 3. **Run subagents on Haiku.** File searches, pattern matching, and codebase exploration are Haiku-level tasks. Set `CLAUDE_CODE_SUBAGENT_MODEL=haiku` or configure per-agent.
 

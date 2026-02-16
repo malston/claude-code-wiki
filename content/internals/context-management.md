@@ -196,7 +196,7 @@ You'll see a message like:
 Auto-compact: Summarizing conversation to free up context...
 ```
 
-This is normal and expected in long sessions. The session continues seamlessly -- you don't lose your place.
+This is normal and expected in long sessions. The session continues without interruption -- you don't lose your place.
 
 ### Manual Compaction
 
@@ -359,7 +359,7 @@ Each cycle preserves the system prompt (unchanged) and a summary of previous wor
 
 ### How Subagents Help
 
-Subagents are the most powerful context management tool available. By running work in a separate context, they:
+Subagents are the single most effective context management technique. By running work in a separate context, they:
 
 1. **Prevent context pollution** -- A 40-turn investigation doesn't bloat your main context
 2. **Provide fresh context** -- The subagent starts with maximum available space
@@ -440,7 +440,7 @@ But the model doesn't have a bad memory -- it has no memory at all beyond its cu
 - **Compact strategically** -- Use `/compact` with custom instructions to preserve specific details
 - **Keep sessions focused** -- One task per session means less context pressure and fewer compactions
 
-The model's reasoning capability is constant. What varies is how much relevant information it can see. Context management isn't a workaround -- it's the primary skill that separates effective Claude Code usage from frustrating sessions.
+The model's reasoning capability is constant. What varies is how much relevant information it can see. Managing that visibility is the primary skill that separates effective Claude Code usage from frustrating sessions.
 
 ---
 
@@ -458,7 +458,7 @@ The model's reasoning capability is constant. What varies is how much relevant i
 
 6. **Don't fight compaction** -- Auto-compact is designed to keep sessions running. If you need to preserve specific context, use manual `/compact` with custom instructions.
 
-7. **Leverage the system prompt wisely** -- Instructions in CLAUDE.md persist across compactions. If there's something Claude must always know during a session, put it in CLAUDE.md rather than repeating it in messages (which can be compacted away).
+7. **Use the system prompt wisely** -- Instructions in CLAUDE.md persist across compactions. If there's something Claude must always know during a session, put it in CLAUDE.md rather than repeating it in messages (which can be compacted away).
 
 8. **Save state to memory before long sessions** -- If you're approaching what might be a compaction, save important decisions and state to your memory files. Memory files survive compaction because they're re-read from disk, not from conversation history.
 

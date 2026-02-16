@@ -25,7 +25,7 @@ Developer workstations connect through the corporate network to an internal LLM 
 
 ### Phase 0: Infrastructure Foundation (Weeks 1–4)
 
-Stand up the cloud LLM service (AWS Bedrock, GCP Vertex AI, or Azure Foundry), private network connectivity, and LLM gateway. Validate the network path end-to-end. Get CISO sign-off on the data flow. The binder provides comprehensive implementation guides for all three cloud providers.
+Stand up the cloud LLM service (AWS Bedrock, GCP Vertex AI, or Azure Foundry), private network connectivity, and LLM gateway. Validate the network path end-to-end. Get CISO sign-off on the data flow. The binder provides implementation guides for all three cloud providers.
 
 ### Phase 1: Platform Engineering Layer (Weeks 3–6, overlapping)
 

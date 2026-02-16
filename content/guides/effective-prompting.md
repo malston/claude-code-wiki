@@ -439,7 +439,7 @@ Unstructured progress works well in plain text:
 - Issue: the email service mock needs updating
 ```
 
-Git also serves as natural state tracking -- commit messages and diffs tell Claude what was done in previous steps.
+Git doubles as state tracking -- commit messages and diffs tell Claude what was done in previous steps.
 
 ### Starting Fresh vs Compaction
 
@@ -468,7 +468,7 @@ Claude's latest models are effective at discovering state from the local filesys
 
 ### Subagent Delegation
 
-Claude Code can delegate work to subagent processes that run in isolated context windows. This is powerful for parallel work, but Claude (especially Opus 4.6) sometimes over-uses subagents where a direct approach would be faster.
+Claude Code can delegate work to subagent processes that run in isolated context windows. This works well for parallel work, but Claude (especially Opus 4.6) sometimes over-uses subagents where a direct approach would be faster.
 
 **When subagents help:**
 

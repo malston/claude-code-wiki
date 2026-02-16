@@ -926,7 +926,7 @@ Each component solves a specific constraint:
 - **Memory System** solves knowledge distribution (hierarchical, inheritable instructions)
 - **Hooks** solve auditing (intercept and validate all operations)
 
-Together they enable scaling from simple conversations to complex multi-system workflows while maintaining context efficiency.
+Together they cover the range from simple conversations to multi-system workflows without exhausting the context window.
 
 ### The Three Extension Mechanisms
 

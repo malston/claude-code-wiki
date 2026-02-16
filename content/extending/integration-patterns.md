@@ -875,7 +875,7 @@ Decision matrix for common scenarios:
 
 ## Combining Integration Patterns
 
-The real power comes from combining mechanisms. Here are practical multi-mechanism patterns:
+The mechanisms become more useful in combination. Here are practical multi-mechanism patterns:
 
 ### MCP + Hooks: Auto-Validated External Access
 

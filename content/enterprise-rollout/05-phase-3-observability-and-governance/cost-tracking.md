@@ -67,7 +67,7 @@ Deploy dashboards showing:
 
 ## Prompt Caching
 
-Bedrock supports prompt caching, which can significantly reduce costs for repeated context patterns (like CLAUDE.md and rules that load every session). Monitor cache hit rates during Cohort 1 and optimize:
+Bedrock supports prompt caching, which can reduce costs by up to 90% for repeated context patterns (like CLAUDE.md and rules that load every session). Monitor cache hit rates during Cohort 1 and optimize:
 
 - Stable context (CLAUDE.md, rules) benefits most from caching
 - Frequently-changing context (code files) benefits less

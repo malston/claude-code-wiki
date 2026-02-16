@@ -14,7 +14,7 @@ Enterprises treat Claude Code adoption as a **training problem** ("teach develop
 
 ### 1. Prompt Engineering as a Development Discipline
 
-Most enterprise developers treat Claude Code like a slightly smarter autocomplete. They haven't internalized that the skill system, CLAUDE.md files, and structured context injection are where the real leverage is. The gap isn't "can you use the tool" but "can you make the tool consistently produce enterprise-grade output."
+Most enterprise developers treat Claude Code like a slightly smarter autocomplete. They haven't internalized that the skill system, CLAUDE.md files, and structured context injection are where the actual value is. The gap isn't "can you use the tool" but "can you make the tool consistently produce enterprise-grade output."
 
 ### 2. Context Architecture
 

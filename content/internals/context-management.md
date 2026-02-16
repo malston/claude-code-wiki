@@ -359,7 +359,7 @@ Each cycle preserves the system prompt (unchanged) and a summary of previous wor
 
 ### How Subagents Help
 
-Subagents are the single most effective context management technique. By running work in a separate context, they:
+Subagents run in their own isolated context windows. By delegating work to a subagent, you keep the results without paying the context cost of the investigation -- typically a 97.5% savings on delegated work. Specifically, they:
 
 1. **Prevent context pollution** -- A 40-turn investigation doesn't bloat your main context
 2. **Provide fresh context** -- The subagent starts with maximum available space

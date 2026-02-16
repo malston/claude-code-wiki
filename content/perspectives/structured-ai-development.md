@@ -34,7 +34,7 @@ The impulse makes sense. Unstructured prompting produces unmaintainable code, an
 
 **They're monolithic where they should be composable.** A framework bundles discovery, planning, execution, and review into a single system. But these are independent concerns. You might want TDD discipline without the framework's opinions on project scaffolding. You might want code review without the framework's test runner preferences. Bundling forces all-or-nothing adoption.
 
-## The Alternative: Composable Primitives
+## Composable Primitives
 
 The solution to unstructured AI coding is a set of primitives that compose independently. Claude Code ships several that, together, produce the structured workflow that frameworks try to provide.
 

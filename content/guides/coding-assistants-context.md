@@ -52,14 +52,14 @@ Claude Code's Task tool runs delegated work in a separate context window. The in
 
 ```text
 Main context (200K)              Subagent context (200K)
-┌──────────────────┐             ┌──────────────────┐
+┌──────────────────┐             ┌───────────────────┐
 │ System prompt    │             │ Subagent prompt   │
 │ Conversation     │ ──────────→ │ 35 turns of       │
 │ "Find all usages │             │ grep, read, trace │
 │  of legacy API"  │             │ across 12 files   │
 │                  │ ←────────── │                   │
 │ ← 400-token      │             │ Detailed findings │
-│   summary        │             └──────────────────┘
+│   summary        │             └───────────────────┘
 └──────────────────┘
 
 Main context cost: ~400 tokens

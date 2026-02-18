@@ -8,7 +8,7 @@ weight: 5
 
 ## Executive Summary
 
-Extended thinking gives Claude additional tokens to reason before responding. On Opus 4.6, thinking is adaptive: Claude decides how much to think based on task complexity. Thinking tokens are billed as output tokens ($25/MTok on Opus 4.6), making thinking depth the second-biggest cost lever after model selection. Effort levels (low/medium/high/max) control how much Claude thinks.
+Extended thinking gives Claude additional tokens to reason before responding. On Opus 4.6 and Sonnet 4.6, thinking is adaptive: Claude decides how much to think based on task complexity. Thinking tokens are billed as output tokens ($25/MTok on Opus 4.6), making thinking depth the second-biggest cost lever after model selection. On Opus 4.6, effort levels (low/medium/high/max) control how much Claude thinks; Sonnet 4.6 supports low/medium/high effort.
 
 | Aspect                          | Details                                                |
 | ------------------------------- | ------------------------------------------------------ |

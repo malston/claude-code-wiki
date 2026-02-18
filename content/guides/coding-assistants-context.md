@@ -156,15 +156,15 @@ The tools are complementary. Exact matching is faster and has no dependencies; s
 
 ## Comparison
 
-| Capability                  | Claude Code                               | Copilot                      |
-| --------------------------- | ----------------------------------------- | ---------------------------- |
-| File injection strategy     | Reactive (grep/glob/read)                 | Static index retrieval       |
-| Subagent isolation          | Yes (Task tool)                           | No                           |
-| Conversation compaction     | Automatic + manual `/compact`             | Not applicable               |
-| Prompt caching              | Yes                                       | Yes (implementation varies)  |
-| Persistent memory           | CLAUDE.md, auto memory (opt-in)           | Limited (recent history only)|
-| Context window              | 200K standard, 1M extended (beta)         | Varies by model/plan         |
-| Pre-filtering search        | Reactive grep/glob (ripgrep configurable) | Static index retrieval       |
+| Capability                  | Claude Code                               | Copilot                         |
+| --------------------------- | ----------------------------------------- | ------------------------------- |
+| File injection strategy     | Reactive (grep/glob/read)                 | Static index retrieval       .  |
+| Subagent isolation          | Yes (Task tool)                           | No                           .  |
+| Conversation compaction     | Automatic + manual `/compact`             | Not applicable               .  |
+| Prompt caching              | Yes                                       | Yes (implementation varies)  .  |
+| Persistent memory           | CLAUDE.md, auto memory (opt-in)           | Limited (recent history only).  |
+| Context window              | 200K standard; 1M beta (Opus 4.6, Sonnet 4.6 via API) | Varies by model/plan|
+| Pre-filtering search        | Reactive grep/glob (ripgrep configurable) | Static index retrieval          |
 
 ## Where Both Fall Short
 
@@ -174,7 +174,7 @@ Neither tool changes the fundamental constraint: the model generates each respon
 
 **No cross-session memory without explicit tooling.** Every new session starts blank. Claude Code's CLAUDE.md and auto memory features compensate for this, but they're opt-in and require the model to write state to files during the session. If it doesn't, the next session has no record of what was done.
 
-**Context budget is finite and fills fast.** A 200K context window sounds large. With a 15K system prompt, active conversation history, and several file reads, a session can approach limits in 50-100 turns. Tool-heavy workflows hit limits faster than conversational ones.
+**Context budget is finite and fills fast.** A 200K context window sounds large. With a 15K system prompt, active conversation history, and several file reads, a session can approach limits in 50-100 turns. Tool-heavy workflows hit limits faster than conversational ones. The 1M token context window (beta, Opus 4.6 and Sonnet 4.6 via API) pushes this ceiling out but doesn't change the underlying dynamic -- irrelevant tokens still dilute relevant ones, and the cost cliff above 200K makes indiscriminate use expensive.
 
 **Attention dilution.** Even within limits, a context window packed with loosely relevant content produces lower quality responses than a focused context with only what matters. The model doesn't "ignore" irrelevant content -- it attends to all of it, and irrelevant tokens compete with relevant ones.
 

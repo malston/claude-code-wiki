@@ -10,47 +10,50 @@ weight: 5
 
 Extended thinking gives Claude additional tokens to reason before responding. On Opus 4.6, thinking is adaptive: Claude decides how much to think based on task complexity. Thinking tokens are billed as output tokens ($25/MTok on Opus 4.6), making thinking depth the second-biggest cost lever after model selection. Effort levels (low/medium/high/max) control how much Claude thinks.
 
-| Aspect             | Details                                                |
-| ------------------ | ------------------------------------------------------ |
-| **Default state**  | Enabled by default in Claude Code                      |
-| **Opus 4.6 mode**  | Adaptive (dynamic depth based on complexity)           |
-| **Other models**   | Manual (fixed budget via `budget_tokens`)              |
-| **Default budget** | 31,999 tokens (configurable via `MAX_THINKING_TOKENS`) |
-| **Billing**        | Thinking tokens billed as output tokens                |
-| **Visibility**     | Summarized view; `Ctrl+O` for verbose thinking text    |
+| Aspect                          | Details                                                |
+| ------------------------------- | ------------------------------------------------------ |
+| **Default state**               | Enabled by default in Claude Code                      |
+| **Opus 4.6 / Sonnet 4.6 mode**  | Adaptive (dynamic depth based on complexity)           |
+| **Other models**                | Manual (fixed budget via `budget_tokens`)              |
+| **Default budget**              | 31,999 tokens (configurable via `MAX_THINKING_TOKENS`) |
+| **Billing**                     | Thinking tokens billed as output tokens                |
+| **Visibility**                  | Summarized view; `Ctrl+O` for verbose thinking text    |
 
 ---
 
 ## Table of Contents
 
-- [How Extended Thinking Works](#how-extended-thinking-works)
-  - [Why Intermediate Tokens Help](#why-intermediate-tokens-help)
-  - [The Thinking Process](#the-thinking-process)
-  - [Adaptive Thinking (Opus 4.6)](#adaptive-thinking-opus-46)
-  - [Summarized Thinking](#summarized-thinking)
-  - [Interleaved Thinking](#interleaved-thinking)
-- [Effort Levels](#effort-levels)
-  - [Available Levels](#available-levels)
-  - [What Effort Controls](#what-effort-controls)
-  - [Setting Effort in Claude Code](#setting-effort-in-claude-code)
-- [Configuration](#configuration)
-  - [Toggle Thinking On/Off](#toggle-thinking-onoff)
-  - [MAX\_THINKING\_TOKENS](#max_thinking_tokens)
-  - [Thinking Budget vs Output Budget](#thinking-budget-vs-output-budget)
-  - [Context Window Interaction](#context-window-interaction)
-  - [Thinking in Subagents](#thinking-in-subagents)
-- [When to Use Extended Thinking](#when-to-use-extended-thinking)
-  - [Tasks That Benefit](#tasks-that-benefit)
-  - [Tasks Where It's Overkill](#tasks-where-its-overkill)
-- [Cost Management](#cost-management)
-  - [How Thinking Tokens Are Billed](#how-thinking-tokens-are-billed)
-  - [Cost Control Levers](#cost-control-levers)
-  - [Cost Estimates](#cost-estimates)
-- [Model Support](#model-support)
-  - [Feature Compatibility](#feature-compatibility)
-- [Best Practices](#best-practices)
-- [Anti-Patterns](#anti-patterns)
-- [References](#references)
+- [Extended Thinking: How Claude Reasons Through Complex Problems](#extended-thinking-how-claude-reasons-through-complex-problems)
+  - [Executive Summary](#executive-summary)
+  - [Table of Contents](#table-of-contents)
+  - [How Extended Thinking Works](#how-extended-thinking-works)
+    - [Why Intermediate Tokens Help](#why-intermediate-tokens-help)
+    - [The Thinking Process](#the-thinking-process)
+    - [Adaptive Thinking (Opus 4.6)](#adaptive-thinking-opus-46)
+    - [Summarized Thinking](#summarized-thinking)
+    - [Interleaved Thinking](#interleaved-thinking)
+  - [Effort Levels](#effort-levels)
+    - [Available Levels](#available-levels)
+    - [What Effort Controls](#what-effort-controls)
+    - [Setting Effort in Claude Code](#setting-effort-in-claude-code)
+  - [Configuration](#configuration)
+    - [Toggle Thinking On/Off](#toggle-thinking-onoff)
+    - [MAX\_THINKING\_TOKENS](#max_thinking_tokens)
+    - [Thinking Budget vs Output Budget](#thinking-budget-vs-output-budget)
+    - [Context Window Interaction](#context-window-interaction)
+    - [Thinking in Subagents](#thinking-in-subagents)
+  - [When to Use Extended Thinking](#when-to-use-extended-thinking)
+    - [Tasks That Benefit](#tasks-that-benefit)
+    - [Tasks Where It's Overkill](#tasks-where-its-overkill)
+  - [Cost Management](#cost-management)
+    - [How Thinking Tokens Are Billed](#how-thinking-tokens-are-billed)
+    - [Cost Control Levers](#cost-control-levers)
+    - [Cost Estimates](#cost-estimates)
+  - [Model Support](#model-support)
+    - [Feature Compatibility](#feature-compatibility)
+  - [Best Practices](#best-practices)
+  - [Anti-Patterns](#anti-patterns)
+  - [References](#references)
 
 ---
 
@@ -131,8 +134,6 @@ Think → Call tool → Read result → Think again → Call another tool → Th
 On Opus 4.6 with adaptive thinking, interleaved thinking is automatic. On earlier models, it requires a beta header. In Claude Code, this is handled transparently -- you don't need to configure anything.
 
 Interleaved thinking is useful for multi-step tasks where each tool result changes what to do next. Claude can reconsider its approach after seeing actual file contents or command output rather than committing to a plan upfront.
-
----
 
 ## Effort Levels
 
@@ -248,14 +249,14 @@ The deciding factor is whether the task requires multiple dependent reasoning st
 
 ### Tasks That Benefit
 
-| Task Type                   | Why Thinking Helps                                          |
-| --------------------------- | ----------------------------------------------------------- |
-| **Architecture decisions**  | Dependencies between components require multi-step analysis |
+| Task Type                   | Why Thinking Helps                                            |
+| --------------------------- | ------------------------------------------------------------- |
+| **Architecture decisions**  | Dependencies between components require multi-step analysis   |
 | **Complex debugging**       | Hypothesis → test → revise cycles benefit from working memory |
-| **Implementation planning** | Sequencing work correctly requires tracking many constraints |
-| **Algorithm design**        | Edge cases interact; reasoning through them compounds       |
-| **Security review**         | Data flows require tracing across many steps                |
-| **Multi-file refactoring**  | Cross-file dependencies need to be tracked simultaneously   |
+| **Implementation planning** | Sequencing work correctly requires tracking many constraints  |
+| **Algorithm design**        | Edge cases interact; reasoning through them compounds         |
+| **Security review**         | Data flows require tracing across many steps                  |
+| **Multi-file refactoring**  | Cross-file dependencies need to be tracked simultaneously     |
 
 ### Tasks Where It's Overkill
 
@@ -268,8 +269,6 @@ The deciding factor is whether the task requires multiple dependent reasoning st
 | **Quick lookups**           | Answer is immediate, no reasoning chain needed |
 
 On Opus 4.6 with adaptive thinking, Claude already allocates less thinking to simple tasks. For explicit control, use `low` effort for routine work and `high` or `max` for complex tasks.
-
----
 
 ## Cost Management
 
@@ -308,18 +307,17 @@ Rough estimates for a 100-message Opus 4.6 session:
 
 Actual costs vary based on task complexity, response length, and tool call volume.
 
----
-
 ## Model Support
 
-| Model          | Thinking Mode   | Effort Levels          | Interleaved | Max Output |
-| -------------- | --------------- | ---------------------- | ----------- | ---------- |
-| **Opus 4.6**   | Adaptive        | low, medium, high, max | Automatic   | 128K       |
-| **Opus 4.5**   | Manual (budget) | low, medium, high      | Beta header | 128K       |
-| **Sonnet 4.5** | Manual (budget) | --                     | Beta header | 64K        |
-| **Haiku 4.5**  | Manual (budget) | --                     | Beta header | 64K        |
+| Model            | Thinking Mode   | Effort Levels          | Interleaved | Max Output |
+| ---------------- | --------------- | ---------------------- | ----------- | ---------- |
+| **Opus 4.6**     | Adaptive        | low, medium, high, max | Automatic   | 128K       |
+| **Sonnet 4.6**   | Adaptive        | low, medium, high      | Automatic   | 64K        |
+| **Opus 4.5**     | Manual (budget) | low, medium, high      | Beta header | 128K       |
+| **Sonnet 4.5**   | Manual (budget) | --                     | Beta header | 64K        |
+| **Haiku 4.5**    | Manual (budget) | --                     | Beta header | 64K        |
 
-Adaptive thinking on Opus 4.6 is the recommended approach. Manual `budget_tokens` mode is deprecated on Opus 4.6 but remains available on all other models.
+Adaptive thinking is available on Opus 4.6 and Sonnet 4.6. Manual `budget_tokens` mode is deprecated on these models but remains available on all others. `max` effort remains exclusive to Opus 4.6.
 
 ### Feature Compatibility
 
@@ -333,8 +331,6 @@ Extended thinking is **not compatible** with:
 `top_p` can be set between 0.95 and 1.0 when thinking is enabled.
 
 Changing thinking parameters invalidates prompt cache for messages, though system prompts and tool definitions remain cached.
-
----
 
 ## Best Practices
 
@@ -352,8 +348,6 @@ Changing thinking parameters invalidates prompt cache for messages, though syste
 
 7. **Use the `opusplan` alias.** Opus for planning (where thinking helps most) and Sonnet for execution (where thinking is less critical) is a reasonable cost/quality split.
 
----
-
 ## Anti-Patterns
 
 1. **Setting MAX_THINKING_TOKENS on Opus 4.6.** The variable is ignored on Opus 4.6 (except `0`). Use effort levels instead.
@@ -367,8 +361,6 @@ Changing thinking parameters invalidates prompt cache for messages, though syste
 5. **Expecting visible token counts to match billing.** Claude 4 models show summarized thinking. The billed count (full thinking) is higher than what you see. This is expected, not a bug.
 
 6. **Ignoring thinking costs in headless mode.** Automated pipelines can run many requests. Without `MAX_THINKING_TOKENS` or effort limits, thinking costs accumulate quickly.
-
----
 
 ## References
 

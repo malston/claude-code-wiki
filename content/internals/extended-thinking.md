@@ -314,8 +314,8 @@ Actual costs vary based on task complexity, response length, and tool call volum
 | **Opus 4.6**     | Adaptive        | low, medium, high, max | Automatic   | 128K       |
 | **Sonnet 4.6**   | Adaptive        | low, medium, high      | Automatic   | 64K        |
 | **Opus 4.5**     | Manual (budget) | low, medium, high      | Beta header | 128K       |
-| **Sonnet 4.5**   | Manual (budget) | --                     | Beta header | 64K        |
-| **Haiku 4.5**    | Manual (budget) | --                     | Beta header | 64K        |
+| **Sonnet 4.5**   | Manual (budget) | low, medium, high      | Beta header | 64K        |
+| **Haiku 4.5**    | Manual (budget) | low, medium, high      | Beta header | 64K        |
 
 Adaptive thinking is available on Opus 4.6 and Sonnet 4.6. Manual `budget_tokens` mode is deprecated on these models but remains available on all others. `max` effort remains exclusive to Opus 4.6.
 

@@ -111,16 +111,60 @@ The advantage is speed: retrieval is fast and doesn't require tool calls. The di
 
 Claude Code's reactive approach (grep → read → reason → grep again) is slower but can follow dependency chains that a static index would miss.
 
+### Pre-Filtering with Search Tools
+
+Compaction and subagents manage content that's already in the context window. Search tools address an earlier problem: deciding what gets injected in the first place.
+
+The default approach is exact pattern matching -- grep for a function name, read the matching file range. This works when you know the right pattern. It fails when you don't: an unfamiliar codebase, a vague task description, or logic that's spread across files with inconsistent naming. In those cases, Claude runs multiple grep attempts, reads partial matches, and discards them -- each attempt consuming tokens.
+
+Two tools address this differently:
+
+**ripgrep** ([BurntSushi/ripgrep](https://github.com/BurntSushi/ripgrep)) is exact pattern matching, but faster. On large codebases with many files, the speed difference means Claude can run more targeted searches in less wall-clock time without changing the token math. It returns file paths and line numbers, so reads stay focused on relevant ranges. Claude Code can be configured to use ripgrep instead of standard grep.
+
+**mgrep** ([mixedbread-ai/mgrep](https://github.com/mixedbread-ai/mgrep)) is semantic search. You index the repo once with `mgrep watch`, then query by intent in natural language rather than pattern. The tool returns ranked results with file paths and line ranges.
+
+```bash
+# exact match -- requires knowing the right pattern
+rg "handleLogin"
+
+# semantic match -- finds by intent
+mgrep "where do we set up auth?"
+```
+
+The token impact comes from search precision. With exact matching, Claude may run 5-10 grep attempts before finding the right location, each returning partial matches that consume context. With semantic search, a single query returns the relevant lines directly. Mixedbread's benchmark against Claude Code showed roughly 2x fewer tokens at similar or better quality across 50 tasks, attributed to the model spending context on reasoning rather than scanning irrelevant results from repeated grep attempts.
+
+mgrep has a Claude Code plugin:
+
+```bash
+mgrep install-claude-code
+```
+
+After installation, Claude Code uses mgrep for semantic queries and standard grep for exact matches -- both available as tools within the same session.
+
+**When to use which:**
+
+| Use ripgrep for...                         | Use mgrep for...                              |
+| ------------------------------------------ | --------------------------------------------- |
+| Symbol tracing and refactoring             | Exploring unfamiliar codebases                |
+| Exact identifier matches                   | Finding logic by intent, not naming           |
+| Known patterns across many files           | Ambiguous queries ("where does X happen?")    |
+| Local, no external dependencies            | Semantic understanding across file types      |
+
+The tools are complementary. Exact matching is faster and has no dependencies; semantic search finds things that aren't greppable.
+
+**Enterprise caveat:** mgrep requires a Mixedbread API key and syncs content to cloud-backed stores. In environments with strict network egress controls or data classification requirements, that dependency may be a blocker. ripgrep has no such constraint -- it runs entirely local.
+
 ## Comparison
 
-| Capability                  | Claude Code                          | Copilot                          |
-| --------------------------- | ------------------------------------ | -------------------------------- |
-| File injection strategy     | Reactive (grep/glob/read)            | Static index retrieval           |
-| Subagent isolation          | Yes (Task tool)                      | No                               |
-| Conversation compaction     | Automatic + manual `/compact`        | Not applicable                   |
-| Prompt caching              | Yes                                  | Yes (implementation varies)      |
-| Persistent memory           | CLAUDE.md, auto memory (opt-in)      | Limited (recent history only)    |
-| Context window              | 200K standard, 1M extended (beta)    | Varies by model/plan             |
+| Capability                  | Claude Code                               | Copilot                      |
+| --------------------------- | ----------------------------------------- | ---------------------------- |
+| File injection strategy     | Reactive (grep/glob/read)                 | Static index retrieval       |
+| Subagent isolation          | Yes (Task tool)                           | No                           |
+| Conversation compaction     | Automatic + manual `/compact`             | Not applicable               |
+| Prompt caching              | Yes                                       | Yes (implementation varies)  |
+| Persistent memory           | CLAUDE.md, auto memory (opt-in)           | Limited (recent history only)|
+| Context window              | 200K standard, 1M extended (beta)         | Varies by model/plan         |
+| Pre-filtering search        | Reactive grep/glob (ripgrep configurable) | Static index retrieval       |
 
 ## Where Both Fall Short
 
@@ -153,3 +197,5 @@ Be specific in requests. Vague requests produce exploratory tool calls. Explorat
 - [Prompt Caching]({{< relref "prompt-caching" >}}) -- Cost reduction for repeated content
 - [Extension Mechanisms]({{< relref "/extending/extension-mechanisms" >}}) -- Subagents and the Task tool
 - [Tool Execution Context]({{< relref "tool-execution-context" >}}) -- How context behaves during bash tool chains
+- [ripgrep](https://github.com/BurntSushi/ripgrep) -- Fast exact search; Claude Code can use in place of standard grep
+- [mgrep](https://github.com/mixedbread-ai/mgrep) -- Semantic search with Claude Code plugin; 2x token reduction in Mixedbread benchmark

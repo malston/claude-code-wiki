@@ -10,8 +10,6 @@ Raw API usage gives you a context window and a model. Everything else -- decidin
 
 This page covers what they actually do, where the approaches differ, and where both fall short.
 
----
-
 ## The Core Problem
 
 Every token in the context window is there for the entire request. The model attends to all of it when generating each response token. A file you read at turn 3 that hasn't been relevant since is still consuming context at turn 50 -- and its presence means less space for content that is relevant now.
@@ -24,8 +22,6 @@ Left unmanaged, a session fills with:
 - Tool call metadata that carries no useful information forward
 
 The model's responses don't degrade suddenly when context fills up. They degrade gradually as the ratio of relevant to irrelevant content shifts. Managing context is really managing that ratio.
-
----
 
 ## What Coding Assistants Do
 
@@ -115,8 +111,6 @@ The advantage is speed: retrieval is fast and doesn't require tool calls. The di
 
 Claude Code's reactive approach (grep → read → reason → grep again) is slower but can follow dependency chains that a static index would miss.
 
----
-
 ## Comparison
 
 | Capability                  | Claude Code                          | Copilot                          |
@@ -127,8 +121,6 @@ Claude Code's reactive approach (grep → read → reason → grep again) is slo
 | Prompt caching              | Yes                                  | Yes (implementation varies)      |
 | Persistent memory           | CLAUDE.md, auto memory (opt-in)      | Limited (recent history only)    |
 | Context window              | 200K standard, 1M extended (beta)    | Varies by model/plan             |
-
----
 
 ## Where Both Fall Short
 
@@ -142,8 +134,6 @@ Neither tool changes the fundamental constraint: the model generates each respon
 
 **Attention dilution.** Even within limits, a context window packed with loosely relevant content produces lower quality responses than a focused context with only what matters. The model doesn't "ignore" irrelevant content -- it attends to all of it, and irrelevant tokens compete with relevant ones.
 
----
-
 ## Practical Implications
 
 Start new sessions for distinct tasks. Context accumulated across unrelated work takes up space and has no value for the current task.
@@ -155,8 +145,6 @@ Use `/compact` proactively. Before starting a large task, compact with custom in
 Keep CLAUDE.md concise. It's re-sent on every message. Every line is a fixed cost. Put project conventions there; don't use it as a session log.
 
 Be specific in requests. Vague requests produce exploratory tool calls. Exploratory tool calls dump file contents into context. Most of that content won't be referenced again.
-
----
 
 ## References
 

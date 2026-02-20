@@ -7,16 +7,14 @@ weight: 1
 
 A structured progression from basic Claude Code usage to advanced workflows. Each module builds on the previous one -- work through them in order.
 
-| Module                     | Focus                                              | Prerequisites |
-| -------------------------- | -------------------------------------------------- | ------------- |
-| 1. Prompting Foundations   | Writing requests that produce correct code         | None          |
-| 2. The Verification Loop   | Building feedback into every task                  | Module 1      |
-| 3. Test-Driven Development | Using tests as requirements for Claude             | Module 2      |
-| 4. Debugging with Claude   | Systematic troubleshooting when things break       | Modules 2-3   |
-| 5. Context Management      | Understanding what Claude sees and remembers       | Modules 1-4   |
-| 6. Extending Claude Code   | Subagents, skills, MCP servers, and custom tooling | Module 5      |
-
----
+| Module                                                          | Focus                                              | Prerequisites |
+| --------------------------------------------------------------- | -------------------------------------------------- | ------------- |
+| [1. Prompting Foundations](#module-1-prompting-foundations)     | Writing requests that produce correct code         | None          |
+| [2. The Verification Loop](#module-2-the-verification-loop)     | Building feedback into every task                  | Module 1      |
+| [3. Test-Driven Development](#module-3-test-driven-development) | Using tests as requirements for Claude             | Module 2      |
+| [4. Debugging with Claude](#module-4-debugging-with-claude)     | Systematic troubleshooting when things break       | Modules 2-3   |
+| [5. Context Management](#module-5-context-management)           | Understanding what Claude sees and remembers       | Modules 1-4   |
+| [6. Extending Claude Code](#module-6-extending-claude-code)     | Subagents, skills, MCP servers, and custom tooling | Module 5      |
 
 ## Module 1: Prompting Foundations
 
@@ -60,8 +58,6 @@ supported_countries list from config/regions.json."
 
 - [Effective Prompting]({{< relref "guides/effective-prompting" >}}) -- Full guide on prompt specificity, task decomposition, and anti-patterns
 
----
-
 ## Module 2: The Verification Loop
 
 **Goal:** Build a workflow where Claude gets concrete feedback after every change.
@@ -97,8 +93,6 @@ The highest-leverage improvement you can make is giving Claude _something to ver
 
 - [Workflow Patterns]({{< relref "guides/workflow-patterns" >}}) -- Explore-plan-implement, fix-with-verification, session management, parallel work
 
----
-
 ## Module 3: Test-Driven Development
 
 **Goal:** Use tests as concrete requirements that survive context changes and session boundaries.
@@ -123,7 +117,7 @@ Then implement the minimal code to make it pass."
 
 **Tests survive context compaction.** Conversation history gets summarized during long sessions, but test files remain on disk. When Claude reads them in the next turn, it recovers the full specification.
 
-**Avoid testing mocks.** If you mock a dependency and then test behavior through the mock, you're testing your mock -- not your code. Use real dependencies where possible: testcontainers, httptest servers, in-memory databases.
+**Avoid tests that only exercise mock behavior.** If you mock a dependency, make sure the test still validates real logic in your code. When possible, prefer real dependencies: testcontainers, httptest servers, in-memory databases.
 
 **Never delete a failing test.** A failing test means either the code has a bug or the test needs updating. Deleting it hides problems.
 
@@ -136,8 +130,6 @@ Then implement the minimal code to make it pass."
 ### Reference
 
 - [Testing Strategies]({{< relref "guides/testing-strategies" >}}) -- TDD patterns, context isolation, automating test runs with hooks
-
----
 
 ## Module 4: Debugging with Claude
 
@@ -178,8 +170,6 @@ Good: "POST /api/orders returns 500. The log shows:
 
 - [Debugging Techniques]({{< relref "guides/debugging-techniques" >}}) -- The full debugging framework, tracing techniques, common bug categories, anti-patterns
 
----
-
 ## Module 5: Context Management
 
 **Goal:** Understand what Claude can see, what it forgets, and how to optimize for long sessions.
@@ -193,7 +183,7 @@ Good: "POST /api/orders returns 500. The log shows:
 **What survives compaction:**
 
 - CLAUDE.md instructions (re-injected every message)
-- Files on disk (tests, code, config)
+- Test files and code on disk (available to re-read, though earlier reads are lost from context)
 - Recent conversation turns
 
 **What doesn't survive:**
@@ -219,8 +209,6 @@ Good: "POST /api/orders returns 500. The log shows:
 
 - [Context Management]({{< relref "internals/context-management" >}}) -- Full deep dive on context window mechanics, compaction, and subagent isolation
 
----
-
 ## Module 6: Extending Claude Code
 
 **Goal:** Use subagents, skills, and MCP servers to scale what Claude can do.
@@ -229,11 +217,11 @@ Good: "POST /api/orders returns 500. The log shows:
 
 **Three extension types, three different purposes:**
 
-| Extension   | What it does                                    | Context impact                  | Use when                                 |
-| ----------- | ----------------------------------------------- | ------------------------------- | ---------------------------------------- |
-| Subagents   | Isolated AI instances with their own context    | Isolated -- ~500 tokens summary | Multi-turn work you want to delegate     |
-| Skills      | Inject knowledge and workflow into main context | Adds to main context            | You want Claude to follow a pattern      |
-| MCP Servers | External stateless tools                        | Tool results in main context    | You need external data (APIs, databases) |
+| Extension   | What it does                                    | Context impact                                         | Use when                                 |
+| ----------- | ----------------------------------------------- | ------------------------------------------------------ | ---------------------------------------- |
+| Subagents   | Isolated AI instances with their own context    | Isolated -- ~500 tokens summary                        | Multi-turn work you want to delegate     |
+| Skills      | Inject knowledge and workflow into main context | Adds to main context                                   | You want Claude to follow a pattern      |
+| MCP Servers | External stateless tools                        | Tool definitions in system prompt + results in context | You need external data (APIs, databases) |
 
 **Subagents save context.** Each subagent gets its own 200K token window. A 40-turn investigation delegated to a subagent returns a summary to your main context -- 97.5% savings.
 
@@ -253,8 +241,6 @@ Good: "POST /api/orders returns 500. The log shows:
 
 - [Extension Mechanisms]({{< relref "extending/extension-mechanisms" >}}) -- Subagents, skills, MCP servers architecture, the Lens + Reviewer pattern
 - [Custom Extensions]({{< relref "extending/custom-extensions" >}}) -- Building your own subagents, skills, and plugins
-
----
 
 ## What's Next
 

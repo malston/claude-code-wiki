@@ -7,16 +7,14 @@ weight: 2
 
 A structured progression for platform engineers deploying Claude Code to teams and organizations. Each module covers one layer of the deployment stack -- work through them in order.
 
-| Module                      | Focus                                                 | Prerequisites |
-| --------------------------- | ----------------------------------------------------- | ------------- |
-| 1. Architecture             | Request flow, control points, configuration hierarchy | None          |
-| 2. Infrastructure           | Bedrock/provider setup, VPC endpoints, LLM gateway    | Module 1      |
-| 3. Configuration and Policy | Managed settings, CLAUDE.md hierarchy, distribution   | Module 2      |
-| 4. Permissions and Security | Permission rules, sandboxing, compliance controls     | Module 3      |
-| 5. Cost Management          | Budgets, model tiering, observability dashboards      | Modules 2-4   |
-| 6. Phased Rollout           | Cohort strategy, success metrics, rollback triggers   | Modules 1-5   |
-
----
+| Module                                                            | Focus                                                 | Prerequisites |
+| ----------------------------------------------------------------- | ----------------------------------------------------- | ------------- |
+| [1. Architecture](#module-1-architecture)                         | Request flow, control points, configuration hierarchy | None          |
+| [2. Infrastructure](#module-2-infrastructure)                     | Bedrock/provider setup, VPC endpoints, LLM gateway    | Module 1      |
+| [3. Configuration and Policy](#module-3-configuration-and-policy) | Managed settings, CLAUDE.md hierarchy, distribution   | Module 2      |
+| [4. Permissions and Security](#module-4-permissions-and-security) | Permission rules, sandboxing, compliance controls     | Module 3      |
+| [5. Cost Management](#module-5-cost-management)                   | Budgets, model tiering, observability dashboards      | Modules 2-4   |
+| [6. Phased Rollout](#module-6-phased-rollout)                     | Cohort strategy, success metrics, rollback triggers   | Modules 1-5   |
 
 ## Module 1: Architecture
 
@@ -58,8 +56,6 @@ A managed CLAUDE.md (~500 tokens) is always loaded before project-level instruct
 
 - [Architecture Overview]({{< relref "enterprise-rollout/00-overview/architecture-overview" >}}) -- Full request flow, VPC isolation, configuration hierarchy
 
----
-
 ## Module 2: Infrastructure
 
 **Goal:** Set up the cloud infrastructure that routes and controls Claude Code API traffic.
@@ -82,7 +78,7 @@ Correct: us.anthropic.claude-sonnet-4-5-20250929-v1:0
 Wrong:   anthropic.claude-sonnet-4-5
 ```
 
-This trips up almost everyone. Test inference profiles in your first infrastructure validation.
+This trips up almost everyone. Test inference profiles in your first infrastructure validation. Verify the current format in your AWS console or the Bedrock documentation, as model identifiers change with releases.
 
 **Model availability lags the direct API.** Expect days to weeks for models to become available on Bedrock after Anthropic releases them. Plan for this in your rollout timeline.
 
@@ -102,8 +98,6 @@ This trips up almost everyone. Test inference profiles in your first infrastruct
 ### Reference
 
 - [Bedrock Fundamentals]({{< relref "enterprise-rollout/02-phase-0-infrastructure-foundation/bedrock-fundamentals" >}}) -- Bedrock setup, inference profiles, data boundaries, provider comparison
-
----
 
 ## Module 3: Configuration and Policy
 
@@ -133,7 +127,7 @@ Distribute it via your existing MDM, Chef, Ansible, or Group Policy tooling.
 }
 ```
 
-`CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC=1` bundles four flags to eliminate extraneous outbound traffic (autoupdater, bug reports, error reporting, telemetry).
+`CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC=1` eliminates extraneous outbound traffic (telemetry, error reporting, update checks).
 
 **Managed CLAUDE.md creates an org-wide behavior baseline.** Deploy it alongside managed-settings.json. Keep it concise -- it loads on every message and costs context window space.
 
@@ -148,8 +142,6 @@ Distribute it via your existing MDM, Chef, Ansible, or Group Policy tooling.
 ### Reference
 
 - [Managed Settings]({{< relref "enterprise-rollout/03-phase-1-platform-engineering/managed-settings" >}}) -- Configuration, distribution, validation, and managed-only controls
-
----
 
 ## Module 4: Permissions and Security
 
@@ -192,8 +184,6 @@ Sandboxing limits filesystem and network access at the OS level, independent of 
 
 - [Permissions & Enterprise]({{< relref "guides/permissions-enterprise" >}}) -- Full permission system, sandboxing, API provider configuration, CI/CD integration
 
----
-
 ## Module 5: Cost Management
 
 **Goal:** Set up budgets, model tiering, and observability to control spend at scale.
@@ -216,7 +206,7 @@ Default all developers to Sonnet. Gate Opus access via the LLM gateway -- Opus w
 - Moderate users (~30%): 100K tokens/day
 - Heavy users (~10%): 200K+ tokens/day
 
-**Extended thinking multiplies costs.** Thinking tokens are billed at the output rate. A single Opus session with extended thinking can consume 50K+ thinking tokens. Set `MAX_THINKING_TOKENS` in managed settings to cap per-request thinking cost.
+**Extended thinking multiplies costs.** Thinking tokens are billed at the output rate. A single Opus request with extended thinking can consume tens of thousands of thinking tokens. Control thinking cost via effort levels (`CLAUDE_CODE_EFFORT_LEVEL` in managed settings) or by defaulting developers to Sonnet, which uses less thinking at lower output pricing. Note: `MAX_THINKING_TOKENS` is ignored on Opus 4.6 (adaptive thinking); use effort levels instead.
 
 **Prompt caching reduces costs up to 90%.** The system prompt and CLAUDE.md are cached across messages in a session. Monitor cache hit rates during Cohort 1 -- caching behavior on Bedrock differs from the direct API.
 
@@ -236,8 +226,6 @@ Default all developers to Sonnet. Gate Opus access via the LLM gateway -- Opus w
 ### Reference
 
 - [Cost Tracking]({{< relref "enterprise-rollout/05-phase-3-observability-and-governance/cost-tracking" >}}) -- Budget controls, provisioned throughput, caching economics, alerting
-
----
 
 ## Module 6: Phased Rollout
 
@@ -283,8 +271,6 @@ Default all developers to Sonnet. Gate Opus access via the LLM gateway -- Opus w
 ### Reference
 
 - [Cohort Strategy]({{< relref "enterprise-rollout/04-phase-2-phased-rollout/cohort-strategy" >}}) -- Full cohort execution plan, success metrics, rollback triggers
-
----
 
 ## What's Next
 

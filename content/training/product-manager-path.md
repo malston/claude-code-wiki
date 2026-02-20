@@ -7,16 +7,14 @@ weight: 3
 
 Technical literacy for product managers working alongside developers who use Claude Code. This path won't make you a developer -- it will give you enough understanding of software design, architecture, coding standards, and TDD to make informed decisions and participate in developer workflows.
 
-| Module                              | Focus                                       | Prerequisites |
-| ----------------------------------- | ------------------------------------------- | ------------- |
-| 1. How Claude Code Works            | What Claude Code is and isn't               | None          |
-| 2. Software Design Principles       | What makes software maintainable            | Module 1      |
-| 3. Architecture Decisions           | How to evaluate technical trade-offs        | Module 2      |
-| 4. Coding Standards                 | Why conventions matter and what to look for | Module 2      |
-| 5. Test-Driven Development          | How TDD shapes planning and estimation      | Modules 2-4   |
-| 6. Working with Developer Workflows | Participating in the development process    | Modules 1-5   |
-
----
+| Module                                                                            | Focus                                       | Prerequisites |
+| --------------------------------------------------------------------------------- | ------------------------------------------- | ------------- |
+| [1. How Claude Code Works](#module-1-how-claude-code-works)                       | What Claude Code is and isn't               | None          |
+| [2. Software Design Principles](#module-2-software-design-principles)             | What makes software maintainable            | Module 1      |
+| [3. Architecture Decisions](#module-3-architecture-decisions)                     | How to evaluate technical trade-offs        | Module 2      |
+| [4. Coding Standards](#module-4-coding-standards)                                 | Why conventions matter and what to look for | Module 2      |
+| [5. Test-Driven Development](#module-5-test-driven-development)                   | How TDD shapes planning and estimation      | Modules 2-4   |
+| [6. Working with Developer Workflows](#module-6-working-with-developer-workflows) | Participating in the development process    | Modules 1-5   |
 
 ## Module 1: How Claude Code Works
 
@@ -32,6 +30,7 @@ Technical literacy for product managers working alongside developers who use Cla
 - Debugging with access to error output and test results
 - Refactoring code while maintaining test coverage
 - Exploring unfamiliar codebases and explaining how things work
+- Interacting with external services through MCP tools (databases, APIs, browsers) when configured
 
 **What Claude Code doesn't do:**
 
@@ -50,7 +49,9 @@ Technical literacy for product managers working alongside developers who use Cla
 - Why do specific requirements produce better results? (Answer: Claude doesn't have your business context -- you have to provide it)
 - Why should large features be broken into smaller tasks? (Answer: context window limits, verification at each step, easier to course-correct)
 
----
+### Reference
+
+- [Context Management]({{< relref "internals/context-management" >}}) -- How Claude Code's context window works and why it matters for task sizing
 
 ## Module 2: Software Design Principles
 
@@ -72,7 +73,9 @@ Technical literacy for product managers working alongside developers who use Cla
 - When requesting features, be specific about the need, not the solution. "Users need to filter orders by date range" is better than "add a date picker component"
 - When reviewing designs, ask: "What happens when we need to change X?" If the answer involves touching many unrelated files, the design may have a coupling problem
 
----
+### Reference
+
+- [Effective Prompting]({{< relref "guides/effective-prompting" >}}) -- How specificity in requirements translates to better AI-generated code
 
 ## Module 3: Architecture Decisions
 
@@ -106,8 +109,6 @@ Technical literacy for product managers working alongside developers who use Cla
 - Separate "we need this now" from "we might need this later" -- YAGNI applies to architecture too
 - When developers say "this will take longer because we need to do it right," ask what "right" means in concrete terms (e.g., "we need to add a database migration" vs. "we need to redesign the service boundary")
 
----
-
 ## Module 4: Coding Standards
 
 **Goal:** Understand why coding standards exist and what to look for when teams adopt them.
@@ -136,7 +137,9 @@ Technical literacy for product managers working alongside developers who use Cla
 - When evaluating Claude Code's output, ask whether it follows the team's patterns. If it doesn't, the CLAUDE.md may need updating.
 - Don't push for "just ship it" when code doesn't match standards. Inconsistent code costs more to maintain later than it saves now.
 
----
+### Reference
+
+- [Memory Organization]({{< relref "guides/memory-organization" >}}) -- How CLAUDE.md files structure project context for Claude Code
 
 ## Module 5: Test-Driven Development
 
@@ -177,7 +180,9 @@ This feels backwards at first, but it produces code that's verified by definitio
 - Don't pressure developers to skip tests to "move faster." Tests save time over the lifecycle of a feature.
 - When Claude Code is used with TDD, the test suite becomes the source of truth for what the software does. Review the tests, not just the code.
 
----
+### Reference
+
+- [Testing Strategies]({{< relref "guides/testing-strategies" >}}) -- TDD patterns and how tests serve as durable requirements for AI-assisted development
 
 ## Module 6: Working with Developer Workflows
 
@@ -227,7 +232,9 @@ A ticket that works poorly:
 2. Review a recent PR from your team. Without reading the code, check: does the PR description match the ticket? Are the acceptance criteria addressed?
 3. Break a large feature into tasks, where each task can be independently verified. Ask a developer to validate that the decomposition makes sense.
 
----
+### Reference
+
+- [Workflow Patterns]({{< relref "guides/workflow-patterns" >}}) -- How developers structure work sessions, plan-then-implement, and manage parallel tasks
 
 ## What's Next
 

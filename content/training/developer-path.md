@@ -61,11 +61,11 @@ supported_countries list from config/regions.json."
 
 ### Exercises
 
-**Starter materials:** `modules/01-prompting/` in the [exercise repo](https://github.com/malston/training-dev-exercises)
+**Starter materials:** `modules/01-prompting/` in the [exercise repo](https://github.com/malston/training-dev-exercises) -- three vague prompts to rewrite, a feature requirements list for the task tracker, and example rewrites for comparison.
 
-1. Take a recent task you completed with Claude and rewrite the prompt to be more specific. Compare what you asked vs. what would have been ideal.
-2. Write a prompt that includes: the exact file to modify, the behavior to add, the reason for the change, and how to verify it works.
-3. Practice the imperative vs. question distinction: write one version of a prompt as an instruction and another as a question. Run both and compare results.
+1. Rewrite three vague prompts ("Add filtering to the task list", "Make the API faster", "Improve the error handling") to be specific enough for Claude to implement on the first attempt. Name the files, the behavior, and the verification step. Compare against `examples.md`.
+2. Pick a feature from `requirements.md` (task search, due dates, comments, or bulk status update) and write a prompt that includes the exact file, the behavior, the reason, and how to verify it works. Run it in Claude Code and evaluate whether it produced correct code on the first attempt.
+3. Choose another requirement and write two versions: an imperative prompt ("Add X to Y") and a question ("How should I approach adding X?"). Run both (use `/clear` between them) and compare what each produces.
 
 ### Reference
 

@@ -66,16 +66,16 @@ Build out the mock product backlog and development codebase for PM exercises.
 
 ### Tasks
 
-- [ ] Task 4.1: **Mock backlog** -- Create a set of GitHub issues (as markdown files) representing a realistic product backlog: mix of well-written and poorly-written tickets, feature requests, and bug reports
-- [ ] Task 4.2: **Module 5 (TDD)** -- Include tickets with vague acceptance criteria that users rewrite into testable Given/When/Then format. Provide before/after examples
-- [ ] Task 4.3: **Module 6 (Workflows)** -- Set up a Spring app with 2-3 open PRs (as branches) that PMs can review: one that matches its ticket, one with scope creep, one missing acceptance criteria
-- [ ] Task 4.4: **Feature decomposition** -- Include a large feature spec that users break into independently verifiable tasks. Provide a template for task decomposition
+- [x] Task 4.1: **Mock backlog** -- Create a set of GitHub issues (as markdown files) representing a realistic product backlog: mix of well-written and poorly-written tickets, feature requests, and bug reports
+- [x] Task 4.2: **Module 5 (TDD)** -- Include tickets with vague acceptance criteria that users rewrite into testable Given/When/Then format. Provide before/after examples
+- [x] Task 4.3: **Module 6 (Workflows)** -- Set up a Spring app with 2-3 open PRs (as branches) that PMs can review: one that matches its ticket, one with scope creep, one missing acceptance criteria
+- [x] Task 4.4: **Feature decomposition** -- Include a large feature spec that users break into independently verifiable tasks. Provide a template for task decomposition
 
 ### Verification
 
-- [ ] Development codebase compiles and tests pass
-- [ ] All PR branches exist and diff cleanly against main
-- [ ] Backlog issues are complete and realistic
+- [x] Development codebase compiles and tests pass
+- [x] All PR branches exist and diff cleanly against main
+- [x] Backlog issues are complete and realistic
 
 ## Phase 5: Integration
 

@@ -100,9 +100,9 @@ The highest-leverage improvement you can make is giving Claude _something to ver
 
 **Starter materials:** `modules/02-verification/` in the [exercise repo](https://github.com/malston/training-dev-exercises) -- uses the `feature/task-search` branch with a broken search implementation and failing tests.
 
-1. Pick a task and include an explicit verification step in your prompt: "After implementing, run `go test ./...` and fix any failures."
-2. Try the explore-plan-implement pattern: use plan mode to investigate a codebase question, then switch to implementation.
-3. Practice `/clear` discipline -- complete a task, then `/clear` before starting the next unrelated one.
+1. Switch to the `feature/task-search` branch. The search endpoint exists but has a bug and tests are failing. Write a prompt that includes an explicit verification step: "Fix the search in TaskController.java, then run `./mvnw test` and fix any failures."
+2. Stay on `feature/task-search`. Use plan mode (Shift+Tab) to investigate: "How is the search feature implemented? What's broken and what's missing?" Then switch to implementation with specific instructions based on what you learned.
+3. Complete the search fix, then run `/clear` and start the "Due Dates" feature from `modules/01-prompting/requirements.md`. Notice how `/clear` prevents the search context from polluting the due dates task.
 
 ### Reference
 
@@ -140,9 +140,9 @@ Then implement the minimal code to make it pass."
 
 **Starter materials:** `modules/03-tdd/` in the [exercise repo](https://github.com/malston/training-dev-exercises) -- includes test stubs for a statistics service (Red phase) and a mock test to replace with real dependencies.
 
-1. Pick a function you need to write. Write the test first, run it to confirm it fails, then ask Claude to implement the function.
-2. Try context isolation: write tests in one Claude session, then open a fresh session to implement against those tests.
-3. Take an existing test that uses mocks and rewrite it to use a real dependency (e.g., replace a mocked HTTP client with httptest).
+1. Run `./mvnw test -Dtest=TaskStatisticsServiceTest` -- the tests fail because the methods throw `UnsupportedOperationException` (Red). Ask Claude to implement `TaskStatisticsService` with the minimum code to make them pass (Green). Refactor if needed while keeping tests green.
+2. Write tests for a "Task Comments" feature (from `modules/01-prompting/requirements.md`) in one Claude session. Run `/clear`, then in a fresh session ask Claude to implement the code to make those tests pass. The tests survive across sessions because they're on disk.
+3. Open `TaskServiceMockTest.java` -- it uses Mockito to mock `TaskRepository` and only tests mock behavior. Rewrite it to use the real repository with `@SpringBootTest`. Does the real-dependency test catch issues the mock test misses?
 
 ### Reference
 
@@ -181,9 +181,9 @@ Good: "POST /api/orders returns 500. The log shows:
 
 **Starter materials:** `modules/04-debugging/` in the [exercise repo](https://github.com/malston/training-dev-exercises) -- uses the `buggy` branch with 4 intentional bugs and a BUGS.md describing symptoms.
 
-1. Find a bug in your codebase. Before asking Claude to fix it, write down: (a) what should happen, (b) what actually happens, (c) the exact error output. Then share all three.
-2. Practice backward tracing: given an error at line X, ask Claude to trace the data flow backward to find where the bad value originates.
-3. Deliberately break something in your code. Write a failing test that captures the bug, then ask Claude to fix it using only the test output as guidance.
+1. Switch to the `buggy` branch and run `./mvnw spring-boot:run`. It fails (Bug #4). Copy the full stack trace and share it with Claude -- compare this against a vague prompt like "the app won't start."
+2. After fixing Bug #4, reproduce Bug #1 (wrong HTTP status on create) with `curl`. Ask Claude to trace backward from the symptom: "POST /api/tasks returns 200 instead of 201. Trace the response path from the controller method to find where the status code is set."
+3. Pick Bug #2 or #3 from BUGS.md. Before asking Claude to fix it, write a failing test that captures the bug, then share only the test output and let Claude fix it from there.
 
 ### Reference
 
@@ -222,9 +222,9 @@ Good: "POST /api/orders returns 500. The log shows:
 
 **Starter materials:** `modules/05-context/` in the [exercise repo](https://github.com/malston/training-dev-exercises) -- exercises for measuring token costs, delegating to subagents, and persisting decisions.
 
-1. Check your current context usage: look at the token counter and note how much context a single file read consumes.
-2. Try using a subagent for research: "Use a subagent to find all usages of `parseConfig` across the codebase and summarize the patterns."
-3. Practice writing decisions to persistent files: after making a design choice in conversation, write it to a CLAUDE.md or design doc so it survives.
+1. Start a Claude session in the task tracker repo. Ask Claude to read `TaskController.java` and note the token count before and after. Then ask it to read the entire `backend/src/main/java/com/example/tasktracker/` directory. How many tokens does each file read cost?
+2. Ask Claude to delegate research to a subagent: "Use a subagent to explore the backend codebase and summarize the design patterns, code organization, and conventions." Then ask the same question directly (without a subagent) and compare the context cost of each approach.
+3. Make a design decision during your session (e.g., "use DTOs instead of exposing entities directly"). Write it to CLAUDE.md, run `/compact`, then ask Claude about the decision. It survives because it's on disk. Compare: what happens if you only discuss the decision in conversation?
 
 ### Reference
 
@@ -256,9 +256,9 @@ Good: "POST /api/orders returns 500. The log shows:
 
 **Starter materials:** `modules/06-extensions/` in the [exercise repo](https://github.com/malston/training-dev-exercises) -- uses the security module for subagent exploration and includes example slash commands in `.claude/commands/`.
 
-1. Delegate a research task to a subagent: "Use a subagent to explore the security module and summarize the key patterns."
-2. Read the description of a skill you use frequently. Understand how its auto-triggering description works.
-3. If you use MCP servers, list which ones are active and what each provides. Check their token cost in the system prompt.
+1. Delegate research to a subagent: "Use a subagent to explore the security package (`AuthService.java`, `AuthController.java`) and explain how passwords are stored, how sessions work, and what vulnerabilities exist." Compare the context cost to asking the same question directly.
+2. Read the example slash commands in `.claude/commands/`. Try running `/project:review-security`. Then create your own command: write a `.claude/commands/add-endpoint.md` that instructs Claude to add a REST endpoint following the patterns in `TaskController`.
+3. Compose extensions: write a `.claude/commands/security-audit.md` that delegates password hashing review to one subagent and session management review to another, then consolidates findings. Compare the quality and context cost against a single prompt asking for everything at once.
 
 ### Reference
 

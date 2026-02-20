@@ -35,7 +35,7 @@ Each module has a matching exercise directory (`exercises/02-infrastructure/`, `
 
 **The request flow has four hops:**
 
-```
+```text
 Developer workstation → LLM gateway → VPC endpoint → Bedrock/provider
 ```
 
@@ -43,7 +43,7 @@ Every API call follows this path. The LLM gateway and managed settings are your 
 
 **Configuration follows a strict hierarchy:**
 
-```
+```text
 managed settings > CLI flags > local settings > project settings > user settings
 ```
 
@@ -51,7 +51,7 @@ Managed settings deployed via MDM cannot be overridden by anything below them. T
 
 **Context window has its own hierarchy:**
 
-```
+```text
 managed CLAUDE.md → project CLAUDE.md + rules → skills → conversation
 ```
 
@@ -86,7 +86,7 @@ A managed CLAUDE.md (~500 tokens) is always loaded before project-level instruct
 
 **Inference profiles are required.** Bedrock uses cross-region model identifiers, not bare model IDs:
 
-```
+```text
 Correct: us.anthropic.claude-sonnet-4-5-20250929-v1:0
 Wrong:   anthropic.claude-sonnet-4-5
 ```
@@ -168,7 +168,7 @@ Distribute it via your existing MDM, Chef, Ansible, or Group Policy tooling.
 
 **Permissions cascade across five scopes:**
 
-```
+```text
 managed > CLI > local > project > user
 ```
 
@@ -225,7 +225,7 @@ Default all developers to Sonnet. Gate Opus access via the LLM gateway -- Opus w
 - Moderate users (~30%): 100K tokens/day
 - Heavy users (~10%): 200K+ tokens/day
 
-**Extended thinking multiplies costs.** Thinking tokens are billed at the output rate. A single Opus request with extended thinking can consume tens of thousands of thinking tokens. Control thinking cost via effort levels (`CLAUDE_CODE_EFFORT_LEVEL` in managed settings) or by defaulting developers to Sonnet, which uses less thinking at lower output pricing. Note: `MAX_THINKING_TOKENS` is ignored on Opus 4.6 (adaptive thinking); use effort levels instead.
+**Extended thinking multiplies costs.** Thinking tokens are billed at the output rate. A single Opus request with extended thinking can consume tens of thousands of thinking tokens. Control thinking cost via effort levels (`CLAUDE_CODE_EFFORT_LEVEL` in managed settings) or by defaulting developers to Sonnet, which uses less thinking at lower output pricing. Note: `MAX_THINKING_TOKENS` is ignored on Opus 4.6 and Sonnet 4.6 (adaptive thinking), except that setting it to `0` still disables thinking entirely. Use effort levels instead.
 
 **Prompt caching reduces costs up to 90%.** The system prompt and CLAUDE.md are cached across messages in a session. Monitor cache hit rates during Cohort 1 -- caching behavior on Bedrock differs from the direct API.
 

@@ -144,6 +144,10 @@ The repo contains a working Spring Boot order service with a mock product backlo
 2. Rate 5 proposed changes (from adding an endpoint to switching frameworks) as easy, moderate, or hard to reverse.
 3. Review the customer dashboard feature spec and ask: if user volume grows 10x, which parts break first?
 
+### Reference
+
+- [Architecture Overview]({{< relref "enterprise-rollout/00-overview/architecture-overview" >}}) -- Trade-off analysis frameworks and architectural decision patterns
+
 ## Module 4: Coding Standards
 
 **Goal:** Understand why coding standards exist and what to look for when teams adopt them.
@@ -192,7 +196,7 @@ The repo contains a working Spring Boot order service with a mock product backlo
 
 **TDD means writing tests before writing code.** The cycle is:
 
-```
+```text
 1. Write a test that describes the desired behavior → it fails
 2. Write the minimum code to make the test pass
 3. Clean up the code while keeping tests passing
@@ -243,7 +247,7 @@ This feels backwards at first, but it produces code that's verified by definitio
 
 **How developers use Claude Code day-to-day:**
 
-```
+```text
 1. Start a session with a specific task
 2. Provide context (files, errors, requirements)
 3. Claude reads code, proposes changes, runs tests

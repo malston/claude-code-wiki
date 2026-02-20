@@ -35,7 +35,7 @@ Each module has a matching exercise directory (`modules/01-prompting/`, `modules
 
 **Be explicit about what, where, and why.** Claude works from what you tell it. Vague requests produce vague results.
 
-```
+```text
 Bad:  "make auth better"
 Good: "Add rate limiting to the login endpoint -- 5 attempts per 10 minutes
        per IP. Return HTTP 429 with a Retry-After header."
@@ -45,7 +45,7 @@ Good: "Add rate limiting to the login endpoint -- 5 attempts per 10 minutes
 
 **Provide context and motivation.** Explaining _why_ you need something helps Claude make better design decisions:
 
-```
+```text
 "Add a circuit breaker to the payment service client.
 We're seeing cascading failures when the payment API goes down --
 the retry storms are taking out the order service too."
@@ -53,7 +53,7 @@ the retry storms are taking out the order service too."
 
 **Point Claude at the right files.** Instead of letting Claude search, tell it where to look:
 
-```
+```text
 "The validation logic is in src/validators/order.ts.
 Add a check that shipping_address.country is in the
 supported_countries list from config/regions.json."
@@ -79,7 +79,7 @@ supported_countries list from config/regions.json."
 
 The core Claude Code workflow is a four-step loop:
 
-```
+```text
 Instruct → Claude acts → Review output → Course-correct
 ```
 
@@ -116,7 +116,7 @@ The highest-leverage improvement you can make is giving Claude _something to ver
 
 **Write the test first.** A failing test is the most precise requirement you can give Claude. It defines exactly what "done" looks like:
 
-```
+```text
 "Write a test in tests/test_parser.py that:
 1. Parses a CSV with a missing header row
 2. Expects a MissingHeaderError with the filename in the message
@@ -156,7 +156,7 @@ Then implement the minimal code to make it pass."
 
 **The debugging framework has four phases:**
 
-```
+```text
 1. Understand -- What should happen? What actually happens?
 2. Reproduce -- Can you trigger the bug reliably? Write a failing test if possible.
 3. Investigate -- Trace backward from the symptom to the root cause.
@@ -165,7 +165,7 @@ Then implement the minimal code to make it pass."
 
 **Share the actual error.** Copy the full stack trace, error message, and relevant log output. Don't paraphrase -- line numbers and error codes are diagnostic information Claude needs.
 
-```
+```text
 Bad:  "The API is returning an error"
 Good: "POST /api/orders returns 500. The log shows:
        NullPointerException at OrderService.java:142
@@ -254,9 +254,9 @@ Good: "POST /api/orders returns 500. The log shows:
 
 ### Exercises
 
-**Starter materials:** `modules/06-extensions/` in the [exercise repo](https://github.com/malston/training-dev-exercises) -- uses the auth module for subagent exploration and includes example slash commands in `.claude/commands/`.
+**Starter materials:** `modules/06-extensions/` in the [exercise repo](https://github.com/malston/training-dev-exercises) -- uses the security module for subagent exploration and includes example slash commands in `.claude/commands/`.
 
-1. Delegate a research task to a subagent: "Use a subagent to explore the authentication module and summarize the key patterns."
+1. Delegate a research task to a subagent: "Use a subagent to explore the security module and summarize the key patterns."
 2. Read the description of a skill you use frequently. Understand how its auto-triggering description works.
 3. If you use MCP servers, list which ones are active and what each provides. Check their token cost in the system prompt.
 

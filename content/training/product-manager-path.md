@@ -16,6 +16,17 @@ Technical literacy for product managers working alongside developers who use Cla
 | [5. Test-Driven Development](#module-5-test-driven-development)                   | How TDD shapes planning and estimation      | Modules 2-4   |
 | [6. Working with Developer Workflows](#module-6-working-with-developer-workflows) | Participating in the development process    | Modules 1-5   |
 
+## Exercise Materials
+
+Clone the exercise repo for hands-on practice alongside Modules 5 and 6:
+
+```bash
+git clone https://github.com/malston/training-pm-exercises.git ~/code/training-pm-exercises
+cd ~/code/training-pm-exercises
+```
+
+The repo contains a working Spring Boot order service with a mock product backlog, PR branches for review practice, and exercises for writing testable acceptance criteria and decomposing features.
+
 ## Module 1: How Claude Code Works
 
 **Goal:** Understand what Claude Code does so you can set realistic expectations for your team.
@@ -180,6 +191,14 @@ This feels backwards at first, but it produces code that's verified by definitio
 - Don't pressure developers to skip tests to "move faster." Tests save time over the lifecycle of a feature.
 - When Claude Code is used with TDD, the test suite becomes the source of truth for what the software does. Review the tests, not just the code.
 
+### Exercises
+
+**Starter materials:** `exercises/05-tdd/` in the [exercise repo](https://github.com/malston/training-pm-exercises) -- before/after examples of vague vs. testable acceptance criteria, plus the mock product backlog in `backlog/`.
+
+1. Read through the mock product backlog. Identify which tickets have testable acceptance criteria and which don't. What's missing from the vague ones?
+2. Pick a vague ticket and rewrite its acceptance criteria using Given/When/Then format. Compare your version with the examples in `exercises/05-tdd/examples.md`.
+3. Review the existing `OrderControllerTest.java` -- can you trace each test back to a specific acceptance criterion? Where are the gaps?
+
 ### Reference
 
 - [Testing Strategies]({{< relref "guides/testing-strategies" >}}) -- TDD patterns and how tests serve as durable requirements for AI-assisted development
@@ -228,9 +247,11 @@ A ticket that works poorly:
 
 ### Exercises
 
-1. Take a feature from your backlog and rewrite it with testable acceptance criteria. For each criterion, write it as: "Given [context], when [action], then [expected result]."
-2. Review a recent PR from your team. Without reading the code, check: does the PR description match the ticket? Are the acceptance criteria addressed?
-3. Break a large feature into tasks, where each task can be independently verified. Ask a developer to validate that the decomposition makes sense.
+**Starter materials:** `exercises/06-workflows/` in the [exercise repo](https://github.com/malston/training-pm-exercises) -- three PR branches for review practice and a feature decomposition exercise using the customer dashboard spec.
+
+1. Review the three PR branches (`feature/order-search`, `feature/order-notifications`, `feature/bulk-status`). For each, compare the PR changes against the corresponding backlog ticket. Which PR matches its ticket? Which has scope creep? Which is missing acceptance criteria?
+2. Take the customer dashboard feature spec (`backlog/features/005-customer-dashboard.md`) and decompose it into smaller tasks using the template in `templates/decomposition-template.md`. Each task should be independently verifiable.
+3. Pick a vague ticket from the backlog and rewrite it with testable acceptance criteria. For each criterion, write it as: "Given [context], when [action], then [expected result]."
 
 ### Reference
 

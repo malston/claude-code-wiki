@@ -16,6 +16,17 @@ A structured progression for platform engineers deploying Claude Code to teams a
 | [5. Cost Management](#module-5-cost-management)                   | Budgets, model tiering, observability dashboards      | Modules 2-4   |
 | [6. Phased Rollout](#module-6-phased-rollout)                     | Cohort strategy, success metrics, rollback triggers   | Modules 1-5   |
 
+## Exercise Materials
+
+Clone the exercise repo for hands-on practice alongside each module:
+
+```bash
+git clone https://github.com/malston/training-platform-exercises.git ~/code/training-platform-exercises
+cd ~/code/training-platform-exercises
+```
+
+Each module has a matching exercise directory (`exercises/02-infrastructure/`, `exercises/03-configuration/`, etc.) with Terraform configs, policy files, and scenarios.
+
 ## Module 1: Architecture
 
 **Goal:** Understand the end-to-end request flow and where control points exist.
@@ -91,6 +102,8 @@ This trips up almost everyone. Test inference profiles in your first infrastruct
 
 ### Exercises
 
+**Starter materials:** `exercises/02-infrastructure/` in the [exercise repo](https://github.com/malston/training-platform-exercises) -- Terraform modules for VPC endpoints and Bedrock inference profiles.
+
 1. Set up a Bedrock VPC endpoint in a test account and validate that traffic doesn't leave your VPC.
 2. Create inference profiles for Sonnet and Haiku. Test that bare model IDs are rejected.
 3. Configure an LLM gateway (or proxy) that routes Claude Code traffic through VPC endpoints.
@@ -135,6 +148,8 @@ Distribute it via your existing MDM, Chef, Ansible, or Group Policy tooling.
 
 ### Exercises
 
+**Starter materials:** `exercises/03-configuration/` in the [exercise repo](https://github.com/malston/training-platform-exercises) -- baseline and strict managed settings, managed CLAUDE.md, and deployment scripts.
+
 1. Write a managed-settings.json that routes traffic through your LLM gateway and disables non-essential traffic.
 2. Write a managed CLAUDE.md with 3-5 org-wide rules (e.g., "never commit secrets," "always run tests before completing").
 3. Deploy both to a test machine via your MDM tool. Verify with `/settings` in Claude Code.
@@ -175,6 +190,8 @@ Sandboxing limits filesystem and network access at the OS level, independent of 
 - `allowManagedHooksOnly` -- only IT-defined hooks execute
 
 ### Exercises
+
+**Starter materials:** `exercises/04-permissions/` in the [exercise repo](https://github.com/malston/training-platform-exercises) -- permission files at three scopes and a test harness that validates cascade behavior.
 
 1. Write deny rules for your organization: what bash commands should never be allowed? (e.g., `sudo`, `curl` to external hosts, `rm -rf /`)
 2. Test the permission cascade: set a deny rule in managed settings, then try to override it in project settings. Confirm it can't be overridden.
@@ -218,6 +235,8 @@ Default all developers to Sonnet. Gate Opus access via the LLM gateway -- Opus w
 - Alert at 80% budget utilization before throttling
 
 ### Exercises
+
+**Starter materials:** `exercises/05-cost/` in the [exercise repo](https://github.com/malston/training-platform-exercises) -- cost calculator, CloudWatch dashboard definition, and rate-limiting configuration.
 
 1. Calculate your expected monthly cost for 100 developers using the usage pattern distribution above.
 2. Set up a CloudWatch dashboard tracking tokens consumed per team per day.
@@ -263,6 +282,8 @@ Default all developers to Sonnet. Gate Opus access via the LLM gateway -- Opus w
 - Cohort 3: 90%+ have used Claude within 2 weeks, >60% weekly active after 1 month
 
 ### Exercises
+
+**Starter materials:** `exercises/06-rollout/` in the [exercise repo](https://github.com/malston/training-platform-exercises) -- cohort roster template, rollback playbook, success metrics, and communication plan templates.
 
 1. Draft your Cohort 1 roster: identify 25 developers across 3-4 teams who would be effective champions.
 2. Write a rollback plan: what specific steps would you take if a security incident occurred during Cohort 2?

@@ -10,50 +10,47 @@ weight: 5
 
 Extended thinking gives Claude additional tokens to reason before responding. On Opus 4.6 and Sonnet 4.6, thinking is adaptive: Claude decides how much to think based on task complexity. Thinking tokens are billed as output tokens ($25/MTok on Opus 4.6), making thinking depth the second-biggest cost lever after model selection. On Opus 4.6, effort levels (low/medium/high/max) control how much Claude thinks; Sonnet 4.6 supports low/medium/high effort.
 
-| Aspect                          | Details                                                |
-| ------------------------------- | ------------------------------------------------------ |
-| **Default state**               | Enabled by default in Claude Code                      |
-| **Opus 4.6 / Sonnet 4.6 mode**  | Adaptive (dynamic depth based on complexity)           |
-| **Other models**                | Manual (fixed budget via `budget_tokens`)              |
-| **Default budget**              | 31,999 tokens (configurable via `MAX_THINKING_TOKENS`) |
-| **Billing**                     | Thinking tokens billed as output tokens                |
-| **Visibility**                  | Summarized view; `Ctrl+O` for verbose thinking text    |
+| Aspect                         | Details                                                |
+| ------------------------------ | ------------------------------------------------------ |
+| **Default state**              | Enabled by default in Claude Code                      |
+| **Opus 4.6 / Sonnet 4.6 mode** | Adaptive (dynamic depth based on complexity)           |
+| **Other models**               | Manual (fixed budget via `budget_tokens`)              |
+| **Default budget**             | 31,999 tokens (configurable via `MAX_THINKING_TOKENS`) |
+| **Billing**                    | Thinking tokens billed as output tokens                |
+| **Visibility**                 | Summarized view; `Ctrl+O` for verbose thinking text    |
 
 ---
 
 ## Table of Contents
 
-- [Extended Thinking: How Claude Reasons Through Complex Problems](#extended-thinking-how-claude-reasons-through-complex-problems)
-  - [Executive Summary](#executive-summary)
-  - [Table of Contents](#table-of-contents)
-  - [How Extended Thinking Works](#how-extended-thinking-works)
-    - [Why Intermediate Tokens Help](#why-intermediate-tokens-help)
-    - [The Thinking Process](#the-thinking-process)
-    - [Adaptive Thinking (Opus 4.6)](#adaptive-thinking-opus-46)
-    - [Summarized Thinking](#summarized-thinking)
-    - [Interleaved Thinking](#interleaved-thinking)
-  - [Effort Levels](#effort-levels)
-    - [Available Levels](#available-levels)
-    - [What Effort Controls](#what-effort-controls)
-    - [Setting Effort in Claude Code](#setting-effort-in-claude-code)
-  - [Configuration](#configuration)
-    - [Toggle Thinking On/Off](#toggle-thinking-onoff)
-    - [MAX\_THINKING\_TOKENS](#max_thinking_tokens)
-    - [Thinking Budget vs Output Budget](#thinking-budget-vs-output-budget)
-    - [Context Window Interaction](#context-window-interaction)
-    - [Thinking in Subagents](#thinking-in-subagents)
-  - [When to Use Extended Thinking](#when-to-use-extended-thinking)
-    - [Tasks That Benefit](#tasks-that-benefit)
-    - [Tasks Where It's Overkill](#tasks-where-its-overkill)
-  - [Cost Management](#cost-management)
-    - [How Thinking Tokens Are Billed](#how-thinking-tokens-are-billed)
-    - [Cost Control Levers](#cost-control-levers)
-    - [Cost Estimates](#cost-estimates)
-  - [Model Support](#model-support)
-    - [Feature Compatibility](#feature-compatibility)
-  - [Best Practices](#best-practices)
-  - [Anti-Patterns](#anti-patterns)
-  - [References](#references)
+- [How Extended Thinking Works](#how-extended-thinking-works)
+  - [Why Intermediate Tokens Help](#why-intermediate-tokens-help)
+  - [The Thinking Process](#the-thinking-process)
+  - [Adaptive Thinking](#adaptive-thinking)
+  - [Summarized Thinking](#summarized-thinking)
+  - [Interleaved Thinking](#interleaved-thinking)
+- [Effort Levels](#effort-levels)
+  - [Available Levels](#available-levels)
+  - [What Effort Controls](#what-effort-controls)
+  - [Setting Effort in Claude Code](#setting-effort-in-claude-code)
+- [Configuration](#configuration)
+  - [Toggle Thinking On/Off](#toggle-thinking-onoff)
+  - [MAX_THINKING_TOKENS](#max_thinking_tokens)
+  - [Thinking Budget vs Output Budget](#thinking-budget-vs-output-budget)
+  - [Context Window Interaction](#context-window-interaction)
+  - [Thinking in Subagents](#thinking-in-subagents)
+- [When to Use Extended Thinking](#when-to-use-extended-thinking)
+  - [Tasks That Benefit](#tasks-that-benefit)
+  - [Tasks Where It's Overkill](#tasks-where-its-overkill)
+- [Cost Management](#cost-management)
+  - [How Thinking Tokens Are Billed](#how-thinking-tokens-are-billed)
+  - [Cost Control Levers](#cost-control-levers)
+  - [Cost Estimates](#cost-estimates)
+- [Model Support](#model-support)
+  - [Feature Compatibility](#feature-compatibility)
+- [Best Practices](#best-practices)
+- [Anti-Patterns](#anti-patterns)
+- [References](#references)
 
 ---
 
@@ -98,9 +95,9 @@ User prompt arrives
 
 The thinking phase is where quality differences appear. On problems that require multiple dependent steps, thinking tokens give the response tokens more context to condition on. On problems that don't -- simple lookups, mechanical edits -- thinking tokens add cost without improving output.
 
-### Adaptive Thinking (Opus 4.6)
+### Adaptive Thinking
 
-Opus 4.6 uses **adaptive thinking** by default. Instead of a fixed budget, Claude decides how much to think based on the complexity of each request:
+Opus 4.6 and Sonnet 4.6 use **adaptive thinking** by default. Instead of a fixed budget, Claude decides how much to think based on the complexity of each request:
 
 - Simple requests (rename a variable, fix a typo): minimal or no thinking
 - Moderate requests (implement a function, fix a bug): moderate thinking
@@ -154,13 +151,13 @@ Effort is a **behavioral signal, not a strict token budget**. At lower effort, C
 
 Effort affects **all tokens** in the response, not just thinking:
 
-| Aspect             | Low Effort                          | High Effort                     |
-| ------------------ | ----------------------------------- | ------------------------------- |
-| Thinking depth     | Minimal or skipped for simple tasks | Deep reasoning on most tasks    |
-| Tool calls         | Fewer, combined operations          | More, thorough exploration      |
-| Explanations       | Terse confirmations                 | Detailed plans and summaries    |
-| Code comments      | Minimal                             | Comprehensive                   |
-| Action style       | Proceeds directly                   | Explains approach before acting |
+| Aspect         | Low Effort                          | High Effort                     |
+| -------------- | ----------------------------------- | ------------------------------- |
+| Thinking depth | Minimal or skipped for simple tasks | Deep reasoning on most tasks    |
+| Tool calls     | Fewer, combined operations          | More, thorough exploration      |
+| Explanations   | Terse confirmations                 | Detailed plans and summaries    |
+| Code comments  | Minimal                             | Comprehensive                   |
+| Action style   | Proceeds directly                   | Explains approach before acting |
 
 ### Setting Effort in Claude Code
 
@@ -176,22 +173,22 @@ Three methods, in order of priority:
 
 ### Toggle Thinking On/Off
 
-| Method          | Scope           | Details                                         |
-| --------------- | --------------- | ----------------------------------------------- |
-| `Option+T` / `Alt+T` | Current session | Toggles thinking for this session only     |
-| `/config`       | Permanent       | Saved as `alwaysThinkingEnabled` in settings    |
-| `Ctrl+O`        | Display only    | Shows thinking text in verbose mode             |
+| Method               | Scope           | Details                                      |
+| -------------------- | --------------- | -------------------------------------------- |
+| `Option+T` / `Alt+T` | Current session | Toggles thinking for this session only       |
+| `/config`            | Permanent       | Saved as `alwaysThinkingEnabled` in settings |
+| `Ctrl+O`             | Display only    | Shows thinking text in verbose mode          |
 
 ### MAX_THINKING_TOKENS
 
 Controls the thinking token budget for manual-mode models:
 
-| Setting          | Value          |
-| ---------------- | -------------- |
-| Default          | 31,999 tokens  |
-| Maximum          | 63,999 tokens  |
-| Minimum          | 1,024 tokens   |
-| Disable thinking | Set to `0`     |
+| Setting          | Value         |
+| ---------------- | ------------- |
+| Default          | 31,999 tokens |
+| Maximum          | 63,999 tokens |
+| Minimum          | 1,024 tokens  |
+| Disable thinking | Set to `0`    |
 
 ```bash
 # Temporary (session only)
@@ -309,13 +306,13 @@ Actual costs vary based on task complexity, response length, and tool call volum
 
 ## Model Support
 
-| Model            | Thinking Mode   | Effort Levels          | Interleaved | Max Output |
-| ---------------- | --------------- | ---------------------- | ----------- | ---------- |
-| **Opus 4.6**     | Adaptive        | low, medium, high, max | Automatic   | 128K       |
-| **Sonnet 4.6**   | Adaptive        | low, medium, high      | Automatic   | 64K        |
-| **Opus 4.5**     | Manual (budget) | low, medium, high      | Beta header | 128K       |
-| **Sonnet 4.5**   | Manual (budget) | low, medium, high      | Beta header | 64K        |
-| **Haiku 4.5**    | Manual (budget) | low, medium, high      | Beta header | 64K        |
+| Model          | Thinking Mode   | Effort Levels          | Interleaved | Max Output |
+| -------------- | --------------- | ---------------------- | ----------- | ---------- |
+| **Opus 4.6**   | Adaptive        | low, medium, high, max | Automatic   | 128K       |
+| **Sonnet 4.6** | Adaptive        | low, medium, high      | Automatic   | 64K        |
+| **Opus 4.5**   | Manual (budget) | low, medium, high      | Beta header | 128K       |
+| **Sonnet 4.5** | Manual (budget) | low, medium, high      | Beta header | 64K        |
+| **Haiku 4.5**  | Manual (budget) | low, medium, high      | Beta header | 64K        |
 
 Adaptive thinking is available on Opus 4.6 and Sonnet 4.6. Manual `budget_tokens` mode is deprecated on these models but remains available on all others. `max` effort remains exclusive to Opus 4.6.
 
@@ -365,7 +362,7 @@ Changing thinking parameters invalidates prompt cache for messages, though syste
 ## References
 
 - [Extended Thinking (API)](https://platform.claude.com/docs/en/build-with-claude/extended-thinking) -- API-level thinking configuration
-- [Adaptive Thinking](https://platform.claude.com/docs/en/build-with-claude/adaptive-thinking) -- Opus 4.6 adaptive mode
+- [Adaptive Thinking](https://platform.claude.com/docs/en/build-with-claude/adaptive-thinking) -- Opus 4.6 and Sonnet 4.6 adaptive mode
 - [Effort Parameter](https://platform.claude.com/docs/en/build-with-claude/effort) -- effort levels and behavioral effects
 - [Extended Thinking Tips](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/extended-thinking-tips) -- prompt engineering for thinking
 - [Model Configuration (Claude Code)](https://code.claude.com/docs/en/model-config) -- effort levels, model aliases, thinking settings

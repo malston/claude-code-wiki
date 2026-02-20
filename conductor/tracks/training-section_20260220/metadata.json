@@ -3,16 +3,16 @@
   "title": "Training Section",
   "type": "feature",
   "status": "in_progress",
-  "current_phase": 1,
-  "current_task": "1.1",
+  "current_phase": 2,
+  "current_task": "2.1",
   "created": "2026-02-20T15:00:00Z",
   "updated": "2026-02-20T15:00:00Z",
   "phases": {
     "total": 3,
-    "completed": 0
+    "completed": 1
   },
   "tasks": {
     "total": 9,
-    "completed": 0
+    "completed": 3
   }
 }

@@ -30,7 +30,7 @@ Write one article per target role. Each article provides a structured learning p
 
 ### Tasks
 
-- [ ] Task 2.1: Write developer learning path (`content/training/developer-path.md`) -- covers prompting, debugging, testing, context management, and extensions
+- [x] Task 2.1: Write developer learning path (`content/training/developer-path.md`) -- covers prompting, debugging, testing, context management, and extensions
 - [ ] Task 2.2: Write platform engineer learning path (`content/training/platform-engineer-path.md`) -- covers infrastructure setup, managed settings, permissions, rollout strategy, and observability
 - [ ] Task 2.3: Write product manager learning path (`content/training/product-manager-path.md`) -- covers software design principles, architecture decisions, coding standards, TDD approach, and working with developer workflows
 

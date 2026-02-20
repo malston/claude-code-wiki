@@ -45,22 +45,22 @@ Final checks before merge.
 
 ### Tasks
 
-- [ ] Task 3.1: Run `hugo --gc --minify` to verify production build
-- [ ] Task 3.2: Verify all training articles are accessible from section index and home page
-- [ ] Task 3.3: Commit final changes and open PR (feature branch created upfront)
+- [x] Task 3.1: Run `hugo --gc --minify` to verify production build
+- [x] Task 3.2: Verify all training articles are accessible from section index and home page
+- [~] Task 3.3: Commit final changes and open PR (feature branch created upfront)
 
 ### Verification
 
-- [ ] Hugo production build succeeds without errors
-- [ ] All acceptance criteria from spec.md are met
+- [x] Hugo production build succeeds without errors
+- [x] All acceptance criteria from spec.md are met
 - [ ] PR passes CI checks (hugo build, style-check)
 
 ## Final Verification
 
-- [ ] All acceptance criteria met
-- [ ] Hugo builds cleanly
-- [ ] Training section linked from home page
-- [ ] At least one article per role (developer, platform engineer, product manager)
+- [x] All acceptance criteria met
+- [x] Hugo builds cleanly
+- [x] Training section linked from home page
+- [x] At least one article per role (developer, platform engineer, product manager)
 - [ ] Ready for review
 
 ---

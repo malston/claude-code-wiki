@@ -48,17 +48,17 @@ Build out Terraform configurations and policy files for infrastructure exercises
 
 ### Tasks
 
-- [ ] Task 3.1: **Module 2 (Infrastructure)** -- Create Terraform modules for a VPC with private subnets, VPC endpoints, and a placeholder Bedrock configuration. Include a `terraform.tfvars.example` with sample values
-- [ ] Task 3.2: **Module 3 (Configuration)** -- Provide sample `managed-settings.json` files (baseline and strict variants), a sample managed CLAUDE.md, and a deployment script skeleton for MDM distribution
-- [ ] Task 3.3: **Module 4 (Permissions)** -- Create a permissions test harness: a `.claude/settings.json` with layered permission rules at managed, project, and user scopes. Include a test script that validates deny rules can't be overridden
-- [ ] Task 3.4: **Module 5 (Cost Management)** -- Provide a cost calculator spreadsheet/script, sample CloudWatch dashboard JSON, and a gateway rate-limiting configuration template
-- [ ] Task 3.5: **Module 6 (Rollout)** -- Create document templates: cohort roster spreadsheet, rollback playbook, success metrics dashboard, and a sample communication plan
+- [x] Task 3.1: **Module 2 (Infrastructure)** -- Create Terraform modules for a VPC with private subnets, VPC endpoints, and a placeholder Bedrock configuration. Include a `terraform.tfvars.example` with sample values
+- [x] Task 3.2: **Module 3 (Configuration)** -- Provide sample `managed-settings.json` files (baseline and strict variants), a sample managed CLAUDE.md, and a deployment script skeleton for MDM distribution
+- [x] Task 3.3: **Module 4 (Permissions)** -- Create a permissions test harness: a `.claude/settings.json` with layered permission rules at managed, project, and user scopes. Include a test script that validates deny rules can't be overridden
+- [x] Task 3.4: **Module 5 (Cost Management)** -- Provide a cost calculator spreadsheet/script, sample CloudWatch dashboard JSON, and a gateway rate-limiting configuration template
+- [x] Task 3.5: **Module 6 (Rollout)** -- Create document templates: cohort roster spreadsheet, rollback playbook, success metrics dashboard, and a sample communication plan
 
 ### Verification
 
-- [ ] `terraform init` and `terraform validate` pass on the infrastructure modules
-- [ ] Sample configurations are valid JSON/YAML
-- [ ] Cost calculator produces correct output for sample inputs
+- [x] `terraform init` and `terraform validate` pass on the infrastructure modules
+- [x] Sample configurations are valid JSON/YAML
+- [x] Cost calculator produces correct output for sample inputs
 
 ## Phase 4: Product Manager Exercise Materials
 

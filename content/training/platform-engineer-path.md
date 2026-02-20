@@ -57,11 +57,13 @@ managed CLAUDE.md → project CLAUDE.md + rules → skills → conversation
 
 A managed CLAUDE.md (~500 tokens) is always loaded before project-level instructions, creating an org-wide behavior baseline.
 
-### Key Questions to Answer
+### Exercises
 
-- Where does API traffic flow, and does any of it traverse the public internet?
-- What are the two enforcement points (gateway + managed settings)?
-- How does the configuration hierarchy prevent developers from overriding policy?
+**Starter materials:** `exercises/01-architecture/` in the [exercise repo](https://github.com/malston/training-platform-exercises) -- request flow diagramming, enforcement point mapping, and configuration hierarchy exercises.
+
+1. Diagram the four-hop request path for your organization. For each hop, identify who controls it and what fails if it goes down.
+2. Map 6 common policies to their enforcement point (gateway, managed settings, or both).
+3. Work through the configuration hierarchy: what happens when a developer's user settings conflict with managed settings? When a project adds allow rules alongside managed deny rules?
 
 ### Reference
 

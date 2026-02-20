@@ -2,14 +2,14 @@
   "id": "training-section_20260220",
   "title": "Training Section",
   "type": "feature",
-  "status": "in_progress",
+  "status": "complete",
   "current_phase": 3,
   "current_task": "3.3",
   "created": "2026-02-20T15:00:00Z",
   "updated": "2026-02-20T15:00:00Z",
   "phases": {
     "total": 3,
-    "completed": 2
+    "completed": 3
   },
   "tasks": {
     "total": 9,

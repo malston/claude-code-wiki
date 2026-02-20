@@ -29,18 +29,18 @@ Build out the Java/Spring backend and Next.js frontend with exercise-specific sc
 
 ### Tasks
 
-- [ ] Task 2.1: **Module 1 (Prompting)** -- Create a Spring REST API with 3-4 endpoints and a Next.js frontend. Include a requirements doc describing features to add, so users can practice writing specific prompts
-- [ ] Task 2.2: **Module 2 (Verification Loop)** -- Add a feature branch with an incomplete implementation and failing tests. Users practice the instruct-act-review-correct loop with explicit verification steps
-- [ ] Task 2.3: **Module 3 (TDD)** -- Create test stubs with descriptions of expected behavior but no implementation. Include one test file with mocked HTTP calls that should be replaced with real dependencies (e.g., testcontainers or MockMvc)
-- [ ] Task 2.4: **Module 4 (Debugging)** -- Introduce 3-4 intentional bugs across the codebase (null reference, off-by-one, wrong status code, race condition). Include a `BUGS.md` with symptoms but not solutions
-- [ ] Task 2.5: **Module 5 (Context Management)** -- Create a large enough codebase that context management matters (~20+ files). Include a design decision log template in CLAUDE.md for persistence exercises
-- [ ] Task 2.6: **Module 6 (Extensions)** -- Add an authentication module with enough complexity for subagent exploration. Include a `.claude/` directory with example skill and subagent configurations
+- [x] Task 2.1: **Module 1 (Prompting)** -- Create a Spring REST API with 3-4 endpoints and a Next.js frontend. Include a requirements doc describing features to add, so users can practice writing specific prompts
+- [x] Task 2.2: **Module 2 (Verification Loop)** -- Add a feature branch with an incomplete implementation and failing tests. Users practice the instruct-act-review-correct loop with explicit verification steps
+- [x] Task 2.3: **Module 3 (TDD)** -- Create test stubs with descriptions of expected behavior but no implementation. Include one test file with mocked HTTP calls that should be replaced with real dependencies (e.g., testcontainers or MockMvc)
+- [x] Task 2.4: **Module 4 (Debugging)** -- Introduce 3-4 intentional bugs across the codebase (null reference, off-by-one, wrong status code, race condition). Include a `BUGS.md` with symptoms but not solutions
+- [x] Task 2.5: **Module 5 (Context Management)** -- Create a large enough codebase that context management matters (~20+ files). Include a design decision log template in CLAUDE.md for persistence exercises
+- [x] Task 2.6: **Module 6 (Extensions)** -- Add an authentication module with enough complexity for subagent exploration. Include a `.claude/` directory with example skill and subagent configurations
 
 ### Verification
 
-- [ ] Java/Spring backend compiles and existing tests pass
-- [ ] Next.js frontend builds
-- [ ] Intentional bugs produce the documented symptoms
+- [x] Java/Spring backend compiles and existing tests pass
+- [x] Next.js frontend builds
+- [x] Intentional bugs produce the documented symptoms
 
 ## Phase 3: Platform Engineer Exercise Materials
 

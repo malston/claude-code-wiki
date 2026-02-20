@@ -47,7 +47,7 @@ Final checks before merge.
 
 - [x] Task 3.1: Run `hugo --gc --minify` to verify production build
 - [x] Task 3.2: Verify all training articles are accessible from section index and home page
-- [~] Task 3.3: Commit final changes and open PR (feature branch created upfront)
+- [x] Task 3.3: Commit final changes and open PR (feature branch created upfront)
 
 ### Verification
 

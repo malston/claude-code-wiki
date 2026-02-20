@@ -3,7 +3,7 @@
 **Track ID:** exercise-materials_20260220
 **Spec:** [spec.md](./spec.md)
 **Created:** 2026-02-20
-**Status:** [ ] Not Started
+**Status:** [~] In Progress
 
 ## Overview
 
@@ -15,9 +15,9 @@ Create all three repos with basic structure, README, CLAUDE.md, and git initiali
 
 ### Tasks
 
-- [ ] Task 1.1: Create `~/code/training-dev-exercises/` -- Java/Spring + Next.js project skeleton with CLAUDE.md, README explaining the repo's purpose, and project-specific conventions
-- [ ] Task 1.2: Create `~/code/training-platform-exercises/` -- Terraform project skeleton with CLAUDE.md, README, and module structure
-- [ ] Task 1.3: Create `~/code/training-pm-exercises/` -- Product backlog structure plus a small development codebase (Java/Spring app) with CLAUDE.md and README
+- [x] Task 1.1: Create `~/code/training-dev-exercises/` -- Java/Spring + Next.js project skeleton with CLAUDE.md, README explaining the repo's purpose, and project-specific conventions
+- [x] Task 1.2: Create `~/code/training-platform-exercises/` -- Terraform project skeleton with CLAUDE.md, README, and module structure
+- [x] Task 1.3: Create `~/code/training-pm-exercises/` -- Product backlog structure plus a small development codebase (Java/Spring app) with CLAUDE.md and README
 
 ### Verification
 

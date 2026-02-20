@@ -13,9 +13,12 @@ The context window is Claude's working memory -- everything the model can refere
 | Model             | Standard Window | Extended (Beta) | Long Context Pricing             |
 | ----------------- | --------------- | --------------- | -------------------------------- |
 | Claude Opus 4.6   | 200K tokens     | 1M tokens       | 2x input, 1.5x output above 200K |
-| Claude Sonnet 4.5 | 200K tokens     | 1M tokens       | 2x input, 1.5x output above 200K |
-| Claude Sonnet 4   | 200K tokens     | 1M tokens       | 2x input, 1.5x output above 200K |
+| Claude Sonnet 4.6 | 200K tokens     | 1M tokens       | 2x input, 1.5x output above 200K |
+| Claude Sonnet 4.5 | 200K tokens     | --              | --                               |
+| Claude Sonnet 4   | 200K tokens     | --              | --                               |
 | Claude Haiku 4.5  | 200K tokens     | --              | --                               |
+
+The 1M token context window is currently available in beta on the API only. Standard claude.ai and Claude Code users access the 200K window unless the beta header is explicitly enabled.
 
 **Key insight:** [Prompt caching]({{< relref "prompt-caching" >}}) reduces the _cost_ of repeated content, but every token still occupies context window _space_. You can afford a 20,000-token system prompt financially, but those 20,000 tokens are unavailable for conversation content regardless.
 
@@ -124,8 +127,6 @@ In practice with tool use (file reads, edits, searches):
 
 Real sessions hit limits faster than expected because file reads and search results are token-expensive. A single `Read` of a large file can consume as much context as 50 simple messages.
 
----
-
 ## Context Awareness
 
 Claude Sonnet 4.5 and Haiku 4.5 have a built-in feature called **context awareness** -- the model tracks its remaining context budget throughout a conversation.
@@ -145,8 +146,6 @@ After each tool call, Claude receives an update:
 This allows Claude to make informed decisions about how to use remaining context -- whether to read a large file, delegate to a subagent, or wrap up work before running out of space.
 
 **Note:** Opus 4.6 does not currently have context awareness -- it does not receive token budget updates. This means Opus may be less efficient at self-managing context in very long sessions.
-
----
 
 ## When Context Runs Out: Compaction
 
@@ -229,8 +228,6 @@ Compaction is a lossy process. The summary captures the gist of the conversation
 
 **This is the fundamental trade-off**: compaction lets sessions run indefinitely, but at the cost of detail from earlier in the conversation. The more compactions occur, the more historical detail is lost.
 
----
-
 ## Strategies for Context Efficiency
 
 ### Reduce System Prompt Overhead
@@ -249,12 +246,12 @@ Subagents (the Task tool) run in their own isolated context windows. This means 
 
 ```text
 Main context (200K)          Subagent context (200K)
-┌────────────────────┐       ┌────────────────────┐
+┌────────────────────┐       ┌─────────────────────┐
 │ System prompt      │       │ Subagent prompt     │
 │ Conversation       │  ──→  │ 40 turns of         │
 │ "Delegate task"    │       │ investigation       │
 │ ← Summary result   │  ←──  │ Detailed findings   │
-│ Continue working   │       └────────────────────┘
+│ Continue working   │       └─────────────────────┘
 └────────────────────┘
 ```
 
@@ -282,11 +279,9 @@ Context accumulates faster in unfocused sessions:
 
 ### Use the 1M Context Window
 
-For sessions that will be particularly long or context-heavy, the 1M token context window provides 5x the standard capacity. This is available in beta for Opus 4.6, Sonnet 4.5, and Sonnet 4 (requires usage tier 4).
+For sessions that will be particularly long or context-heavy, the 1M token context window provides 5x the standard capacity. This is available in beta for Opus 4.6 and Sonnet 4.6, accessible via the API with the beta header enabled.
 
-**Trade-off:** Tokens above 200K are billed at 2x input and 1.5x output pricing. For very long sessions, the extra cost may be worth avoiding compaction and its associated information loss.
-
----
+**Trade-off:** Tokens above 200K are billed at 2x input and 1.5x output pricing. For very long sessions, the extra cost may be worth avoiding compaction and its associated information loss. Note that the 1M window is API-only for now -- standard claude.ai and Claude Code users remain on the 200K window.
 
 ## How Context Flows in Claude Code
 
@@ -353,8 +348,6 @@ Usage
 
 Each cycle preserves the system prompt (unchanged) and a summary of previous work. Recent turns are kept verbatim. The effective "memory depth" shrinks with each compaction.
 
----
-
 ## Subagents as Context Management
 
 ### How Subagents Help
@@ -387,8 +380,6 @@ Subagents run in their own isolated context windows. By delegating work to a sub
 
 **Rule of thumb:** If the task will involve reading 3+ files or take more than 10 turns, delegate to a subagent.
 
----
-
 ## Extended Thinking and Context
 
 When extended thinking is enabled, thinking tokens count toward the context window during the current turn but are **automatically stripped from subsequent turns**. This means:
@@ -400,8 +391,6 @@ When extended thinking is enabled, thinking tokens count toward the context wind
 This design prevents thinking tokens from eating into your context budget over time. A turn with 10,000 thinking tokens will briefly use that space, but it's freed for the next turn.
 
 **Exception:** During tool use, thinking blocks must be preserved until the tool use cycle completes. They're stripped after the cycle ends.
-
----
 
 ## Why Claude Code Seems Inconsistent
 
@@ -442,8 +431,6 @@ But the model doesn't have a bad memory -- it has no memory at all beyond its cu
 
 The model's reasoning capability is constant. What varies is how much relevant information it can see. Managing that visibility is the primary skill that separates effective Claude Code usage from frustrating sessions.
 
----
-
 ## Practical Tips
 
 1. **Watch the context indicator** -- Claude Code shows context usage. Pay attention to it approaching limits.
@@ -461,8 +448,6 @@ The model's reasoning capability is constant. What varies is how much relevant i
 7. **Use the system prompt wisely** -- Instructions in CLAUDE.md persist across compactions. If there's something Claude must always know during a session, put it in CLAUDE.md rather than repeating it in messages (which can be compacted away).
 
 8. **Save state to memory before long sessions** -- If you're approaching what might be a compaction, save important decisions and state to your memory files. Memory files survive compaction because they're re-read from disk, not from conversation history.
-
----
 
 ## References
 

@@ -156,15 +156,15 @@ The tools are complementary. Exact matching is faster and has no dependencies; s
 
 ## Comparison
 
-| Capability                  | Claude Code                               | Copilot                         |
-| --------------------------- | ----------------------------------------- | ------------------------------- |
-| File injection strategy     | Reactive (grep/glob/read)                 | Static index retrieval          |
-| Subagent isolation          | Yes (Task tool)                           | No                              |
-| Conversation compaction     | Automatic + manual `/compact`             | Not applicable                  |
-| Prompt caching              | Yes                                       | Yes (implementation varies)     |
-| Persistent memory           | CLAUDE.md, auto memory (opt-in)           | Limited (recent history only).  |
-| Context window              | 200K standard; 1M beta (Opus 4.6, Sonnet 4.6 via API) | Varies by model/plan|
-| Pre-filtering search        | Reactive grep/glob (ripgrep configurable) | Static index retrieval          |
+| Capability                  | Claude Code                               | Copilot                          |
+| --------------------------- | ----------------------------------------- | -------------------------------- |
+| File injection strategy     | Reactive (grep/glob/read)                 | Static index retrieval           |
+| Subagent isolation          | Yes (Task tool)                           | No                               |
+| Conversation compaction     | Automatic + manual `/compact`             | Not applicable                   |
+| Prompt caching              | Yes                                       | Yes (implementation varies)      |
+| Persistent memory           | CLAUDE.md, auto memory (opt-in)           | Limited (recent history only).   |
+| Context window              | 200K standard; 1M beta (Opus 4.6, Sonnet 4.6 via API) | Varies by model/plan |
+| Pre-filtering search        | Reactive grep/glob (ripgrep configurable) | Static index retrieval           |
 
 ## Where Both Fall Short
 

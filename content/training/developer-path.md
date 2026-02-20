@@ -25,7 +25,7 @@ git clone https://github.com/malston/training-dev-exercises.git ~/code/training-
 cd ~/code/training-dev-exercises
 ```
 
-Each module has a matching exercise directory (`exercises/01-prompting/`, `exercises/02-verification/`, etc.) with instructions, starter code, and scenarios.
+Each module has a matching exercise directory (`modules/01-prompting/`, `modules/02-verification/`, etc.) with instructions, starter code, and scenarios.
 
 ## Module 1: Prompting Foundations
 
@@ -61,7 +61,7 @@ supported_countries list from config/regions.json."
 
 ### Exercises
 
-**Starter materials:** `exercises/01-prompting/` in the [exercise repo](https://github.com/malston/training-dev-exercises)
+**Starter materials:** `modules/01-prompting/` in the [exercise repo](https://github.com/malston/training-dev-exercises)
 
 1. Take a recent task you completed with Claude and rewrite the prompt to be more specific. Compare what you asked vs. what would have been ideal.
 2. Write a prompt that includes: the exact file to modify, the behavior to add, the reason for the change, and how to verify it works.
@@ -98,7 +98,7 @@ The highest-leverage improvement you can make is giving Claude _something to ver
 
 ### Exercises
 
-**Starter materials:** `exercises/02-verification/` in the [exercise repo](https://github.com/malston/training-dev-exercises) -- uses the `feature/task-search` branch with a broken search implementation and failing tests.
+**Starter materials:** `modules/02-verification/` in the [exercise repo](https://github.com/malston/training-dev-exercises) -- uses the `feature/task-search` branch with a broken search implementation and failing tests.
 
 1. Pick a task and include an explicit verification step in your prompt: "After implementing, run `go test ./...` and fix any failures."
 2. Try the explore-plan-implement pattern: use plan mode to investigate a codebase question, then switch to implementation.
@@ -138,7 +138,7 @@ Then implement the minimal code to make it pass."
 
 ### Exercises
 
-**Starter materials:** `exercises/03-tdd/` in the [exercise repo](https://github.com/malston/training-dev-exercises) -- includes test stubs for a statistics service (Red phase) and a mock test to replace with real dependencies.
+**Starter materials:** `modules/03-tdd/` in the [exercise repo](https://github.com/malston/training-dev-exercises) -- includes test stubs for a statistics service (Red phase) and a mock test to replace with real dependencies.
 
 1. Pick a function you need to write. Write the test first, run it to confirm it fails, then ask Claude to implement the function.
 2. Try context isolation: write tests in one Claude session, then open a fresh session to implement against those tests.
@@ -179,7 +179,7 @@ Good: "POST /api/orders returns 500. The log shows:
 
 ### Exercises
 
-**Starter materials:** `exercises/04-debugging/` in the [exercise repo](https://github.com/malston/training-dev-exercises) -- uses the `buggy` branch with 4 intentional bugs and a BUGS.md describing symptoms.
+**Starter materials:** `modules/04-debugging/` in the [exercise repo](https://github.com/malston/training-dev-exercises) -- uses the `buggy` branch with 4 intentional bugs and a BUGS.md describing symptoms.
 
 1. Find a bug in your codebase. Before asking Claude to fix it, write down: (a) what should happen, (b) what actually happens, (c) the exact error output. Then share all three.
 2. Practice backward tracing: given an error at line X, ask Claude to trace the data flow backward to find where the bad value originates.
@@ -220,7 +220,7 @@ Good: "POST /api/orders returns 500. The log shows:
 
 ### Exercises
 
-**Starter materials:** `exercises/05-context/` in the [exercise repo](https://github.com/malston/training-dev-exercises) -- exercises for measuring token costs, delegating to subagents, and persisting decisions.
+**Starter materials:** `modules/05-context/` in the [exercise repo](https://github.com/malston/training-dev-exercises) -- exercises for measuring token costs, delegating to subagents, and persisting decisions.
 
 1. Check your current context usage: look at the token counter and note how much context a single file read consumes.
 2. Try using a subagent for research: "Use a subagent to find all usages of `parseConfig` across the codebase and summarize the patterns."
@@ -254,7 +254,7 @@ Good: "POST /api/orders returns 500. The log shows:
 
 ### Exercises
 
-**Starter materials:** `exercises/06-extensions/` in the [exercise repo](https://github.com/malston/training-dev-exercises) -- uses the auth module for subagent exploration and includes example slash commands in `.claude/commands/`.
+**Starter materials:** `modules/06-extensions/` in the [exercise repo](https://github.com/malston/training-dev-exercises) -- uses the auth module for subagent exploration and includes example slash commands in `.claude/commands/`.
 
 1. Delegate a research task to a subagent: "Use a subagent to explore the authentication module and summarize the key patterns."
 2. Read the description of a skill you use frequently. Understand how its auto-triggering description works.

@@ -62,7 +62,7 @@ The repo contains a working Spring Boot order service with a mock product backlo
 
 ### Exercises
 
-**Starter materials:** `exercises/01-claude-code-basics/` in the [exercise repo](https://github.com/malston/training-pm-exercises) -- exercises using the order service and mock backlog to explore Claude Code's capabilities and limitations.
+**Starter materials:** `modules/01-claude-code-basics/` in the [exercise repo](https://github.com/malston/training-pm-exercises) -- exercises using the order service and mock backlog to explore Claude Code's capabilities and limitations.
 
 1. Compare two backlog tickets (`backlog/features/001-order-search.md` vs `backlog/features/002-order-history-export.md`). Which gives Claude enough information to implement correctly? What's missing from the vague one?
 2. Review `backlog/features/005-customer-dashboard.md` -- this feature is too large for one Claude Code session. List which parts you'd split into separate tasks.
@@ -94,7 +94,7 @@ The repo contains a working Spring Boot order service with a mock product backlo
 
 ### Exercises
 
-**Starter materials:** `exercises/02-design-principles/` in the [exercise repo](https://github.com/malston/training-pm-exercises) -- exercises using the order service to practice recognizing separation of concerns, YAGNI violations, and naming quality.
+**Starter materials:** `modules/02-design-principles/` in the [exercise repo](https://github.com/malston/training-pm-exercises) -- exercises using the order service to practice recognizing separation of concerns, YAGNI violations, and naming quality.
 
 1. Read `OrderService.java` and `OrderController.java`. Why are they separate? If you needed to add email notifications on cancellation, which file changes?
 2. Review the full backlog and classify each ticket as "need now," "might need later," or "over-engineering." Which would you defer?
@@ -138,7 +138,7 @@ The repo contains a working Spring Boot order service with a mock product backlo
 
 ### Exercises
 
-**Starter materials:** `exercises/03-architecture/` in the [exercise repo](https://github.com/malston/training-pm-exercises) -- trade-off analysis, reversibility assessment, and scalability exercises using the order service.
+**Starter materials:** `modules/03-architecture/` in the [exercise repo](https://github.com/malston/training-pm-exercises) -- trade-off analysis, reversibility assessment, and scalability exercises using the order service.
 
 1. The order service uses an in-memory H2 database. Fill out the trade-off table comparing H2 vs. PostgreSQL for production. What questions would you ask the team?
 2. Rate 5 proposed changes (from adding an endpoint to switching frameworks) as easy, moderate, or hard to reverse.
@@ -174,7 +174,7 @@ The repo contains a working Spring Boot order service with a mock product backlo
 
 ### Exercises
 
-**Starter materials:** `exercises/04-coding-standards/` in the [exercise repo](https://github.com/malston/training-pm-exercises) -- exercises for reviewing CLAUDE.md, checking PR consistency, and making the business case for standards.
+**Starter materials:** `modules/04-coding-standards/` in the [exercise repo](https://github.com/malston/training-pm-exercises) -- exercises for reviewing CLAUDE.md, checking PR consistency, and making the business case for standards.
 
 1. Read the project's `CLAUDE.md`. What conventions does it enforce? What's missing that would help Claude produce more consistent code?
 2. Compare the three PR branches against the patterns in main. Which is most consistent? Which deviates the most?
@@ -225,10 +225,10 @@ This feels backwards at first, but it produces code that's verified by definitio
 
 ### Exercises
 
-**Starter materials:** `exercises/05-tdd/` in the [exercise repo](https://github.com/malston/training-pm-exercises) -- before/after examples of vague vs. testable acceptance criteria, plus the mock product backlog in `backlog/`.
+**Starter materials:** `modules/05-tdd/` in the [exercise repo](https://github.com/malston/training-pm-exercises) -- before/after examples of vague vs. testable acceptance criteria, plus the mock product backlog in `backlog/`.
 
 1. Read through the mock product backlog. Identify which tickets have testable acceptance criteria and which don't. What's missing from the vague ones?
-2. Pick a vague ticket and rewrite its acceptance criteria using Given/When/Then format. Compare your version with the examples in `exercises/05-tdd/examples.md`.
+2. Pick a vague ticket and rewrite its acceptance criteria using Given/When/Then format. Compare your version with the examples in `modules/05-tdd/examples.md`.
 3. Review the existing `OrderControllerTest.java` -- can you trace each test back to a specific acceptance criterion? Where are the gaps?
 
 ### Reference
@@ -279,7 +279,7 @@ A ticket that works poorly:
 
 ### Exercises
 
-**Starter materials:** `exercises/06-workflows/` in the [exercise repo](https://github.com/malston/training-pm-exercises) -- three PR branches for review practice and a feature decomposition exercise using the customer dashboard spec.
+**Starter materials:** `modules/06-workflows/` in the [exercise repo](https://github.com/malston/training-pm-exercises) -- three PR branches for review practice and a feature decomposition exercise using the customer dashboard spec.
 
 1. Review the three PR branches (`feature/order-search`, `feature/order-notifications`, `feature/bulk-status`). For each, compare the PR changes against the corresponding backlog ticket. Which PR matches its ticket? Which has scope creep? Which is missing acceptance criteria?
 2. Take the customer dashboard feature spec (`backlog/features/005-customer-dashboard.md`) and decompose it into smaller tasks using the template in `templates/decomposition-template.md`. Each task should be independently verifiable.

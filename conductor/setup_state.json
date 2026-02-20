@@ -1,0 +1,42 @@
+{
+  "status": "complete",
+  "project_type": "brownfield",
+  "current_section": "complete",
+  "current_question": 0,
+  "completed_sections": [
+    "product",
+    "guidelines",
+    "tech_stack",
+    "workflow",
+    "styleguides"
+  ],
+  "answers": {
+    "project_name": "claude-code-wiki",
+    "description": "A knowledge base wiki about Claude Code internals, patterns, and usage",
+    "problem": "Teams adopting Claude Code lack practical guidance beyond the official getting-started docs",
+    "users": "Both -- developers for guides, platform engineers for enterprise rollout",
+    "goals": "Practical depth, enterprise readiness, stay current",
+    "voice": "Dry, precise, direct",
+    "principles": "Accuracy over speed, show don't tell, no filler, depth over breadth, keep it current, enterprise-ready",
+    "tech_stack": "Hugo SSG + Markdown + GitHub Actions + GitHub Pages + shell scripting + style checking",
+    "deploy": "GitHub Pages via GitHub Actions + local preview (hugo serve)",
+    "tdd": "Flexible -- tests for scripts and tooling when applicable",
+    "commits": "Descriptive messages, no format required",
+    "review": "Required for non-trivial changes",
+    "verification": "Only at track completion",
+    "style_guides": "Markdown + Shell",
+    "conventions": "Reference STYLE-GUIDE.md"
+  },
+  "files_created": [
+    "conductor/index.md",
+    "conductor/product.md",
+    "conductor/product-guidelines.md",
+    "conductor/tech-stack.md",
+    "conductor/workflow.md",
+    "conductor/tracks.md",
+    "conductor/code_styleguides/markdown.md",
+    "conductor/code_styleguides/shell.md"
+  ],
+  "started_at": "2026-02-20T14:56:00Z",
+  "last_updated": "2026-02-20T14:58:00Z"
+}

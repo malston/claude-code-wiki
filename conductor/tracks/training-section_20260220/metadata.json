@@ -1,0 +1,16 @@
+{
+  "id": "training-section_20260220",
+  "title": "Training Section",
+  "type": "feature",
+  "status": "pending",
+  "created": "2026-02-20T15:00:00Z",
+  "updated": "2026-02-20T15:00:00Z",
+  "phases": {
+    "total": 3,
+    "completed": 0
+  },
+  "tasks": {
+    "total": 9,
+    "completed": 0
+  }
+}

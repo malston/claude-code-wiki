@@ -18,14 +18,14 @@ Technical literacy for product managers working alongside developers who use Cla
 
 ## Exercise Materials
 
-Clone the exercise repo for hands-on practice alongside Modules 5 and 6:
+Clone the exercise repo for hands-on practice alongside each module:
 
 ```bash
 git clone https://github.com/malston/training-pm-exercises.git ~/code/training-pm-exercises
 cd ~/code/training-pm-exercises
 ```
 
-The repo contains a working Spring Boot order service with a mock product backlog, PR branches for review practice, and exercises for writing testable acceptance criteria and decomposing features.
+The repo contains a working Spring Boot order service with a mock product backlog, PR branches for review practice, and exercises for each module from understanding Claude Code to feature decomposition.
 
 ## Module 1: How Claude Code Works
 
@@ -60,6 +60,14 @@ The repo contains a working Spring Boot order service with a mock product backlo
 - Why do specific requirements produce better results? (Answer: Claude doesn't have your business context -- you have to provide it)
 - Why should large features be broken into smaller tasks? (Answer: context window limits, verification at each step, easier to course-correct)
 
+### Exercises
+
+**Starter materials:** `exercises/01-claude-code-basics/` in the [exercise repo](https://github.com/malston/training-pm-exercises) -- exercises using the order service and mock backlog to explore Claude Code's capabilities and limitations.
+
+1. Compare two backlog tickets (`backlog/features/001-order-search.md` vs `backlog/features/002-order-history-export.md`). Which gives Claude enough information to implement correctly? What's missing from the vague one?
+2. Review `backlog/features/005-customer-dashboard.md` -- this feature is too large for one Claude Code session. List which parts you'd split into separate tasks.
+3. Pair with a developer on a Claude Code session and note 3 things that surprised you about how it works.
+
 ### Reference
 
 - [Context Management]({{< relref "internals/context-management" >}}) -- How Claude Code's context window works and why it matters for task sizing
@@ -83,6 +91,14 @@ The repo contains a working Spring Boot order service with a mock product backlo
 - When estimating work, factor in maintenance cost -- not just initial implementation
 - When requesting features, be specific about the need, not the solution. "Users need to filter orders by date range" is better than "add a date picker component"
 - When reviewing designs, ask: "What happens when we need to change X?" If the answer involves touching many unrelated files, the design may have a coupling problem
+
+### Exercises
+
+**Starter materials:** `exercises/02-design-principles/` in the [exercise repo](https://github.com/malston/training-pm-exercises) -- exercises using the order service to practice recognizing separation of concerns, YAGNI violations, and naming quality.
+
+1. Read `OrderService.java` and `OrderController.java`. Why are they separate? If you needed to add email notifications on cancellation, which file changes?
+2. Review the full backlog and classify each ticket as "need now," "might need later," or "over-engineering." Which would you defer?
+3. Check the `feature/order-notifications` branch -- the developer added email, SMS, and Slack when the ticket only asked for email. Which design principle does this violate?
 
 ### Reference
 
@@ -120,6 +136,14 @@ The repo contains a working Spring Boot order service with a mock product backlo
 - Separate "we need this now" from "we might need this later" -- YAGNI applies to architecture too
 - When developers say "this will take longer because we need to do it right," ask what "right" means in concrete terms (e.g., "we need to add a database migration" vs. "we need to redesign the service boundary")
 
+### Exercises
+
+**Starter materials:** `exercises/03-architecture/` in the [exercise repo](https://github.com/malston/training-pm-exercises) -- trade-off analysis, reversibility assessment, and scalability exercises using the order service.
+
+1. The order service uses an in-memory H2 database. Fill out the trade-off table comparing H2 vs. PostgreSQL for production. What questions would you ask the team?
+2. Rate 5 proposed changes (from adding an endpoint to switching frameworks) as easy, moderate, or hard to reverse.
+3. Review the customer dashboard feature spec and ask: if user volume grows 10x, which parts break first?
+
 ## Module 4: Coding Standards
 
 **Goal:** Understand why coding standards exist and what to look for when teams adopt them.
@@ -147,6 +171,14 @@ The repo contains a working Spring Boot order service with a mock product backlo
 - Support your team's investment in CLAUDE.md and coding standards -- they directly improve the quality of AI-generated code
 - When evaluating Claude Code's output, ask whether it follows the team's patterns. If it doesn't, the CLAUDE.md may need updating.
 - Don't push for "just ship it" when code doesn't match standards. Inconsistent code costs more to maintain later than it saves now.
+
+### Exercises
+
+**Starter materials:** `exercises/04-coding-standards/` in the [exercise repo](https://github.com/malston/training-pm-exercises) -- exercises for reviewing CLAUDE.md, checking PR consistency, and making the business case for standards.
+
+1. Read the project's `CLAUDE.md`. What conventions does it enforce? What's missing that would help Claude produce more consistent code?
+2. Compare the three PR branches against the patterns in main. Which is most consistent? Which deviates the most?
+3. Make the business case for investing a sprint in CLAUDE.md and coding standards documentation instead of building features.
 
 ### Reference
 

@@ -2,7 +2,9 @@
   "id": "training-section_20260220",
   "title": "Training Section",
   "type": "feature",
-  "status": "pending",
+  "status": "in_progress",
+  "current_phase": 1,
+  "current_task": "1.1",
   "created": "2026-02-20T15:00:00Z",
   "updated": "2026-02-20T15:00:00Z",
   "phases": {

@@ -3,7 +3,7 @@
 **Track ID:** training-section_20260220
 **Spec:** [spec.md](./spec.md)
 **Created:** 2026-02-20
-**Status:** [ ] Not Started
+**Status:** [~] In Progress
 
 ## Overview
 
@@ -15,14 +15,14 @@ Set up the training section structure and integrate it into site navigation.
 
 ### Tasks
 
-- [ ] Task 1.1: Create `content/training/_index.md` with section title, description, and links to role-based articles
-- [ ] Task 1.2: Add Training section link to home page navigation (`content/_index.md`)
-- [ ] Task 1.3: Verify Hugo builds and training section appears in sidebar and home page
+- [x] Task 1.1: Create `content/training/_index.md` with section title, description, and links to role-based articles
+- [x] Task 1.2: Add Training section link to home page navigation (`content/_index.md`)
+- [x] Task 1.3: Verify Hugo builds and training section appears in sidebar and home page
 
 ### Verification
 
-- [ ] `hugo serve` shows Training in sidebar navigation
-- [ ] Home page links to Training section
+- [x] `hugo serve` shows Training in sidebar navigation
+- [x] Home page links to Training section
 
 ## Phase 2: Content Development
 
@@ -47,7 +47,7 @@ Final checks before merge.
 
 - [ ] Task 3.1: Run `hugo --gc --minify` to verify production build
 - [ ] Task 3.2: Verify all training articles are accessible from section index and home page
-- [ ] Task 3.3: Create feature branch, commit, and open PR
+- [ ] Task 3.3: Commit final changes and open PR (feature branch created upfront)
 
 ### Verification
 

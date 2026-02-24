@@ -2,8 +2,6 @@
 
 How content in this wiki should read. These rules apply to all contributors -- human and AI.
 
----
-
 ## Voice
 
 ### Guides and Reference
@@ -18,8 +16,6 @@ Guides teach. They should be dry, precise, and direct. The reader came to learn 
 ### Perspectives
 
 Perspective pieces are opinion. They can have personality, take positions, and use a conversational tone. But the same structural rules apply -- no filler, no slop.
-
----
 
 ## Anti-Patterns to Avoid
 
@@ -101,8 +97,6 @@ Good: "Most developers don't read documentation."
 
 The sentence after these openers is usually the one you should lead with.
 
----
-
 ## Structural Rules
 
 ### Say Things Once
@@ -150,17 +144,14 @@ Fine: "set MAX_THINKING_TOKENS to control the thinking budget"
       (this is a documented, user-facing setting)
 ```
 
----
-
 ## Formatting
 
+- Do not use horizontal rules (`---`) as section dividers. Headings provide sufficient visual separation; the Hugo template adds spacing between sections. Reserve `---` for YAML front-matter delimiters only.
 - Use `--` for dashes, not `—` (em dash character)
 - Use fenced code blocks with language identifiers for all code and examples (use `text` for plain-text examples, `bash` for commands, etc.)
 - Use ASCII diagrams over Mermaid for simple structures
 - Keep tables for genuinely tabular data, not for lists disguised as tables
 - Headers should describe content, not tease it ("How Context Windows Work" not "The Surprising Truth About Context")
-
----
 
 ## Punctuation and Grammar
 
@@ -168,8 +159,6 @@ Fine: "set MAX_THINKING_TOKENS to control the thinking budget"
 - Title case for headers: "How Context Windows Work" not "How context windows work"
 - One space after periods
 - Contractions are fine in all content types
-
----
 
 ## What Good Wiki Content Looks Like
 

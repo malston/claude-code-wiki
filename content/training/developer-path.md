@@ -83,7 +83,7 @@ The core Claude Code workflow is a four-step loop:
 Instruct → Claude acts → Review output → Course-correct
 ```
 
-The highest-leverage improvement you can make is giving Claude _something to verify against_. Without verification, Claude guesses whether it succeeded. With verification, it knows.
+Give Claude _something to verify against_. Without verification, Claude guesses whether it succeeded.
 
 **Types of verification:**
 
@@ -195,7 +195,7 @@ Good: "POST /api/orders returns 500. The log shows:
 
 ### Key Concepts
 
-**Every message has a cost.** Claude's context window (200K tokens) holds the system prompt, conversation history, and tool results. File reads are the biggest variable cost -- a 1,000-line file consumes ~8,000-10,000 tokens.
+**Every message has a cost.** Claude's context window (200K tokens) holds the system prompt, conversation history, and tool results. File reads are the biggest variable cost -- a 500-line file consumes ~3,000-5,000 tokens.
 
 **Compaction is lossy.** When the context window fills (75-92%), older messages get summarized automatically. Key decisions and recent turns are preserved, but details from earlier in the session are lost.
 
@@ -214,7 +214,7 @@ Good: "POST /api/orders returns 500. The log shows:
 **Strategies for long sessions:**
 
 - Write key decisions to CLAUDE.md or project files -- they persist across compaction and sessions
-- Use subagents for research -- a 40-turn investigation costs ~500 tokens as a summary vs. ~20K in the main context
+- Use subagents for research -- a 40-turn investigation returns ~500 tokens as a summary vs. up to ~20K in the main context
 - Read targeted line ranges instead of whole files when you know where the relevant code is
 - Use `/compact` proactively before starting a different phase of work
 
@@ -244,7 +244,7 @@ Good: "POST /api/orders returns 500. The log shows:
 | Skills      | Inject knowledge and workflow into main context | Adds to main context                                   | You want Claude to follow a pattern      |
 | MCP Servers | External stateless tools                        | Tool definitions in system prompt + results in context | You need external data (APIs, databases) |
 
-**Subagents save context.** Each subagent gets its own 200K token window. A 40-turn investigation delegated to a subagent returns a summary to your main context -- 97.5% savings.
+**Subagents save context.** Each subagent gets its own 200K token window. A 40-turn investigation delegated to a subagent returns a summary to your main context -- up to 97.5% context savings.
 
 **Skills inject behavior.** A skill auto-activates based on its description, then injects instructions into the main context. Use skills for "how to approach this kind of task" -- coding standards, review checklists, workflow patterns.
 

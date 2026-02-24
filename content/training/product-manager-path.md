@@ -5,7 +5,7 @@ weight: 3
 
 # Product Manager Path
 
-Technical literacy for product managers working alongside developers who use Claude Code. This path won't make you a developer -- it will give you enough understanding of software design, architecture, coding standards, and TDD to make informed decisions and participate in developer workflows.
+Technical literacy for product managers working alongside developers who use Claude Code. This path covers enough software design, architecture, coding standards, and TDD for you to make informed decisions and participate in developer workflows.
 
 | Module                                                                            | Focus                                       | Prerequisites |
 | --------------------------------------------------------------------------------- | ------------------------------------------- | ------------- |
@@ -78,7 +78,7 @@ The repo contains a working Spring Boot order service with a mock product backlo
 
 ### Key Concepts
 
-**Software is expensive to change, not to write.** The initial implementation is the cheap part. Maintenance -- reading, understanding, debugging, extending -- accounts for the majority of the cost over a system's lifetime. Every design decision should favor long-term maintainability.
+**The initial implementation is the cheap part.** Maintenance -- reading, understanding, debugging, extending -- accounts for the majority of the cost over a system's lifetime. Every design decision should favor long-term maintainability.
 
 **YAGNI: You Aren't Gonna Need It.** Don't build for hypothetical future requirements. Build what's needed now, and only add complexity when there's a concrete need. This applies to your roadmap too -- resist feature requests that "might be useful someday."
 
@@ -110,7 +110,7 @@ The repo contains a working Spring Boot order service with a mock product backlo
 
 ### Key Concepts
 
-**Architecture is about trade-offs, not right answers.** Every architectural choice has costs and benefits. "Should we use microservices or a monolith?" isn't a question with a universal answer -- it depends on team size, deployment needs, and complexity.
+**Every architectural choice has costs and benefits.** There's no universal answer to "microservices or monolith" -- it depends on team size, deployment needs, and complexity.
 
 **Common trade-offs you'll encounter:**
 
@@ -146,7 +146,7 @@ The repo contains a working Spring Boot order service with a mock product backlo
 
 ### Reference
 
-- [Architecture Overview]({{< relref "enterprise-rollout/00-overview/architecture-overview" >}}) -- Trade-off analysis frameworks and architectural decision patterns
+- [Architecture Overview]({{< relref "enterprise-rollout/00-overview/architecture-overview" >}}) -- Claude Code request flow and enterprise configuration hierarchy
 
 ## Module 4: Coding Standards
 
@@ -162,7 +162,7 @@ The repo contains a working Spring Boot order service with a mock product backlo
 2. **Naming** -- variable names, function names, file names. Describes what code does. Good names make code self-documenting.
 3. **Patterns** -- how to handle errors, structure tests, organize modules. These require judgment and team agreement.
 
-**Claude Code follows project standards automatically** when they're documented in CLAUDE.md. A well-maintained CLAUDE.md file is one of the highest-leverage investments a team can make -- it tells Claude exactly how to write code that matches the project's conventions.
+**Claude Code follows project standards automatically** when they're documented in CLAUDE.md. A well-maintained CLAUDE.md file directly controls the quality of AI-generated code -- it tells Claude exactly how to write code that matches the project's conventions.
 
 **Style guides and CLAUDE.md are related but different:**
 

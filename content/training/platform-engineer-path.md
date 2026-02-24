@@ -25,7 +25,7 @@ git clone https://github.com/malston/training-platform-exercises.git ~/code/trai
 cd ~/code/training-platform-exercises
 ```
 
-Each module has a matching exercise directory (`exercises/02-infrastructure/`, `exercises/03-configuration/`, etc.) with Terraform configs, policy files, and scenarios.
+Each module has a matching exercise directory (`exercises/01-architecture/`, `exercises/02-infrastructure/`, etc.) with Terraform configs, policy files, and scenarios.
 
 ## Module 1: Architecture
 
@@ -81,7 +81,7 @@ A managed CLAUDE.md (~500 tokens) is always loaded before project-level instruct
 
 - No training on your data
 - No data sharing with Anthropic
-- 30-day minimum log retention (zero-day retention not available on Bedrock)
+- Configurable log retention (check your Bedrock region's data retention options -- defaults and minimums vary)
 - All traffic stays within your VPC via PrivateLink
 
 **Inference profiles are required.** Bedrock uses cross-region model identifiers, not bare model IDs:

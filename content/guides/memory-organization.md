@@ -23,7 +23,7 @@ Claude Code's memory system is a hierarchy of markdown files loaded into the sys
 
 ### Memory as Context Engineering
 
-Memory organization is a context engineering problem. Every file loaded into the system prompt competes for space in a finite context window, and research shows that irrelevant context doesn't just waste tokens -- it degrades the model's ability to follow the instructions that matter (see [Context Cost of Memory](#context-cost-of-memory)).
+Memory organization is a context engineering problem. Every file loaded into the system prompt competes for space in a finite context window. Irrelevant context wastes tokens and degrades the model's ability to follow the instructions that matter (see [Context Cost of Memory](#context-cost-of-memory)).
 
 The memory hierarchy maps to four operations identified in [LangChain's context engineering framework](https://blog.langchain.com/context-engineering-for-agents/):
 
@@ -510,7 +510,7 @@ This way all worktrees share the same personal instructions.
 
 Every memory file loaded into the system prompt consumes context window space on every message. This is the same cost model described in the [token optimization]({{< relref "/internals/token-optimization" >}}) and [system prompt]({{< relref "/internals/system-prompt" >}}) articles.
 
-The cost isn't just budget -- it's accuracy. Research on context degradation (Chroma Research, 2025) found that adding irrelevant context to the window degrades model performance. Even a single piece of similar-but-wrong information reduces accuracy, though severity varies by model and task, and multiple distractors compound the damage. Generic instructions like "write clean code" aren't just wasting tokens -- they're noise that competes for attention with your specific, actionable rules.
+The cost is both budget and accuracy. Research on context degradation (Chroma Research, 2025) found that adding irrelevant context to the window degrades model performance. Even a single piece of similar-but-wrong information reduces accuracy, though severity varies by model and task, and multiple distractors compound the damage. Generic instructions like "write clean code" waste tokens and compete for attention with your specific, actionable rules.
 
 ```text
 Context window budget (e.g., 200K tokens):
@@ -647,7 +647,7 @@ The rules directory exists for this case. Use it when CLAUDE.md exceeds ~100 lin
 
 10. **Prefer fewer, focused files over many small ones** -- Each file adds discovery overhead. Group related rules together unless they have different path scopes.
 
-11. **Use clear section headers as retrieval anchors** -- Research shows that dense prose is harder for models to retrieve specific information from than well-structured content with distinct headers. Use `##` headers, bullet lists, and tables rather than long paragraphs in CLAUDE.md files.
+11. **Use clear section headers as retrieval anchors** -- Well-structured content with distinct headers, bullet lists, and tables is easier for models to navigate and retrieve from than long paragraphs in CLAUDE.md files.
 
 12. **Put durable instructions in files, not conversation** -- Instructions mentioned in chat may be lost or diluted during [auto-compaction](#how-memory-interacts-with-compaction). If an instruction needs to persist across a long session, it belongs in a memory file.
 

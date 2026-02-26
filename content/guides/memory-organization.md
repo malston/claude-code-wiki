@@ -21,40 +21,63 @@ Claude Code's memory system is a hierarchy of markdown files loaded into the sys
 | **Auto memory**     | `~/.claude/projects/<project>/memory/` | You + this project | First 200 lines of MEMORY.md                    | Just you              |
 | **Child CLAUDE.md** | Subdirectories of working dir          | Context-dependent  | On demand (when Claude reads files in that dir) | Team (via git)        |
 
----
+### Memory as Context Engineering
+
+Memory organization is a context engineering problem. Every file loaded into the system prompt competes for space in a finite context window. Irrelevant context wastes tokens and degrades the model's ability to follow the instructions that matter (see [Context Cost of Memory](#context-cost-of-memory)).
+
+The memory hierarchy maps to four operations identified in [LangChain's context engineering framework](https://blog.langchain.com/context-engineering-for-agents/):
+
+| Operation    | What It Does                              | Memory Feature                                                         |
+| ------------ | ----------------------------------------- | ---------------------------------------------------------------------- |
+| **Write**    | Save information outside the window       | Auto memory, MEMORY.md topic files, CLAUDE.local.md                    |
+| **Select**   | Pull relevant information into the window | Path-specific rules, `@imports`, on-demand child CLAUDE.md             |
+| **Compress** | Retain only essential tokens              | The 200-line limit, keeping files concise, periodic review             |
+| **Isolate**  | Split context across separate scopes      | User vs project vs local scope, rules directory, topic file separation |
+
+The rest of this guide covers how to apply these operations through Claude Code's memory system.
 
 ## Table of Contents
 
-- [The Memory Hierarchy](#the-memory-hierarchy)
-  - [How Files Are Discovered](#how-files-are-discovered)
-  - [Precedence](#precedence)
-  - [What Goes Where](#what-goes-where)
-- [User Memory (~/.claude/CLAUDE.md)](#user-memory)
-  - [What Belongs Here](#what-belongs-in-user-memory)
-  - [Keeping It Tight](#keeping-user-memory-tight)
-- [Project Memory (./CLAUDE.md)](#project-memory)
-  - [Team-Shared Instructions](#team-shared-instructions)
-  - [Project vs User Scope](#project-vs-user-scope)
-  - [The /init Bootstrap](#the-init-bootstrap)
-- [Project Local Memory (./CLAUDE.local.md)](#project-local-memory)
-- [The Rules Directory (.claude/rules/)](#the-rules-directory)
-  - [When to Use Rules vs CLAUDE.md](#when-to-use-rules-vs-claudemd)
-  - [Path-Specific Rules](#path-specific-rules)
-  - [Organizing with Subdirectories](#organizing-with-subdirectories)
-  - [Sharing Rules Across Projects](#sharing-rules-across-projects)
-- [Auto Memory](#auto-memory)
-  - [What Claude Remembers](#what-claude-remembers)
-  - [The 200-Line Limit](#the-200-line-limit)
-  - [Topic Files](#topic-files)
-- [Imports (@path Syntax)](#imports)
-- [Context Cost of Memory](#context-cost-of-memory)
-  - [Every Line Has a Price](#every-line-has-a-price)
-  - [Measuring Your Memory Footprint](#measuring-your-memory-footprint)
-- [Common Mistakes](#common-mistakes)
-- [Best Practices](#best-practices)
-- [References](#references)
-
----
+- [Memory Organization: Structuring CLAUDE.md and Rules for Scale](#memory-organization-structuring-claudemd-and-rules-for-scale)
+  - [Executive Summary](#executive-summary)
+    - [Memory as Context Engineering](#memory-as-context-engineering)
+  - [Table of Contents](#table-of-contents)
+  - [The Memory Hierarchy](#the-memory-hierarchy)
+    - [How Files Are Discovered](#how-files-are-discovered)
+    - [Precedence](#precedence)
+    - [What Goes Where](#what-goes-where)
+  - [User Memory](#user-memory)
+    - [What Belongs in User Memory](#what-belongs-in-user-memory)
+    - [Keeping User Memory Tight](#keeping-user-memory-tight)
+  - [Project Memory](#project-memory)
+    - [Team-Shared Instructions](#team-shared-instructions)
+    - [Project vs User Scope](#project-vs-user-scope)
+    - [The /init Bootstrap](#the-init-bootstrap)
+  - [Project Local Memory](#project-local-memory)
+  - [The Rules Directory](#the-rules-directory)
+    - [When to Use Rules vs CLAUDE.md](#when-to-use-rules-vs-claudemd)
+    - [Path-Specific Rules](#path-specific-rules)
+    - [Organizing with Subdirectories](#organizing-with-subdirectories)
+    - [Sharing Rules Across Projects](#sharing-rules-across-projects)
+  - [Auto Memory](#auto-memory)
+    - [What Claude Remembers](#what-claude-remembers)
+    - [The 200-Line Limit](#the-200-line-limit)
+    - [Topic Files](#topic-files)
+    - [Reviewing Auto Memory for Accuracy](#reviewing-auto-memory-for-accuracy)
+    - [Managing Auto Memory](#managing-auto-memory)
+  - [Imports](#imports)
+  - [Context Cost of Memory](#context-cost-of-memory)
+    - [Every Line Has a Price](#every-line-has-a-price)
+    - [Measuring Your Memory Footprint](#measuring-your-memory-footprint)
+    - [How Memory Interacts with Compaction](#how-memory-interacts-with-compaction)
+  - [Common Mistakes](#common-mistakes)
+    - [Putting Everything in User CLAUDE.md](#putting-everything-in-user-claudemd)
+    - [Generic Instructions That Add No Value](#generic-instructions-that-add-no-value)
+    - [Contradictory Rules Across Scopes](#contradictory-rules-across-scopes)
+    - [Not Using CLAUDE.local.md](#not-using-claudelocalmd)
+    - [Monolithic CLAUDE.md in Large Projects](#monolithic-claudemd-in-large-projects)
+  - [Best Practices](#best-practices)
+  - [References](#references)
 
 ## The Memory Hierarchy
 
@@ -62,7 +85,7 @@ Claude Code's memory system is a hierarchy of markdown files loaded into the sys
 
 Claude Code discovers memory files by walking up the directory tree from your working directory to the filesystem root, loading any CLAUDE.md or CLAUDE.local.md files it finds along the way:
 
-```
+```text
 Working directory: /home/user/projects/my-app/src/
 
 Files loaded (bottom to top):
@@ -80,29 +103,31 @@ Plus:
 
 Child directories (below your working directory) are different -- their CLAUDE.md files load on demand only when Claude reads files in those directories, not at startup.
 
+The `--add-dir` flag gives Claude access to additional directories outside your working directory. By default, CLAUDE.md files from added directories are not loaded. Set `CLAUDE_CODE_ADDITIONAL_DIRECTORIES_CLAUDE_MD=1` to include their memory files.
+
 ### Precedence
 
-More specific instructions take precedence over broader ones:
+The general rule: more specific instructions take precedence over broader ones. The official docs confirm two specifics:
 
-```
-Highest priority
-    │
-    ├── Managed policy (organization-wide, IT-managed)
-    ├── Project CLAUDE.md (repo root)
-    ├── Project rules (.claude/rules/*.md)
-    ├── User CLAUDE.md (~/.claude/CLAUDE.md)
-    ├── User rules (~/.claude/rules/*.md)
-    ├── Project local (CLAUDE.local.md)
-    └── Auto memory (MEMORY.md)
-    │
-Lowest priority
-```
+- **Managed policy** overrides everything -- it represents organizational requirements that individual projects shouldn't override
+- **Project rules** take priority over **user-level rules** -- user rules are loaded first, then project rules override where they conflict
 
-In practice, conflicts are rare if you put the right content at the right scope. Managed policy overrides everything because it represents organizational requirements (security policies, compliance rules) that individual projects shouldn't override.
+Beyond that, the docs don't establish a strict total ordering. In practice, conflicts are rare if you put the right content at the right scope:
+
+```text
+Managed policy          (organization-wide, highest priority)
+    ↓ overrides
+Project-level files     (CLAUDE.md, .claude/rules/*.md)
+    ↓ overrides
+User-level files        (~/.claude/CLAUDE.md, ~/.claude/rules/*.md)
+
+CLAUDE.local.md         (personal + project-specific, gitignored)
+Auto memory (MEMORY.md) (Claude's notes, lowest priority)
+```
 
 ### What Goes Where
 
-```
+```text
 Is this instruction...
 │
 ├── Required by your organization?
@@ -123,8 +148,6 @@ Is this instruction...
 └── Something Claude learned during a session?
     → Auto memory (Claude manages this)
 ```
-
----
 
 ## User Memory
 
@@ -172,8 +195,6 @@ Your user CLAUDE.md applies to every project. A 200-line file means ~1,500-2,000
 - Move language-specific rules to `~/.claude/rules/` with path conditions
 - Keep only truly universal preferences in the main file
 - Review periodically -- remove rules that are no longer relevant
-
----
 
 ## Project Memory
 
@@ -223,7 +244,7 @@ Notice what this covers:
 
 ### Project vs User Scope
 
-```
+```text
 User CLAUDE.md (your preferences):
   "Always use conventional commits"
   "Run tests before committing"
@@ -241,13 +262,11 @@ The user scope is about **how you work**. The project scope is about **how this 
 
 For new projects, the `/init` command generates a starter CLAUDE.md based on the codebase:
 
-```
+```sh
 > /init
 ```
 
 This analyzes your project structure and creates a reasonable starting point. Review and edit it -- the generated file is a starting point, not a finished product.
-
----
 
 ## Project Local Memory
 
@@ -277,8 +296,6 @@ This file is automatically gitignored -- it's for your personal preferences in a
 - My local Postgres uses password "dev" for testing
 ```
 
----
-
 ## The Rules Directory
 
 **Location:** `./.claude/rules/*.md` (project) or `~/.claude/rules/*.md` (user)
@@ -287,7 +304,7 @@ This file is automatically gitignored -- it's for your personal preferences in a
 
 The rules directory solves a specific problem: when a single CLAUDE.md gets too large or when different rules apply to different parts of the codebase.
 
-```
+```text
 When CLAUDE.md is enough:
   - Small to medium projects
   - Under ~100 lines of instructions
@@ -318,7 +335,7 @@ paths:
 - Include OpenAPI documentation comments on all handlers
 ```
 
-This rule only loads when Claude is working with TypeScript files under `src/api/` or `src/middleware/`. It doesn't burden the context when working on other parts of the codebase.
+This rule only loads when Claude is working with TypeScript files under `src/api/` or `src/middleware/`. It doesn't burden the context when working on other parts of the codebase. This is a **pull-based** pattern -- the model gets information when it reaches for relevant files, rather than having everything pushed into the window upfront. Since irrelevant context degrades performance (see [Context Cost of Memory](#context-cost-of-memory)), loading rules only when they're relevant avoids that penalty.
 
 Supported glob patterns:
 
@@ -337,7 +354,7 @@ Rules without a `paths` field load unconditionally -- same as being in CLAUDE.md
 
 For larger projects, organize rules into subdirectories:
 
-```
+```sh
 .claude/rules/
 ├── frontend/
 │   ├── react.md           # React component conventions
@@ -367,13 +384,15 @@ ln -s ~/company-standards/security.md .claude/rules/security.md
 
 This is useful for organizations with coding standards that apply across multiple repositories without needing managed policy.
 
----
+Everything above -- CLAUDE.md, CLAUDE.local.md, and the rules directory -- is **instructions you write for Claude**. You author them, you version-control them, and you decide what goes in. The next section covers a different category: **notes Claude writes for itself**.
 
 ## Auto Memory
 
 **Location:** `~/.claude/projects/<project>/memory/`
 
-Auto memory is different from CLAUDE.md files -- it's notes Claude writes for itself, not instructions you write for Claude. Claude records patterns it discovers, debugging insights, architecture notes, and your preferences as it works.
+Auto memory is Claude's own scratchpad. Where CLAUDE.md files contain your instructions, auto memory contains Claude's notes -- patterns it discovers, debugging insights, architecture decisions, and your preferences as it observes them. You can ask Claude to remember things, and you can edit the files directly, but Claude is the primary author.
+
+Each project's memory directory is derived from the git repository root, so all subdirectories within the same repo share one auto memory directory. Git worktrees get separate memory directories.
 
 ### What Claude Remembers
 
@@ -386,7 +405,7 @@ As Claude works, it may save things like:
 
 You can also tell Claude to remember specific things:
 
-```
+```text
 "remember that we use pnpm, not npm"
 "save to memory that the API tests require a local Redis instance"
 ```
@@ -395,7 +414,7 @@ You can also tell Claude to remember specific things:
 
 Only the first 200 lines of `MEMORY.md` are loaded into the system prompt. Everything beyond line 200 is invisible at session start. This is a hard constraint -- MEMORY.md must be concise.
 
-```
+```sh
 ~/.claude/projects/<project>/memory/
 ├── MEMORY.md           # Index file (first 200 lines loaded)
 ├── debugging.md        # Detailed debugging notes
@@ -428,9 +447,30 @@ Topic files let you store detailed notes without hitting the 200-line limit:
 - See [api-conventions.md](api-conventions.md) for endpoint design decisions
 ```
 
-The pattern: MEMORY.md has the summary, topic files have the detail. Claude reads topic files when it needs them.
+The pattern: MEMORY.md has the summary, topic files have the detail. Claude reads topic files when it needs them. This is another pull-based pattern -- keeping the always-loaded index small while letting Claude retrieve detailed context on demand.
 
----
+### Reviewing Auto Memory for Accuracy
+
+Auto memory can capture wrong information. If Claude records an incorrect debugging insight, an outdated architectural assumption, or a misunderstood convention, that error gets loaded into every subsequent session. In context engineering terms, this is **context poisoning** -- false information in the window that the model treats as ground truth and builds on.
+
+Review MEMORY.md periodically for accuracy, not just length. Look for:
+
+- **Outdated facts** -- Architecture that changed, dependencies that were replaced, conventions that evolved
+- **Incorrect conclusions** -- Debugging insights from sessions where the root cause turned out to be something else
+- **Stale preferences** -- Tool or workflow preferences you've since changed
+
+A wrong memory entry is worse than a missing one. Missing information means Claude has to discover it; wrong information means Claude confidently acts on something false.
+
+### Managing Auto Memory
+
+Use `/memory` during a session to open any memory file (including MEMORY.md) in your editor for direct editing. The `/memory` selector also includes a toggle to enable or disable auto memory.
+
+Auto memory is enabled by default. To disable it:
+
+- **Per session:** Use `/memory` and toggle it off
+- **Per project:** Set `"autoMemoryEnabled": false` in `.claude/settings.json`
+- **All projects:** Set `"autoMemoryEnabled": false` in `~/.claude/settings.json`
+- **Environment override:** `CLAUDE_CODE_DISABLE_AUTO_MEMORY=1` overrides all other settings (useful for CI)
 
 ## Imports
 
@@ -464,24 +504,24 @@ CLAUDE.local.md only exists in one worktree. If you work across git worktrees, u
 
 This way all worktrees share the same personal instructions.
 
----
-
 ## Context Cost of Memory
 
 ### Every Line Has a Price
 
 Every memory file loaded into the system prompt consumes context window space on every message. This is the same cost model described in the [token optimization]({{< relref "/internals/token-optimization" >}}) and [system prompt]({{< relref "/internals/system-prompt" >}}) articles.
 
-```
+The cost is both budget and accuracy. Research on context degradation (Chroma Research, 2025) found that adding irrelevant context to the window degrades model performance. Even a single piece of similar-but-wrong information reduces accuracy, though severity varies by model and task, and multiple distractors compound the damage. Generic instructions like "write clean code" waste tokens and compete for attention with your specific, actionable rules.
+
+```text
 Context window budget (e.g., 200K tokens):
-┌─────────────────────────────────────────────────┐
+┌──────────────────────────────────────────────────┐
 │ Core instructions + tool defs    (~6,000-10,000) │
 │ CLAUDE.md files (all scopes)     (~2,000-4,000)  │ ← Your memory files
 │ Skill + subagent catalogs        (~3,000-5,000)  │
 │ Auto memory (MEMORY.md)          (~200-500)      │
 │ Conversation history             (grows)         │
 │ Available for work               (what's left)   │
-└─────────────────────────────────────────────────┘
+└──────────────────────────────────────────────────┘
 ```
 
 [Prompt caching]({{< relref "/internals/prompt-caching" >}}) means this content is cheap to re-send (90% discount after the first message), but the context window space is consumed regardless. A 4,000-token CLAUDE.md costs ~$0.40 per 200-message session with caching -- not expensive, but those 4,000 tokens are unavailable for actual work.
@@ -490,7 +530,7 @@ Context window budget (e.g., 200K tokens):
 
 A rough estimate of your CLAUDE.md token cost:
 
-```
+```text
 Lines of markdown × ~7 tokens/line ≈ total tokens
 
 Example:
@@ -502,15 +542,28 @@ Example:
   Total:                             ≈ 3,630 tokens
 ```
 
-This is a rough estimate -- actual token count depends on content density. Code blocks and tables tend to use more tokens per line than plain text.
+This is a rough estimate -- actual token count depends on content density. Code blocks and tables tend to use roughly 1.5-2x more tokens per line than plain prose due to syntax characters, pipe delimiters, and alignment markers. If your CLAUDE.md is table-heavy, budget accordingly.
 
----
+### How Memory Interacts with Compaction
+
+When a conversation approaches the context window limit, Claude Code triggers auto-compaction -- the conversation history is summarized to free space. Memory files are structurally exempt from this process. Compaction only operates on the messages array (conversation turns, tool results, code output). The system prompt -- which contains CLAUDE.md, rules, and MEMORY.md -- exists outside that array and is never modified or removed by compaction.
+
+This has a practical implication: instructions that must persist across a long session belong in memory files, not in conversation. If you tell Claude "always run tests before committing" in chat, that instruction may be lost or diluted when conversation history is summarized. If you put it in CLAUDE.md, it's present at full fidelity on every message.
+
+```text
+What compaction touches:
+  Conversation turns          → summarized
+  Tool results and code output → compressed or dropped
+
+What compaction does not touch:
+  System prompt (CLAUDE.md, rules, MEMORY.md) → unchanged
+```
 
 ## Common Mistakes
 
 ### Putting Everything in User CLAUDE.md
 
-```
+```text
 Bad: 230-line user CLAUDE.md with project-specific Go rules,
      React rules, Python rules, and team conventions
 
@@ -522,7 +575,7 @@ Your user CLAUDE.md loads in every project. Go conventions shouldn't load when y
 
 ### Generic Instructions That Add No Value
 
-```
+```text
 Bad:  "Write clean, maintainable code"
       "Follow best practices"
       "Use proper error handling"
@@ -538,7 +591,7 @@ Every line in CLAUDE.md should tell Claude something it wouldn't know or do by d
 
 ### Contradictory Rules Across Scopes
 
-```
+```text
 User CLAUDE.md:    "Use 4-space indentation"
 Project CLAUDE.md: "Use tabs for indentation"
 ```
@@ -547,7 +600,7 @@ When rules conflict, Claude has to guess which one wins. More specific (project)
 
 ### Not Using CLAUDE.local.md
 
-```
+```text
 Bad: Committing your personal sandbox URLs and local ports
      to the team's CLAUDE.md
 
@@ -559,7 +612,7 @@ CLAUDE.local.md exists specifically for personal, project-specific preferences t
 
 ### Monolithic CLAUDE.md in Large Projects
 
-```
+```text
 Bad: 500-line CLAUDE.md covering frontend, backend, database,
      deployment, testing, and security all in one file
 
@@ -571,8 +624,6 @@ Good: Focused CLAUDE.md (~50-80 lines) with architecture overview
 ```
 
 The rules directory exists for this case. Use it when CLAUDE.md exceeds ~100 lines or when rules apply to different parts of the codebase.
-
----
 
 ## Best Practices
 
@@ -596,7 +647,9 @@ The rules directory exists for this case. Use it when CLAUDE.md exceeds ~100 lin
 
 10. **Prefer fewer, focused files over many small ones** -- Each file adds discovery overhead. Group related rules together unless they have different path scopes.
 
----
+11. **Use clear section headers as retrieval anchors** -- Well-structured content with distinct headers, bullet lists, and tables is easier for models to navigate and retrieve from than long paragraphs in CLAUDE.md files.
+
+12. **Put durable instructions in files, not conversation** -- Instructions mentioned in chat may be lost or diluted during [auto-compaction](#how-memory-interacts-with-compaction). If an instruction needs to persist across a long session, it belongs in a memory file.
 
 ## References
 
@@ -605,3 +658,5 @@ The rules directory exists for this case. Use it when CLAUDE.md exceeds ~100 lin
 - [Token Optimization Article]({{< relref "/internals/token-optimization" >}}) -- Managing per-message token overhead
 - [Context Management Article]({{< relref "/internals/context-management" >}}) -- Working within the context window budget
 - [Effective Prompting Article]({{< relref "effective-prompting" >}}) -- CLAUDE.md as persistent prompting
+- [Chroma Research: Context Rot](https://research.trychroma.com/context-rot) -- Research on how irrelevant context degrades LLM accuracy
+- [LangChain: Context Engineering for Agents](https://blog.langchain.com/context-engineering-for-agents/) -- The write/select/compress/isolate framework

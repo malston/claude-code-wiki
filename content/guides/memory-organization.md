@@ -64,6 +64,7 @@ The rest of this guide covers how to apply these operations through Claude Code'
     - [The 200-Line Limit](#the-200-line-limit)
     - [Topic Files](#topic-files)
     - [Reviewing Auto Memory for Accuracy](#reviewing-auto-memory-for-accuracy)
+    - [Managing Auto Memory](#managing-auto-memory)
   - [Imports](#imports)
   - [Context Cost of Memory](#context-cost-of-memory)
     - [Every Line Has a Price](#every-line-has-a-price)
@@ -102,25 +103,27 @@ Plus:
 
 Child directories (below your working directory) are different -- their CLAUDE.md files load on demand only when Claude reads files in those directories, not at startup.
 
+The `--add-dir` flag gives Claude access to additional directories outside your working directory. By default, CLAUDE.md files from added directories are not loaded. Set `CLAUDE_CODE_ADDITIONAL_DIRECTORIES_CLAUDE_MD=1` to include their memory files.
+
 ### Precedence
 
-More specific instructions take precedence over broader ones:
+The general rule: more specific instructions take precedence over broader ones. The official docs confirm two specifics:
+
+- **Managed policy** overrides everything -- it represents organizational requirements that individual projects shouldn't override
+- **Project rules** take priority over **user-level rules** -- user rules are loaded first, then project rules override where they conflict
+
+Beyond that, the docs don't establish a strict total ordering. In practice, conflicts are rare if you put the right content at the right scope:
 
 ```text
-Highest priority
-    │
-    ├── Managed policy (organization-wide, IT-managed)
-    ├── Project CLAUDE.md (repo root)
-    ├── Project rules (.claude/rules/*.md)
-    ├── User CLAUDE.md (~/.claude/CLAUDE.md)
-    ├── User rules (~/.claude/rules/*.md)
-    ├── Project local (CLAUDE.local.md)
-    └── Auto memory (MEMORY.md)
-    │
-Lowest priority
-```
+Managed policy          (organization-wide, highest priority)
+    ↓ overrides
+Project-level files     (CLAUDE.md, .claude/rules/*.md)
+    ↓ overrides
+User-level files        (~/.claude/CLAUDE.md, ~/.claude/rules/*.md)
 
-In practice, conflicts are rare if you put the right content at the right scope. Managed policy overrides everything because it represents organizational requirements (security policies, compliance rules) that individual projects shouldn't override.
+CLAUDE.local.md         (personal + project-specific, gitignored)
+Auto memory (MEMORY.md) (Claude's notes, lowest priority)
+```
 
 ### What Goes Where
 
@@ -389,6 +392,8 @@ Everything above -- CLAUDE.md, CLAUDE.local.md, and the rules directory -- is **
 
 Auto memory is Claude's own scratchpad. Where CLAUDE.md files contain your instructions, auto memory contains Claude's notes -- patterns it discovers, debugging insights, architecture decisions, and your preferences as it observes them. You can ask Claude to remember things, and you can edit the files directly, but Claude is the primary author.
 
+Each project's memory directory is derived from the git repository root, so all subdirectories within the same repo share one auto memory directory. Git worktrees get separate memory directories.
+
 ### What Claude Remembers
 
 As Claude works, it may save things like:
@@ -455,6 +460,17 @@ Review MEMORY.md periodically for accuracy, not just length. Look for:
 - **Stale preferences** -- Tool or workflow preferences you've since changed
 
 A wrong memory entry is worse than a missing one. Missing information means Claude has to discover it; wrong information means Claude confidently acts on something false.
+
+### Managing Auto Memory
+
+Use `/memory` during a session to open any memory file (including MEMORY.md) in your editor for direct editing. The `/memory` selector also includes a toggle to enable or disable auto memory.
+
+Auto memory is enabled by default. To disable it:
+
+- **Per session:** Use `/memory` and toggle it off
+- **Per project:** Set `"autoMemoryEnabled": false` in `.claude/settings.json`
+- **All projects:** Set `"autoMemoryEnabled": false` in `~/.claude/settings.json`
+- **Environment override:** `CLAUDE_CODE_DISABLE_AUTO_MEMORY=1` overrides all other settings (useful for CI)
 
 ## Imports
 

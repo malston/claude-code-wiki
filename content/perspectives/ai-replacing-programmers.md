@@ -34,7 +34,7 @@ When you build for yourself, you unconsciously work around bugs. You know not to
 
 At a recent vibe coding meetup, the recurring theme was "why can't it just do what I ask" and "what do I do when I get stuck and don't have skills in that area." One PM wanted to do customer-facing website changes but didn't want to touch "the backend" -- what she called the HTML/CSS. "If I had wanted to become a software engineer I would have."
 
-That's not laziness. It's a reasonable expectation that the tools have created and can't yet fulfill. She wants engineering outcomes without engineering knowledge, and the marketing around these tools told her that was the deal. The gap between that promise and reality is where most vibe coding projects die -- not at the start, when everything feels magical, but three weeks in, when you're staring at an error message that means nothing to you and the AI keeps suggesting fixes that make it worse.
+That reaction reflects a reasonable expectation the tools created and can't yet fulfill. She wants engineering outcomes without engineering knowledge, and the marketing around these tools told her that was the deal. The gap between that promise and reality is where most vibe coding projects die. Not at the start, when everything feels magical. Three weeks in, when you're staring at an error message that means nothing to you and the AI keeps suggesting fixes that make it worse.
 
 The tools amplify what you already understand. They don't substitute for understanding. You can absolutely code yourself into a corner on larger projects, and the less you know about the corner, the deeper you get before you realize you're stuck.
 
@@ -42,7 +42,7 @@ The tools amplify what you already understand. They don't substitute for underst
 
 SaaS isn't expensive because writing code is hard. It's expensive because reliability, security, compliance, support, integrations, multi-tenancy, and operations are hard. None of that goes away because someone vibe-coded a Streamlit app.
 
-More people building means more demand for the infrastructure underneath -- auth services, database hosting, payment processing, deployment pipelines. The picks-and-shovels layer grows.
+More people building means more demand for the infrastructure underneath: auth services, database hosting, payment processing, deployment pipelines. The picks-and-shovels layer grows.
 
 ## The Historical Pattern
 
@@ -65,7 +65,7 @@ AI isn't giving people that runway. The adaptive mechanisms that made previous w
 
 The right pattern for using AI effectively: treat it as a capable assistant that needs direction. Write stories from the product owner perspective, break work into digestible chunks, provide architectural guidance. That produces real results vs. "build me an app."
 
-The people who thrive will be the ones who understand the system and use the tools to accelerate within it. Product sense and technical understanding stop being separate career tracks -- they become the same job. The bar goes up because more people are competing for fewer roles, and the roles themselves demand range that used to be spread across a team.
+The people who thrive will be the ones who understand the system and use the tools to accelerate within it. The roles now demand both product sense and technical depth. The bar goes up because more people are competing for fewer of these roles, and each role demands range that used to be spread across a team.
 
 People who skip the understanding part will keep hitting walls. Faster.
 
@@ -75,9 +75,9 @@ The job market for junior devs is shrinking. Companies that used to hire five ju
 
 Senior engineers didn't appear from nowhere. They were junior engineers who spent years making mistakes in production, debugging systems they didn't fully understand, and slowly building the judgment that makes them valuable. If you cut off that pipeline, you're consuming a resource you're not replenishing. The industry is eating its seed corn.
 
-The counterargument: juniors are learning theory and using these tools in school, so they'll arrive pre-accelerated. There's truth in that. Theory matters more now, not less -- when code generation is cheap, the ability to evaluate whether generated code is correct becomes the differentiating skill. But theory without operational reps produces people who can pass an interview and struggle in production. The tools don't substitute for the years of "I shipped a bug at 3 AM and learned why input validation matters."
+The counterargument: juniors are learning theory and using these tools in school, so they'll arrive pre-accelerated. There's truth in that. Theory matters more now, not less. When code generation is cheap, the ability to evaluate whether generated code is correct becomes the differentiating skill. But theory without operational reps produces people who can pass an interview and struggle in production. The tools don't substitute for the years of "I shipped a bug at 3 AM and learned why input validation matters."
 
-This is the structural crack underneath the "who wins" argument. The winners need deep system understanding. Deep system understanding comes from years of practice. The market is eliminating the entry point for that practice. Something has to give -- either companies find ways to grow juniors alongside AI tools, or the talent pipeline thins until senior engineers become scarce enough that the economics reverse.
+This is the structural crack underneath the "who wins" argument. The winners need deep system understanding. Deep system understanding comes from years of practice. The market is eliminating the entry point for that practice. Something has to give. Either companies find ways to grow juniors alongside AI tools, or the talent pipeline thins until senior engineers become scarce enough that the economics reverse.
 
 ## The Bottleneck Shift
 
@@ -90,7 +90,7 @@ The bottleneck has moved. Code production used to be the constraint. Now it's:
 
 Until the verification and integration pipeline catches up to the generation pipeline, faster code production just moves the pileup downstream.
 
-The tooling is starting to address this. Agentic coding tools -- ones that read your codebase, run commands, inspect logs, execute tests, and iterate -- are a fundamentally different paradigm than pasting code into a chat window and evaluating the response. The complaint that "AI can't see your metrics, logs, or traces" is exactly what tool use and [MCP servers]({{< relref "guides/essential-plugins" >}}) solve. The generic-advice problem is real, but the fix is giving the tools specific context -- [codebase access]({{< relref "guides/memory-organization" >}}), project history, runtime state -- so they can give specific answers. The bottleneck moves again when the verification tools catch up to the generation tools.
+The tooling is starting to address this. Agentic coding tools that read your codebase, run commands, inspect logs, execute tests, and iterate represent a fundamentally different paradigm than pasting code into a chat window and evaluating the response. The complaint that "AI can't see your metrics, logs, or traces" is exactly what tool use and [MCP servers]({{< relref "guides/essential-plugins" >}}) solve. The generic-advice problem is real, but the fix is giving the tools specific context: [memory organization]({{< relref "guides/memory-organization" >}}), project history, runtime state. The bottleneck moves again when the verification tools catch up to the generation tools.
 
 ## The Wrong Optimization
 

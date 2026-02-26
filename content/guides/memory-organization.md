@@ -383,11 +383,17 @@ ln -s ~/company-standards/security.md .claude/rules/security.md
 
 This is useful for organizations with coding standards that apply across multiple repositories without needing managed policy.
 
+---
+
+Everything above -- CLAUDE.md, CLAUDE.local.md, and the rules directory -- is **instructions you write for Claude**. You author them, you version-control them, and you decide what goes in. The next section covers a different category: **notes Claude writes for itself**.
+
+---
+
 ## Auto Memory
 
 **Location:** `~/.claude/projects/<project>/memory/`
 
-Auto memory is different from CLAUDE.md files -- it's notes Claude writes for itself, not instructions you write for Claude. Claude records patterns it discovers, debugging insights, architecture notes, and your preferences as it works.
+Auto memory is Claude's own scratchpad. Where CLAUDE.md files contain your instructions, auto memory contains Claude's notes -- patterns it discovers, debugging insights, architecture decisions, and your preferences as it observes them. You can ask Claude to remember things, and you can edit the files directly, but Claude is the primary author.
 
 ### What Claude Remembers
 

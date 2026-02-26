@@ -10,15 +10,15 @@ weight: 3
 
 Hooks let you run code at specific points in Claude Code's lifecycle -- before a tool runs, after a file is edited, when a session starts, when Claude finishes responding. This cookbook provides copy-paste-ready recipes for the most common use cases: auto-formatting, command safety, test gates, notifications, logging, and context injection. Each recipe includes the hook configuration, the script, and notes on gotchas.
 
-| Category          | Example Recipes                                       | Hook Events Used                  |
-| ----------------- | ----------------------------------------------------- | --------------------------------- |
-| **Code quality**  | Auto-format, lint on save, type check                 | PostToolUse (Edit\|Write)         |
-| **Safety**        | Block dangerous commands, protect files, branch guard | PreToolUse (Bash, Edit\|Write)    |
-| **Verification**  | Test gates, build checks, stop-until-passing          | PostToolUse, Stop, TaskCompleted  |
-| **Notifications** | Desktop alerts, Slack, TTS                            | Notification                      |
-| **Logging**       | Command audit, session tracking, debug wrapper        | PostToolUse, SessionStart         |
-| **Context**       | Inject reminders, load state, persist env vars        | SessionStart, UserPromptSubmit    |
-| **Quality gates** | Block stopping until tasks complete, review checks    | Stop, SubagentStop, TaskCompleted |
+| Category          | Example Recipes                                       | Hook Events Used                               |
+| ----------------- | ----------------------------------------------------- | ---------------------------------------------- |
+| **Code quality**  | Auto-format, lint on save, type check                 | PostToolUse (Edit\|Write)                      |
+| **Safety**        | Block dangerous commands, protect files, branch guard | PreToolUse (Bash, Edit\|Write)                 |
+| **Verification**  | Test gates, build checks, stop-until-passing          | PostToolUse, Stop, TaskCompleted               |
+| **Notifications** | Desktop alerts, Slack, TTS                            | Notification                                   |
+| **Logging**       | Command audit, session tracking, debug wrapper        | PostToolUse, SessionStart                      |
+| **Context**       | Inject reminders, load state, persist env vars        | SessionStart, UserPromptSubmit                 |
+| **Quality gates** | Block stopping until tasks complete, auto code review | Stop, SubagentStop, TaskCompleted, PostToolUse |
 
 ---
 
@@ -65,6 +65,7 @@ Hooks let you run code at specific points in Claude Code's lifecycle -- before a
 - [Recipes: Quality Gates](#recipes-quality-gates)
   - [Prompt-Based Stop Gate](#prompt-based-stop-gate)
   - [Agent-Based Verification Gate](#agent-based-verification-gate)
+  - [Stop Hook Code Review](#stop-hook-code-review)
 - [Combining Hooks](#combining-hooks)
   - [A Complete Safety Setup](#a-complete-safety-setup)
   - [A Complete CI-Style Setup](#a-complete-ci-style-setup)
@@ -1093,6 +1094,172 @@ For thorough verification that requires reading files or running commands.
 ```
 
 Agent hooks are more expensive (they spawn a full subagent with tool access) but can perform multi-step verification.
+
+### Stop Hook Code Review
+
+Trigger a semantic code review subagent when Claude finishes, covering only files modified since the last review. This combines two hooks: a PostToolUse hook that tracks which files were modified, and a Stop hook that triggers the review.
+
+The pattern addresses a specific problem: Claude ignores system prompt instructions as context fills up. A separate review agent with a fresh context window catches violations that the main agent missed or rationalized away.
+
+**File tracking script** (`.claude/hooks/review-tracker.sh`):
+
+```bash
+#!/usr/bin/env bash
+set -euo pipefail
+
+LOG_DIR="/tmp"
+INPUT=$(cat)
+SESSION_ID=$(echo "$INPUT" | jq -r '.session_id // empty')
+ACTION="${1:-}"
+
+if [ -z "$SESSION_ID" ]; then
+  exit 0
+fi
+
+LOG_FILE="${LOG_DIR}/review-log-${SESSION_ID}.jsonl"
+
+log_file_modified() {
+  local FILE_PATH
+  FILE_PATH=$(echo "$INPUT" | jq -r '.tool_input.file_path // empty')
+  if [ -z "$FILE_PATH" ]; then
+    exit 0
+  fi
+
+  # Filter by extension -- customize for your project
+  case "$FILE_PATH" in
+    *.ts|*.tsx|*.js|*.jsx|*.go|*.py) ;;
+    *) exit 0 ;;
+  esac
+
+  jq -nc --arg f "$FILE_PATH" --arg e "file_modified" \
+    '{event: $e, file: $f}' >> "$LOG_FILE"
+}
+
+check_and_review() {
+  if [ ! -f "$LOG_FILE" ]; then
+    exit 0
+  fi
+
+  # Find files modified since the last review
+  local LAST_REVIEW_LINE
+  LAST_REVIEW_LINE=$(grep -n '"review_triggered"' "$LOG_FILE" | tail -1 | cut -d: -f1)
+
+  local FILES
+  if [ -n "$LAST_REVIEW_LINE" ]; then
+    FILES=$(tail -n +"$((LAST_REVIEW_LINE + 1))" "$LOG_FILE" \
+      | jq -r 'select(.event == "file_modified") | .file' \
+      | sort -u)
+  else
+    FILES=$(jq -r 'select(.event == "file_modified") | .file' "$LOG_FILE" \
+      | sort -u)
+  fi
+
+  if [ -z "$FILES" ]; then
+    exit 0
+  fi
+
+  # Mark this review point
+  jq -nc '{event: "review_triggered"}' >> "$LOG_FILE"
+
+  # Build file list for output
+  local FILE_LIST
+  FILE_LIST=$(echo "$FILES" | sed 's/^/- /')
+
+  cat >&2 <<REVIEW_MSG
+CODE REVIEW REQUIRED
+
+Files modified since last review:
+${FILE_LIST}
+
+INSTRUCTION: Use the Task tool with a code review subagent. Pass the file list as the prompt. The subagent should read each file and check against the project's review rules in .claude/review-rules.md (fall back to general quality checks if the file doesn't exist).
+
+After receiving findings:
+1. Show all findings to the user.
+2. For each finding, either fix it or explain why you're skipping it.
+   Valid skip reasons: impossible to satisfy (you tried), conflicts with explicit requirements, or genuinely makes code worse.
+   Not valid: "too much time", "out of scope", "pre-existing code", "would require large refactor."
+   When uncertain, ask the user.
+3. Summarize: what was fixed, what was skipped and why.
+REVIEW_MSG
+
+  exit 2
+}
+
+case "$ACTION" in
+  log) log_file_modified ;;
+  review) check_and_review ;;
+  *) exit 0 ;;
+esac
+```
+
+**Configuration:**
+
+```json
+{
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Write|Edit|MultiEdit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": ".claude/hooks/review-tracker.sh log"
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": ".claude/hooks/review-tracker.sh review"
+          }
+        ]
+      }
+    ]
+  }
+}
+```
+
+**Review rules file** (`.claude/review-rules.md`):
+
+Define project-specific rules that the review subagent checks. The subagent reads this file and applies only what's listed -- no improvisation. Example rules for a TypeScript project:
+
+```text
+## No Dangerous Fallback Values
+
+Nullish coalescing (`??`) with a hardcoded default for required values
+hides bugs. Required values should fail fast, not silently default.
+
+Exceptions: feature flags defaulting to `false`, optional display
+values with sensible defaults.
+
+## No Generic Category Names
+
+Files named utils.ts, helpers.ts, handlers.ts, or directories named
+/shared are dumping grounds. Name files after what they contain.
+
+## Domain Logic Stays in Domain Objects
+
+Application services that query an entity's state and then make
+decisions based on it are leaking domain logic. The entity should
+protect its own invariants.
+```
+
+**How it works:**
+
+1. Every Write/Edit/MultiEdit appends the modified file path to a JSONL log keyed by session ID.
+2. When Claude stops, the Stop hook checks whether any files were modified since the last review.
+3. If yes, it emits an instruction to stderr and exits 2, which blocks Claude and forces it to read the output.
+4. Claude spawns a review subagent (Haiku is appropriate -- fast and cheap for focused rule-checking) that reads each file and checks against the rules.
+5. The log records a `review_triggered` event so the next Stop only reviews files modified after this point.
+
+**The anti-skip instructions matter.** Without them, Claude will rationalize ignoring findings ("out of scope," "pre-existing issue," "would require refactoring"). The Stop hook output explicitly lists what counts as a valid reason to skip a finding and what doesn't. This is a prompt-level control -- it works because the instruction arrives in a fresh context (the Stop hook output), not buried in a system prompt that's been compressed.
+
+**Limitations:** The Stop hook fires whenever Claude finishes, including when it stops to ask a question. If Claude commits before stopping, the review happens after the commit. Neither issue is fatal, but both are worth knowing about. A `CodeReadyForReview` hook event (which doesn't exist yet) would be the correct abstraction.
+
+This pattern is adapted from [claude-skillz](https://github.com/NTCoding/claude-skillz) by Nick Tune.
 
 ---
 

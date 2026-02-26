@@ -23,9 +23,9 @@ Claude Code's memory system is a hierarchy of markdown files loaded into the sys
 
 ### Memory as Context Engineering
 
-Memory organization is a context engineering problem. Every file loaded into the system prompt competes for space in a finite context window, and research shows that irrelevant context doesn't just waste tokens -- it actively degrades the model's performance on the instructions that matter (see [Context Cost of Memory](#context-cost-of-memory)).
+Memory organization is a context engineering problem. Every file loaded into the system prompt competes for space in a finite context window, and research shows that irrelevant context doesn't just waste tokens -- it degrades the model's ability to follow the instructions that matter (see [Context Cost of Memory](#context-cost-of-memory)).
 
-The memory hierarchy maps to the four core operations of context engineering:
+The memory hierarchy maps to four operations identified in [LangChain's context engineering framework](https://blog.langchain.com/context-engineering-for-agents/):
 
 | Operation    | What It Does                              | Memory Feature                                                         |
 | ------------ | ----------------------------------------- | ---------------------------------------------------------------------- |
@@ -35,8 +35,6 @@ The memory hierarchy maps to the four core operations of context engineering:
 | **Isolate**  | Split context across separate scopes      | User vs project vs local scope, rules directory, topic file separation |
 
 The rest of this guide covers how to apply these operations through Claude Code's memory system.
-
----
 
 ## Table of Contents
 
@@ -70,7 +68,7 @@ The rest of this guide covers how to apply these operations through Claude Code'
   - [Context Cost of Memory](#context-cost-of-memory)
     - [Every Line Has a Price](#every-line-has-a-price)
     - [Measuring Your Memory Footprint](#measuring-your-memory-footprint)
-    - [How Memory Survives Compaction](#how-memory-survives-compaction)
+    - [How Memory Interacts with Compaction](#how-memory-interacts-with-compaction)
   - [Common Mistakes](#common-mistakes)
     - [Putting Everything in User CLAUDE.md](#putting-everything-in-user-claudemd)
     - [Generic Instructions That Add No Value](#generic-instructions-that-add-no-value)
@@ -334,7 +332,7 @@ paths:
 - Include OpenAPI documentation comments on all handlers
 ```
 
-This rule only loads when Claude is working with TypeScript files under `src/api/` or `src/middleware/`. It doesn't burden the context when working on other parts of the codebase. This is a **pull-based** pattern -- the model gets information when it reaches for relevant files, rather than having everything pushed into the window upfront. Context engineering research shows pull-based retrieval consistently outperforms front-loading because the model only sees what's relevant to its current task.
+This rule only loads when Claude is working with TypeScript files under `src/api/` or `src/middleware/`. It doesn't burden the context when working on other parts of the codebase. This is a **pull-based** pattern -- the model gets information when it reaches for relevant files, rather than having everything pushed into the window upfront. Since irrelevant context degrades performance (see [Context Cost of Memory](#context-cost-of-memory)), loading rules only when they're relevant avoids that penalty.
 
 Supported glob patterns:
 
@@ -383,11 +381,7 @@ ln -s ~/company-standards/security.md .claude/rules/security.md
 
 This is useful for organizations with coding standards that apply across multiple repositories without needing managed policy.
 
----
-
 Everything above -- CLAUDE.md, CLAUDE.local.md, and the rules directory -- is **instructions you write for Claude**. You author them, you version-control them, and you decide what goes in. The next section covers a different category: **notes Claude writes for itself**.
-
----
 
 ## Auto Memory
 
@@ -500,7 +494,7 @@ This way all worktrees share the same personal instructions.
 
 Every memory file loaded into the system prompt consumes context window space on every message. This is the same cost model described in the [token optimization]({{< relref "/internals/token-optimization" >}}) and [system prompt]({{< relref "/internals/system-prompt" >}}) articles.
 
-The cost isn't just budget -- it's accuracy. Research on context degradation (Chroma Research, 2025) found that adding irrelevant context to the window actively hurts model performance. A single piece of similar-but-wrong information significantly degrades accuracy on the task at hand, and multiple distractors compound the damage. Generic instructions like "write clean code" aren't just wasting tokens -- they're noise that competes for attention with your specific, actionable rules.
+The cost isn't just budget -- it's accuracy. Research on context degradation (Chroma Research, 2025) found that adding irrelevant context to the window degrades model performance. Even a single piece of similar-but-wrong information reduces accuracy, though severity varies by model and task, and multiple distractors compound the damage. Generic instructions like "write clean code" aren't just wasting tokens -- they're noise that competes for attention with your specific, actionable rules.
 
 ```text
 Context window budget (e.g., 200K tokens):
@@ -532,24 +526,21 @@ Example:
   Total:                             ≈ 3,630 tokens
 ```
 
-This is a rough estimate -- actual token count depends on content density. Code blocks and tables tend to use more tokens per line than plain text (~10-15 tokens/line vs ~7 for prose). If your CLAUDE.md is table-heavy, budget accordingly.
+This is a rough estimate -- actual token count depends on content density. Code blocks and tables tend to use roughly 1.5-2x more tokens per line than plain prose due to syntax characters, pipe delimiters, and alignment markers. If your CLAUDE.md is table-heavy, budget accordingly.
 
-### How Memory Survives Compaction
+### How Memory Interacts with Compaction
 
-When a conversation approaches the context window limit (~95% capacity), Claude Code triggers auto-compaction -- the conversation history is summarized to free space. Memory files (CLAUDE.md, rules, MEMORY.md) survive this process intact because they're part of the system prompt, which is re-injected in full after compaction. Conversation context is lossy; memory files are not.
+When a conversation approaches the context window limit, Claude Code triggers auto-compaction -- the conversation history is summarized to free space. Memory files are structurally exempt from this process. Compaction only operates on the messages array (conversation turns, tool results, code output). The system prompt -- which contains CLAUDE.md, rules, and MEMORY.md -- exists outside that array and is never modified or removed by compaction.
 
-This has a practical implication: instructions that must persist across a long session belong in memory files, not in conversation. If you tell Claude "always run tests before committing" in chat, that instruction may be lost or diluted during compaction. If you put it in CLAUDE.md, it's re-loaded at full fidelity every time.
+This has a practical implication: instructions that must persist across a long session belong in memory files, not in conversation. If you tell Claude "always run tests before committing" in chat, that instruction may be lost or diluted when conversation history is summarized. If you put it in CLAUDE.md, it's present at full fidelity on every message.
 
 ```text
-Before compaction:
-  System prompt (CLAUDE.md, rules, etc.)  → preserved
-  200 turns of conversation               → summarized to ~20% of original
-  Tool results and code output            → compressed or dropped
+What compaction touches:
+  Conversation turns          → summarized
+  Tool results and code output → compressed or dropped
 
-After compaction:
-  System prompt (CLAUDE.md, rules, etc.)  → identical to before
-  Compressed conversation summary         → key decisions and current state
-  Fresh context space                     → available for continued work
+What compaction does not touch:
+  System prompt (CLAUDE.md, rules, MEMORY.md) → unchanged
 ```
 
 ## Common Mistakes
@@ -580,7 +571,7 @@ Good: "Use slog for all logging, never fmt.Println"
       (Specific to your project, can't be inferred)
 ```
 
-Every line in CLAUDE.md should tell Claude something it wouldn't know or do by default. If removing the line wouldn't change Claude's behavior, remove it. Research shows this isn't just about efficiency -- irrelevant context actively interferes with the model's ability to follow the instructions that matter.
+Every line in CLAUDE.md should tell Claude something it wouldn't know or do by default. If removing the line wouldn't change Claude's behavior, remove it.
 
 ### Contradictory Rules Across Scopes
 
@@ -642,7 +633,7 @@ The rules directory exists for this case. Use it when CLAUDE.md exceeds ~100 lin
 
 11. **Use clear section headers as retrieval anchors** -- Research shows that dense prose is harder for models to retrieve specific information from than well-structured content with distinct headers. Use `##` headers, bullet lists, and tables rather than long paragraphs in CLAUDE.md files.
 
-12. **Put durable instructions in files, not conversation** -- Instructions mentioned in chat may be lost or diluted during [auto-compaction](#how-memory-survives-compaction). If an instruction needs to persist across a long session, it belongs in a memory file.
+12. **Put durable instructions in files, not conversation** -- Instructions mentioned in chat may be lost or diluted during [auto-compaction](#how-memory-interacts-with-compaction). If an instruction needs to persist across a long session, it belongs in a memory file.
 
 ## References
 

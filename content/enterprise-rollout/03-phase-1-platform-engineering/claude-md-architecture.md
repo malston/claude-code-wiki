@@ -14,8 +14,6 @@ Unlike human developers who can skim past irrelevant instructions, Claude treats
 
 **Design principle: progressive disclosure of context.** Load the minimum viable instructions unconditionally. Load everything else conditionally based on what the developer is actually working on.
 
----
-
 ## Layer 0: Managed CLAUDE.md (Always Loaded, Org-Wide)
 
 Deployed via MDM alongside managed-settings.json. Every Claude Code session sees this file, regardless of project, team, or developer.
@@ -38,8 +36,6 @@ Deployed via MDM alongside managed-settings.json. Every Claude Code session sees
 ### Anti-Pattern
 
 Treating the org CLAUDE.md as a coding standards document. A 200-line org CLAUDE.md means 200 lines consumed in every session for every developer, most of which is irrelevant to the current task.
-
----
 
 ## Layer 1: Project CLAUDE.md + Rules Directory (Loaded Per-Repo)
 
@@ -115,8 +111,6 @@ As of January 2026, there's a known bug where rules with `paths` frontmatter loa
 - Rules support subdirectory organization (auto-discovered recursively)
 - Symlinks are supported -- use for sharing rules across repos
 
----
-
 ## Layer 2: agent_docs/ and Reference Files (Loaded On-Demand)
 
 Deep knowledge layer -- architecture documents, design decisions, API specs, domain models. These files are **NOT** loaded automatically. CLAUDE.md tells Claude they exist, and Claude reads them when relevant.
@@ -158,8 +152,6 @@ were made -- read these before proposing alternatives to established patterns.
 
 Cohort 1 developers (25 power users) draft `agent_docs` based on existing team wikis, design docs, and tribal knowledge. The platform team reviews and standardizes format. Expect 2–4 weeks of focused effort per major codebase.
 
----
-
 ## Layer 3: Skills (Loaded On-Demand, Invoked Explicitly or Auto-Matched)
 
 Structured workflows Claude invokes as complete procedures. They sit in `.claude/skills/` directories and load only when invoked or when Claude's description-matching determines they're relevant.
@@ -167,8 +159,6 @@ Structured workflows Claude invokes as complete procedures. They sit in `.claude
 Skills differ from rules and CLAUDE.md in an important way: **they're procedural, not declarative.** Rules say "when working on API files, follow these patterns." Skills say "here's a step-by-step procedure for creating a new API endpoint."
 
 See [Skills Library Design](skills-library-design.md) for the full three-tier skills architecture.
-
----
 
 ## Complete Repository Structure
 

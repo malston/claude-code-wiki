@@ -10,8 +10,6 @@ weight: 5
 
 Skills are structured workflows Claude can invoke as complete procedures. Each skill needs a SKILL.md file with YAML frontmatter (name, description) and markdown instructions. The name becomes the /slash-command, and the description helps Claude decide when to load it automatically.
 
----
-
 ## Tier 1: Organization Skills (Global, All Developers)
 
 Distributed via plugin marketplace (internal) or symlink from a shared repo. Installed to `~/.claude/skills/` on each developer machine.
@@ -123,8 +121,6 @@ If this change causes issues in production, what's the rollback procedure?
 - **Procedural, not declarative.** Skills tell Claude what to do step by step. Conventions and constraints belong in rules.
 - **Self-contained.** Each skill should work without requiring the developer to provide additional context.
 
----
-
 ## Tier 2: Team/Project Skills (Per-Repo, Version-Controlled)
 
 Checked into each repo at `.claude/skills/`. Team-specific workflows and patterns.
@@ -141,26 +137,22 @@ Checked into each repo at `.claude/skills/`. Team-specific workflows and pattern
 ```text
 .claude/skills/
 └── new-endpoint/
-    ├── SKILL.md              # Instructions
+    ├── SKILL.md               # Instructions
     ├── templates/
-    │   ├── handler.ts.md     # Handler template
+    │   ├── handler.ts.md      # Handler template
     │   ├── handler.test.ts.md # Test template
-    │   └── openapi.yaml.md   # OpenAPI fragment
+    │   └── openapi.yaml.md    # OpenAPI fragment
     └── examples/
-        └── sample-crud.md    # Example of a well-structured endpoint
+        └── sample-crud.md     # Example of a well-structured endpoint
 ```
 
 The SKILL.md references these files: "Use the template in `templates/handler.ts.md` as your starting structure. See `examples/sample-crud.md` for a complete working example."
 
 This turns tribal knowledge into executable procedures. The senior engineer who always scaffolds endpoints the right way -- their knowledge is now codified in a skill that any developer on the team can invoke.
 
----
-
 ## Tier 3: Personal Skills (Individual Developer)
 
 Stored in `~/.claude/skills/`. Not managed by the org, not shared in repos. Personal workflows: code review checklists, note-taking conventions, learning workflows. The org shouldn't try to control these.
-
----
 
 ## Skill Description Budget
 
@@ -169,8 +161,6 @@ Skill descriptions are loaded into context so Claude knows what's available. The
 If each skill description is ~100 characters, you can have ~160 skills before hitting the budget. In practice, keep descriptions to one sentence and you'll be fine with 30–50 skills across all tiers.
 
 Run `/context` to check for warnings about excluded skills.
-
----
 
 ## Skill Naming Conflicts
 

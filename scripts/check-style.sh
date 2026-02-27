@@ -39,8 +39,18 @@ report() {
 check_em_dashes() {
     local file="$1"
     local line_num=0
+    local in_code_block=false
     while IFS= read -r line; do
         line_num=$((line_num + 1))
+        if [[ "$line" =~ ^[[:space:]]*\`\`\` ]]; then
+            if [[ "$in_code_block" == false ]]; then
+                in_code_block=true
+            else
+                in_code_block=false
+            fi
+            continue
+        fi
+        [[ "$in_code_block" == true ]] && continue
         if [[ "$line" == *"—"* ]]; then
             report "$file" "$line_num" "em dash character (—) found; use -- instead" "$line"
         fi
@@ -116,9 +126,18 @@ check_triple_hyphen_em_dashes() {
 check_banned_openers() {
     local file="$1"
     local line_num=0
+    local in_code_block=false
     while IFS= read -r line; do
         line_num=$((line_num + 1))
-        # Case-insensitive match against banned phrases
+        if [[ "$line" =~ ^[[:space:]]*\`\`\` ]]; then
+            if [[ "$in_code_block" == false ]]; then
+                in_code_block=true
+            else
+                in_code_block=false
+            fi
+            continue
+        fi
+        [[ "$in_code_block" == true ]] && continue
         local lower
         lower="$(echo "$line" | tr '[:upper:]' '[:lower:]')"
         for phrase in "let's be honest" "here's the thing" "the truth is" "at the end of the day" "let's be real"; do
@@ -126,6 +145,120 @@ check_banned_openers() {
                 report "$file" "$line_num" "banned opener phrase: \"${phrase}\"" "$line"
             fi
         done
+    done < "$file"
+}
+
+check_contrastive_reframes() {
+    local file="$1"
+    local line_num=0
+    local in_code_block=false
+    while IFS= read -r line; do
+        line_num=$((line_num + 1))
+        if [[ "$line" =~ ^[[:space:]]*\`\`\` ]]; then
+            if [[ "$in_code_block" == false ]]; then
+                in_code_block=true
+            else
+                in_code_block=false
+            fi
+            continue
+        fi
+        [[ "$in_code_block" == true ]] && continue
+        local lower
+        lower="$(echo "$line" | tr '[:upper:]' '[:lower:]')"
+        if [[ "$lower" =~ not[[:space:]]+just[[:space:]] ]]; then
+            report "$file" "$line_num" "contrastive reframe: \"not just...\"" "$line"
+        fi
+        if [[ "$lower" =~ isn\'t[[:space:]]+just[[:space:]] ]]; then
+            report "$file" "$line_num" "contrastive reframe: \"isn't just...\"" "$line"
+        fi
+    done < "$file"
+}
+
+check_superlative_filler() {
+    local file="$1"
+    local -a words=("powerful" "seamless" "elegant" "robust" "cutting-edge" "game-changing" "next-level")
+    local line_num=0
+    local in_code_block=false
+    while IFS= read -r line; do
+        line_num=$((line_num + 1))
+        if [[ "$line" =~ ^[[:space:]]*\`\`\` ]]; then
+            if [[ "$in_code_block" == false ]]; then
+                in_code_block=true
+            else
+                in_code_block=false
+            fi
+            continue
+        fi
+        [[ "$in_code_block" == true ]] && continue
+        local lower
+        lower="$(echo "$line" | tr '[:upper:]' '[:lower:]')"
+        for word in "${words[@]}"; do
+            if [[ "$lower" == *"$word"* ]]; then
+                report "$file" "$line_num" "superlative filler: \"${word}\"" "$line"
+            fi
+        done
+    done < "$file"
+}
+
+check_horizontal_rules() {
+    local file="$1"
+    local line_num=0
+    local in_code_block=false
+    local in_front_matter=false
+    while IFS= read -r line; do
+        line_num=$((line_num + 1))
+        if [[ "$line" =~ ^[[:space:]]*\`\`\` ]]; then
+            if [[ "$in_code_block" == false ]]; then
+                in_code_block=true
+            else
+                in_code_block=false
+            fi
+            continue
+        fi
+        [[ "$in_code_block" == true ]] && continue
+        if [[ "$line" =~ ^[[:space:]]*-{3,}[[:space:]]*$ ]]; then
+            if [[ $line_num -eq 1 ]]; then
+                in_front_matter=true
+                continue
+            fi
+            if [[ "$in_front_matter" == true ]]; then
+                in_front_matter=false
+                continue
+            fi
+            report "$file" "$line_num" "horizontal rule used as section divider" "$line"
+        fi
+    done < "$file"
+}
+
+check_slop_phrases() {
+    local file="$1"
+    local line_num=0
+    local in_code_block=false
+    while IFS= read -r line; do
+        line_num=$((line_num + 1))
+        if [[ "$line" =~ ^[[:space:]]*\`\`\` ]]; then
+            if [[ "$in_code_block" == false ]]; then
+                in_code_block=true
+            else
+                in_code_block=false
+            fi
+            continue
+        fi
+        [[ "$in_code_block" == true ]] && continue
+        local lower
+        lower="$(echo "$line" | tr '[:upper:]' '[:lower:]')"
+        [[ "$lower" == *"delv"* ]] && \
+            report "$file" "$line_num" "slop: \"delve\" variant (Tier 1 AI tell)" "$line"
+        [[ "$lower" == *"it's worth noting"* ]] && \
+            report "$file" "$line_num" "slop: \"it's worth noting\"" "$line"
+        [[ "$lower" == *"pivotal"* ]] && \
+            report "$file" "$line_num" "slop: \"pivotal\" (Tier 1 AI tell)" "$line"
+        [[ "$lower" == *"revolutionary"* ]] && \
+            report "$file" "$line_num" "slop: \"revolutionary\" (Tier 1 AI tell)" "$line"
+        [[ "$lower" == *"moreover"* ]] && \
+            report "$file" "$line_num" "slop: \"moreover\" transition" "$line"
+        [[ "$lower" == *"furthermore"* ]] && \
+            report "$file" "$line_num" "slop: \"furthermore\" transition" "$line"
     done < "$file"
 }
 
@@ -196,6 +329,10 @@ main() {
         check_triple_hyphen_em_dashes "$file"
         check_bare_code_fences "$file"
         check_banned_openers "$file"
+        check_contrastive_reframes "$file"
+        check_superlative_filler "$file"
+        check_horizontal_rules "$file"
+        check_slop_phrases "$file"
     done <<< "$files"
 
     if [[ $violations -gt 0 ]]; then

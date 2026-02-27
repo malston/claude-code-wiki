@@ -119,11 +119,11 @@ Whether users can add their own hooks is controlled by `allowManagedHooksOnly` i
 "postCreateCommand": "npm install -g @anthropic-ai/claude-code@2.1.37"
 ```
 
-2. **Test new versions with Cohort 1 first.** Before upgrading everyone, have 2-3 power users run the new version for a week. New versions occasionally change behavior (tool calling patterns, skill loading, compaction thresholds).
+1. **Test new versions with Cohort 1 first.** Before upgrading everyone, have 2-3 power users run the new version for a week. New versions occasionally change behavior (tool calling patterns, skill loading, compaction thresholds).
 
-3. **Upgrade in waves.** Same cohort pattern as the initial rollout -- don't upgrade 500 developers simultaneously.
+2. **Upgrade in waves.** Same cohort pattern as the initial rollout -- don't upgrade 500 developers simultaneously.
 
-4. **Track the current version in managed settings documentation.** When you push a version update, update the internal changelog so developers know what changed.
+3. **Track the current version in managed settings documentation.** When you push a version update, update the internal changelog so developers know what changed.
 
 ### Version Update Cadence
 

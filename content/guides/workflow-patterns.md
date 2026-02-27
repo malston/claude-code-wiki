@@ -246,7 +246,7 @@ Session 2 (fresh context):
   → Claude discovers requirements from the tests
 ```
 
-This pattern is especially powerful for multi-session work. See [Working Across Context Windows]({{< relref "effective-prompting#working-across-context-windows" >}}) in the effective prompting article.
+This pattern works well for multi-session work. See [Working Across Context Windows]({{< relref "effective-prompting#working-across-context-windows" >}}) in the effective prompting article.
 
 ## Code Review
 

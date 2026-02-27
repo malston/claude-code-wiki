@@ -134,7 +134,7 @@ The `$ARGUMENTS` placeholder is replaced with the hook's JSON input data. Prompt
 }
 ```
 
-Agent hooks are useful when verification requires inspecting files or running commands, not just evaluating the input data.
+Agent hooks are useful when verification requires inspecting files or running commands beyond evaluating the input data.
 
 ### Exit Code Protocol
 

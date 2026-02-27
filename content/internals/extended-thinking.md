@@ -36,7 +36,7 @@ Extended thinking gives Claude additional tokens to reason before responding. On
     - [Setting Effort in Claude Code](#setting-effort-in-claude-code)
   - [Configuration](#configuration)
     - [Toggle Thinking On/Off](#toggle-thinking-onoff)
-    - [MAX\_THINKING\_TOKENS](#max_thinking_tokens)
+    - [MAX_THINKING_TOKENS](#max_thinking_tokens)
     - [Thinking Budget vs Output Budget](#thinking-budget-vs-output-budget)
     - [Context Window Interaction](#context-window-interaction)
     - [Thinking in Subagents](#thinking-in-subagents)
@@ -121,7 +121,7 @@ In Claude Code, toggle verbose mode (`Ctrl+O`) to see the thinking text as gray 
 
 ### Interleaved Thinking
 
-With tool use, Claude can think **between** tool calls, not just before the first response:
+With tool use, Claude can think **between** tool calls, including between each tool result:
 
 ```text
 Think → Call tool → Read result → Think again → Call another tool → Think → Respond
@@ -148,7 +148,7 @@ Effort is a **behavioral signal, not a strict token budget**. At lower effort, C
 
 ### What Effort Controls
 
-Effort affects **all tokens** in the response, not just thinking:
+Effort affects **all tokens** in the response, including non-thinking output:
 
 | Aspect         | Low Effort                          | High Effort                     |
 | -------------- | ----------------------------------- | ------------------------------- |

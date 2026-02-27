@@ -8,7 +8,7 @@ weight: 6
 
 ## Executive Summary
 
-Claude Code's memory system is a hierarchy of markdown files loaded into the system prompt. Every file you add costs context window space on every message, so organization isn't just about clarity -- it's about efficiency. The key is putting the right information at the right scope, keeping files concise, and using the rules directory for modularity when a single CLAUDE.md gets unwieldy.
+Claude Code's memory system is a hierarchy of markdown files loaded into the system prompt. Every file you add costs context window space on every message, so organization affects both clarity and efficiency. The key is putting the right information at the right scope, keeping files concise, and using the rules directory for modularity when a single CLAUDE.md gets unwieldy.
 
 | Memory Type         | Location                               | Scope              | Loaded When                                     | Shared With           |
 | ------------------- | -------------------------------------- | ------------------ | ----------------------------------------------- | --------------------- |
@@ -453,7 +453,7 @@ The pattern: MEMORY.md has the summary, topic files have the detail. Claude read
 
 Auto memory can capture wrong information. If Claude records an incorrect debugging insight, an outdated architectural assumption, or a misunderstood convention, that error gets loaded into every subsequent session. In context engineering terms, this is **context poisoning** -- false information in the window that the model treats as ground truth and builds on.
 
-Review MEMORY.md periodically for accuracy, not just length. Look for:
+Review MEMORY.md periodically for accuracy as well as length. Look for:
 
 - **Outdated facts** -- Architecture that changed, dependencies that were replaced, conventions that evolved
 - **Incorrect conclusions** -- Debugging insights from sessions where the root cause turned out to be something else

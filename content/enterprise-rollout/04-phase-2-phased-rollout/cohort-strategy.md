@@ -55,7 +55,7 @@ Don't light up 500 developers at once. Each cohort discovers different classes o
 
 ### Selection Criteria
 
-- Expand to complete teams (not just individual developers)
+- Expand to complete teams (beyond individual developers)
 - Include at least one team that's skeptical -- they'll surface real objections
 - Include the team with the most complex codebase
 

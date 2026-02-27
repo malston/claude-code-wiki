@@ -300,7 +300,7 @@ Context window budget (e.g., 200K tokens):
 └──────────────────────────────────────────────┘
 ```
 
-This is why the [token optimization article]({{< relref "token-optimization" >}}) still matters even with caching. Disabling unused plugins saves context window space, not just money.
+This is why the [token optimization article]({{< relref "token-optimization" >}}) still matters even with caching. Disabling unused plugins saves context window space in addition to money.
 
 ### When to Worry About Caching
 

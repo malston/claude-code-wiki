@@ -72,7 +72,7 @@ Use:
   "Now check prod and compare."
 ```
 
-**Put critical constraints in the user message, not just the skill file.** For high-stakes operations, restate the constraint in the prompt:
+**Put critical constraints in the user message as well as the skill file.** For high-stakes operations, restate the constraint in the prompt:
 
 ```bash
 # In your message to Claude:
@@ -100,12 +100,12 @@ For rules you need to be reliably active during tool-heavy workflows, the most d
 
 ## Summary
 
-| Context source | Available during reasoning | Active when processing tool results |
-| -------------- | -------------------------- | ----------------------------------- |
-| System prompt / CLAUDE.md | Yes | Not re-injected, but in conversation history |
-| Skill file instructions | Yes | Same as above |
-| User message | Yes | Same as above |
-| Explicit instruction in user message | Yes | Most reliable for tool-heavy chains |
+| Context source                       | Available during reasoning | Active when processing tool results          |
+| ------------------------------------ | -------------------------- | -------------------------------------------- |
+| System prompt / CLAUDE.md            | Yes                        | Not re-injected, but in conversation history |
+| Skill file instructions              | Yes                        | Same as above                                |
+| User message                         | Yes                        | Same as above                                |
+| Explicit instruction in user message | Yes                        | Most reliable for tool-heavy chains          |
 
 The model reasons from its full context window, which includes the conversation history. The issue is not that instructions disappear -- it is that they are less likely to be the focal point when the model is processing a stream of tool results mid-chain.
 

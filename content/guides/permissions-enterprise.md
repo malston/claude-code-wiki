@@ -142,7 +142,7 @@ If no rule matches, the permission mode determines behavior:
 | `Bash(git * main)`    | Any git command targeting main |
 | `Bash(* --version)`   | Any command with `--version`   |
 
-Claude Code is aware of shell operators. `Bash(safe-cmd *)` will not permit `safe-cmd && malicious-cmd`. The matching is semantically aware, not just string-based.
+Claude Code is aware of shell operators. `Bash(safe-cmd *)` will not permit `safe-cmd && malicious-cmd`. The matching is semantically aware of shell syntax, not string-based.
 
 **Read and Edit** -- gitignore-style path patterns:
 

@@ -118,7 +118,7 @@ Permission rules are lists of tool patterns that control whether actions are app
 
 Rules are evaluated: **deny -> ask -> allow**. First matching rule wins.
 
-```
+```text
 Tool call: Bash("npm run test")
   1. Check deny rules → no match
   2. Check ask rules → no match

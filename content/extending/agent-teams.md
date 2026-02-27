@@ -18,8 +18,6 @@ Agent teams let multiple Claude Code instances work together on complex tasks. O
 | **Best for**      | Focused tasks, research           | Parallel work, competing perspectives  |
 | **Cost**          | Lower (one instance + subagents)  | Higher (N separate instances)          |
 
----
-
 ## Table of Contents
 
 - [Agent Teams: Multi-Agent Orchestration in Claude Code](#agent-teams-multi-agent-orchestration-in-claude-code)
@@ -62,8 +60,6 @@ Agent teams let multiple Claude Code instances work together on complex tasks. O
   - [Anti-Patterns](#anti-patterns)
   - [References](#references)
 
----
-
 ## Enabling Agent Teams
 
 Agent teams are experimental and disabled by default. Enable with an environment variable:
@@ -77,8 +73,6 @@ Agent teams are experimental and disabled by default. Enable with an environment
 ```
 
 Place this in `~/.claude/settings.json` (all projects) or `.claude/settings.json` (this project).
-
----
 
 ## Architecture
 
@@ -218,7 +212,7 @@ Delegate all coding tasks to your teammates.
 
 Tasks flow through three states:
 
-```
+```text
 pending ──> in_progress ──> completed
 ```
 
@@ -400,8 +394,8 @@ Synthesize into a final review.
 ### Research + Implementation
 
 Separate research from coding with task dependencies:
-text
-```
+
+```text
 Create a team:
 - 2 researchers: investigate the GraphQL library API, edge cases, and patterns
 - 1 implementer: build the integration based on research findings

@@ -60,7 +60,7 @@ Testing is the highest-leverage tool for getting good results from Claude Code. 
 
 ## Why Tests Matter More with AI
 
-Claude Code performs dramatically better when it can verify its own work. This isn't just a nice-to-have -- it's the single highest-leverage pattern for improving Claude's output quality.
+Claude Code performs dramatically better when it can verify its own work. This is the single highest-leverage pattern for improving Claude's output quality.
 
 ```text
 Without tests:
@@ -537,7 +537,7 @@ Better quality signal:
   "do the tests cover edge cases?"
 ```
 
-Ask Claude to evaluate test quality, not just coverage:
+Ask Claude to evaluate test quality in addition to coverage:
 
 ```text
 "review the tests for the auth package. for each

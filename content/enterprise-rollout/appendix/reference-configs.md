@@ -48,8 +48,6 @@ Deploy to all developer machines via MDM.
 | Linux    | `/etc/claude-code/managed-settings.json`                        |
 | Windows  | `C:\Program Files\ClaudeCode\managed-settings.json`             |
 
----
-
 ## Developer Shell Environment Variables
 
 ```bash
@@ -68,8 +66,6 @@ export NODE_EXTRA_CA_CERTS='/etc/ssl/certs/corp-ca-bundle.pem'
 # export ANTHROPIC_MODEL='claude-sonnet-4-5-20250929'
 # export ANTHROPIC_DEFAULT_HAIKU_MODEL='us.anthropic.claude-haiku-4-5-20251001-v1:0'
 ```
-
----
 
 ## Terraform: VPC Endpoint for Bedrock
 
@@ -120,8 +116,6 @@ resource "aws_security_group" "bedrock_endpoint" {
 }
 ```
 
----
-
 ## IAM Policy for Bedrock Access
 
 ```json
@@ -143,8 +137,6 @@ resource "aws_security_group" "bedrock_endpoint" {
 
 Attach to the IAM role used by the LLM gateway service, not to individual developer users.
 
----
-
 ## Sample Project .claude/settings.json
 
 ```json
@@ -162,8 +154,6 @@ Attach to the IAM role used by the LLM gateway service, not to individual develo
   }
 }
 ```
-
----
 
 ## Sample .mcp.json (Project MCP Servers)
 

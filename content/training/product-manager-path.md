@@ -88,7 +88,7 @@ The repo contains a working Spring Boot order service with a mock product backlo
 
 ### What This Means for PMs
 
-- When estimating work, factor in maintenance cost -- not just initial implementation
+- When estimating work, factor in maintenance cost alongside initial implementation
 - When requesting features, be specific about the need, not the solution. "Users need to filter orders by date range" is better than "add a date picker component"
 - When reviewing designs, ask: "What happens when we need to change X?" If the answer involves touching many unrelated files, the design may have a coupling problem
 
@@ -225,7 +225,7 @@ This feels backwards at first, but it produces code that's verified by definitio
 
 - Write acceptance criteria as specific behaviors, not vague outcomes. Each criterion should be verifiable: given X input, expect Y output.
 - Don't pressure developers to skip tests to "move faster." Tests save time over the lifecycle of a feature.
-- When Claude Code is used with TDD, the test suite becomes the source of truth for what the software does. Review the tests, not just the code.
+- When Claude Code is used with TDD, the test suite becomes the source of truth for what the software does. Review the tests as well as the code.
 
 ### Exercises
 

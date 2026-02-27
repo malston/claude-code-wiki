@@ -75,7 +75,7 @@ Hooks let you run code at specific points in Claude Code's lifecycle -- before a
     - [Shell Profile Pollution](#shell-profile-pollution)
     - [Hook Snapshot at Startup](#hook-snapshot-at-startup)
     - [Async Hooks Cannot Block](#async-hooks-cannot-block)
-    - [Exit 2 vs JSON -- Choose One](#exit-2-vs-json----choose-one)
+    - [Exit 2 vs JSON](#exit-2-vs-json)
     - [PermissionRequest Hooks Don't Fire in Headless Mode](#permissionrequest-hooks-dont-fire-in-headless-mode)
     - [PostToolUse Cannot Undo](#posttooluse-cannot-undo)
     - [The hookEventName Bug](#the-hookeventname-bug)
@@ -134,7 +134,7 @@ The `$ARGUMENTS` placeholder is replaced with the hook's JSON input data. Prompt
 }
 ```
 
-Agent hooks are useful when verification requires inspecting files or running commands, not just evaluating the input data.
+Agent hooks are useful when verification requires inspecting files or running commands beyond evaluating the input data.
 
 ### Exit Code Protocol
 
@@ -187,7 +187,7 @@ The three permission decisions: `allow` (skip permission prompt), `deny` (block 
 
 ### Complete Event Table
 
-```
+```text
 Session lifecycle:
   SessionStart ──> [conversation] ──> SessionEnd
                         │
@@ -1402,7 +1402,7 @@ Claude Code captures hook configuration at session start. If you edit hooks duri
 
 Async hooks run in the background. By the time they finish, the triggering action has already proceeded. Use async for notifications and logging, not for safety gates.
 
-### Exit 2 vs JSON -- Choose One
+### Exit 2 vs JSON
 
 If a hook exits with code 2, stdout is ignored. If you want structured control (allow/deny/ask with reasons), exit 0 and output JSON. Don't mix the approaches.
 

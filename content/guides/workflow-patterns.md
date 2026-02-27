@@ -106,7 +106,7 @@ Planning adds overhead. For tasks where you could describe the diff in one sente
 
 ### The Four Phases
 
-```
+```text
 Phase 1: EXPLORE (Plan Mode)
   Claude reads files and understands the codebase.
   No changes are made.
@@ -147,7 +147,7 @@ Toggle plan mode with **Shift+Tab** during a session, or start in plan mode with
 
 For larger features where requirements aren't fully defined, have Claude interview you before planning:
 
-```
+```text
 I want to build [brief description]. Interview me in
 detail using the AskUserQuestion tool.
 
@@ -246,7 +246,7 @@ Session 2 (fresh context):
   → Claude discovers requirements from the tests
 ```
 
-This pattern is especially powerful for multi-session work. See [Working Across Context Windows]({{< relref "effective-prompting#working-across-context-windows" >}}) in the effective prompting article.
+This pattern works well for multi-session work. See [Working Across Context Windows]({{< relref "effective-prompting#working-across-context-windows" >}}) in the effective prompting article.
 
 ## Code Review
 
@@ -488,7 +488,7 @@ The `--allowedTools` flag restricts what Claude can do when running unattended.
 
 Codebase exploration reads many files, which fills your context. Delegating research to subagents keeps your main context clean for implementation:
 
-```
+```text
 "use subagents to investigate how our authentication
  system handles token refresh, and whether we have
  any existing OAuth utilities I should reuse"
@@ -500,7 +500,7 @@ The subagent explores in a separate context window, reads as many files as it ne
 
 After Claude implements something, use a subagent for review:
 
-```
+```text
 "use a subagent to review this code for edge cases
  and security issues"
 ```
@@ -511,7 +511,7 @@ The review happens in fresh context without the implementation bias of the curre
 
 Opus 4.6 has a strong tendency to spawn subagents even when a direct approach would be faster:
 
-```
+```text
 Overkill (subagent for a simple search):
   Claude spawns a subagent to grep for a function name
 

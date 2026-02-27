@@ -8,7 +8,7 @@ weight: 4
 
 ## Executive Summary
 
-Every Claude Code session carries a baseline token cost from skills, plugins, and system configuration loaded into the context window. This cost is per-message -- paid on every API round-trip, not just when features are used. Understanding and managing this overhead directly impacts session cost, available context for actual work, and response latency.
+Every Claude Code session carries a baseline token cost from skills, plugins, and system configuration loaded into the context window. This cost is per-message -- paid on every API round-trip regardless of whether the features are used. Understanding and managing this overhead directly impacts session cost, available context for actual work, and response latency.
 
 | Component                                        | When Loaded        | Token Cost Pattern          |
 | ------------------------------------------------ | ------------------ | --------------------------- |

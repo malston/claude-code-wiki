@@ -172,7 +172,7 @@ The single most useful thing you can give Claude is the actual error output. Not
 | What to Share                 | Example                                                     |
 | ----------------------------- | ----------------------------------------------------------- |
 | **Full error message**        | Paste the complete error, not "it says something about nil" |
-| **Stack trace**               | The full trace, not just the top line                       |
+| **Stack trace**               | The full trace, not only the top line                       |
 | **Command that triggered it** | `go test ./internal/auth/...` not "the tests fail"          |
 | **Relevant log output**       | The lines around the error, not the entire 10,000-line log  |
 | **Environment context**       | Go version, OS, CI vs local, relevant config                |

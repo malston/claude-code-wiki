@@ -176,7 +176,7 @@ Each scope can add rules. Deny rules from any scope are evaluated first and alwa
 
 **Rule evaluation order: deny → ask → allow.** Structure your security model as a deny list: block dangerous operations in managed settings, then let project and user settings define what to allow.
 
-**Bash rules are shell-aware.** `Bash(safe-cmd *)` matches `safe-cmd anything` but won't match `safe-cmd && evil-cmd`. Claude Code parses the command structure, not just the string.
+**Bash rules are shell-aware.** `Bash(safe-cmd *)` matches `safe-cmd anything` but won't match `safe-cmd && evil-cmd`. Claude Code parses the command structure, not the raw string.
 
 **Sandboxing provides OS-level isolation:**
 

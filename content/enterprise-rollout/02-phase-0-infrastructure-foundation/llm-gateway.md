@@ -108,7 +108,7 @@ Claude Code calls this command to get a fresh API key. It's invoked on startup a
 
 Use this when:
 
-- The gateway requires per-user bearer tokens (not just SSO passthrough)
+- The gateway requires per-user bearer tokens (beyond SSO passthrough)
 - Credentials rotate more frequently than session duration
 - You need credential audit at the individual developer level beyond what SSO provides
 

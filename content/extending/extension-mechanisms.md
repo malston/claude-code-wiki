@@ -19,8 +19,6 @@ Claude Code extends capabilities through three distinct mechanisms with differen
 | **Invocation** | Explicit (Task tool)           | Auto-discovered              | Explicit tool calls      |
 | **State**      | Fresh but resumable            | Part of main conversation    | Truly stateless          |
 
----
-
 ## Table of Contents
 
 - [Subagents, Skills, and MCP Servers: Architecture Deep Dive](#subagents-skills-and-mcp-servers-architecture-deep-dive)
@@ -80,8 +78,6 @@ Claude Code extends capabilities through three distinct mechanisms with differen
   - [Key Insight](#key-insight)
     - [The Three Extension Mechanisms](#the-three-extension-mechanisms)
   - [References](#references)
-
----
 
 ## Subagents (Task Tool)
 
@@ -173,8 +169,6 @@ Return findings as:
 
 **Usage**: "Use the compliance-reviewer agent to review the payment processing changes in this PR"
 
----
-
 #### Example 2: Legacy System Migration Assistant
 
 **Scenario**: You're migrating from a legacy Python 2 codebase to modern Python 3 with async support. The migration requires understanding old patterns, proposing modern equivalents, and tracking what's been migrated.
@@ -216,8 +210,6 @@ You assist with Python 2 → Python 3 async migration.
 ```
 
 **Usage**: "Use the migration-assistant to analyze the database layer and propose async conversion"
-
----
 
 #### Example 3: Incident Response Debugger
 
@@ -265,8 +257,6 @@ Maintain running state:
 
 **Usage**: "Use the incident-debugger to investigate why checkout latency spiked at 3pm"
 
----
-
 ### When NOT to Create a Subagent
 
 Don't create a subagent when:
@@ -280,8 +270,6 @@ Don't create a subagent when:
 | Task completes in <10 turns      | Main context is fine                 |
 
 **Rule of thumb**: Create a subagent when you're _delegating work_ that needs isolation. Use a skill when you're _guiding work_ that happens in main context.
-
----
 
 ## Skills
 
@@ -420,8 +408,6 @@ See @pagination-patterns.md for cursor-based pagination standards.
 
 **Auto-triggers when**: "add an endpoint for...", "design the API for...", "review this controller"
 
----
-
 #### Example 2: Database Migration Checklist
 
 **Scenario**: Database migrations are high-risk. Your team has a checklist: backward compatibility, rollback plan, index impact, data backfill strategy. You want Claude to automatically apply this thinking when migration work is detected.
@@ -484,8 +470,6 @@ description: Use when creating, reviewing, or planning database migrations. Ensu
 
 **Auto-triggers when**: "create a migration", "add a column", "change the schema", "database migration"
 
----
-
 #### Example 3: Security Review Lens
 
 **Scenario**: You want security thinking applied to normal code review - not a full audit (that's a subagent), but awareness of common vulnerabilities during regular development.
@@ -547,8 +531,6 @@ See @owasp-quick-ref.md for detailed vulnerability patterns.
 ```
 
 **Auto-triggers when**: Writing code, reviewing PRs, discussing implementation
-
----
 
 ### When NOT to Create a Skill
 
@@ -672,8 +654,6 @@ You perform thorough code reviews. Your job is to find issues the author missed.
 
 The lens keeps you aware. The reviewer does the deep work.
 
----
-
 ## MCP Servers
 
 ### What They Are
@@ -722,8 +702,6 @@ MCP Server (stateless)
 - Lightweight, frequent tool calls
 - No reasoning required beyond data retrieval
 
----
-
 ## Context Window Implications
 
 ### Main Instance
@@ -752,8 +730,6 @@ Minimal overhead:
 - Tool input: Few tokens
 - Tool output: Bounded at 25K max
 - No accumulation across calls
-
----
 
 ## Memory System Architecture
 
@@ -795,8 +771,6 @@ Claude Code uses procedural/organizational memory, not conversation history:
 - All discovered CLAUDE.md files loaded at startup
 - Consume tokens but essential for context
 - Prompt caching reduces repeated tokenization cost
-
----
 
 ## Data Flow Comparison
 
@@ -840,8 +814,6 @@ Post-tool hook (optional logging)
 Result incorporated into context
 ```
 
----
-
 ## Decision Matrix
 
 ```sh
@@ -883,8 +855,6 @@ What kind of capability extension?
 | Brainstorming framework        | Skill      |
 | Explore unfamiliar codebase    | Subagent   |
 
----
-
 ## Best Practices
 
 ### Subagent Configuration
@@ -913,8 +883,6 @@ What kind of capability extension?
 - Reference files selectively
 - Let prompt caching handle repeated references
 - Design skills for minimal initial footprint
-
----
 
 ## Key Insight
 
@@ -965,8 +933,6 @@ Together they cover the range from simple conversations to multi-system workflow
 ```
 
 **Summary**: Skills enhance _how_ the main instance works. Subagents _offload_ work to isolated instances. MCP servers _fetch_ from external systems.
-
----
 
 ## References
 

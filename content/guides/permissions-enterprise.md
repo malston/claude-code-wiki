@@ -118,7 +118,7 @@ Permission rules are lists of tool patterns that control whether actions are app
 
 Rules are evaluated: **deny -> ask -> allow**. First matching rule wins.
 
-```
+```text
 Tool call: Bash("npm run test")
   1. Check deny rules → no match
   2. Check ask rules → no match
@@ -142,7 +142,7 @@ If no rule matches, the permission mode determines behavior:
 | `Bash(git * main)`    | Any git command targeting main |
 | `Bash(* --version)`   | Any command with `--version`   |
 
-Claude Code is aware of shell operators. `Bash(safe-cmd *)` will not permit `safe-cmd && malicious-cmd`. The matching is semantically aware, not just string-based.
+Claude Code is aware of shell operators. `Bash(safe-cmd *)` will not permit `safe-cmd && malicious-cmd`. The matching is semantically aware of shell syntax, not string-based.
 
 **Read and Edit** -- gitignore-style path patterns:
 

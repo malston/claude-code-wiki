@@ -62,7 +62,7 @@ This guide covers the plugins that provide the highest value relative to their t
 
 MCP (Model Context Protocol) servers are external processes that expose tools to Claude. They run as separate processes alongside Claude Code and communicate through stdin/stdout. Each tool the server exposes shows up in Claude's tool list, available for explicit invocation.
 
-```
+```text
 Claude Code ←→ MCP Server Process ←→ External Resource
                  │
                  ├── Tool: search(query)
@@ -218,7 +218,7 @@ When a significant technical decision is made during a session, claude-mem captu
 
 **Two-step usage pattern:**
 
-```
+```text
 1. resolve-library-id(libraryName: "next.js", query: "server components")
    → Returns: /vercel/next.js
 
@@ -301,7 +301,7 @@ Each subagent runs in its own context window, so it doesn't bloat the main conve
 
 Every plugin adds to the system prompt, and the system prompt is sent on every API round-trip. This is covered in depth in the [Token Optimization]({{< relref "/internals/token-optimization" >}}) article, but the key point for plugins specifically:
 
-```
+```text
 Plugin cost per message:
   MCP tools:     ~30-80 tokens per tool definition
   Subagents:     ~50-150 tokens per subagent description

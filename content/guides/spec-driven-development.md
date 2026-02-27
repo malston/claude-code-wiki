@@ -15,7 +15,7 @@ Spec-driven development (SDD) is the practice of creating structured specificati
 | **Specs are prompts**            | Specifications are context engineering, not documentation         | AI agents produce better output from structured input |
 | **Fresh contexts prevent decay** | Each task gets an isolated context window                         | Quality stays consistent regardless of project size   |
 | **Atomic decomposition**         | Work is broken into small, independent tasks                      | Targets ~50% context usage where quality is highest   |
-| **Goal-backward verification**   | Verify that goals are achieved, not only that tasks completed     | A passing task list doesn't mean the feature works    |
+| **Goal-backward verification**   | Verify that goals are achieved, not only that tasks are completed | A passing task list doesn't mean the feature works    |
 | **Structured handoffs**          | Plans, summaries, and state files carry knowledge across sessions | No tribal knowledge lost between context windows      |
 
 ## Table of Contents

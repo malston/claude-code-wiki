@@ -20,42 +20,46 @@ Debugging with Claude Code works best when treated as a systematic investigation
 | **Subagent investigation**    | Large codebase, many files to search         | Keeps main context clean for the fix   |
 | **Minimal reproduction**      | Intermittent or environment-specific bugs    | Isolates the exact conditions          |
 
----
-
 ## Table of Contents
 
-- [The Debugging Framework](#the-debugging-framework)
-  - [Phase 1: Understand the Symptom](#phase-1-understand-the-symptom)
-  - [Phase 2: Reproduce](#phase-2-reproduce)
-  - [Phase 3: Investigate Root Cause](#phase-3-investigate-root-cause)
-  - [Phase 4: Fix and Verify](#phase-4-fix-and-verify)
-- [Sharing Errors Effectively](#sharing-errors-effectively)
-  - [What to Include](#what-to-include)
-  - [What Not to Do](#what-not-to-do)
-- [Tracing Techniques](#tracing-techniques)
-  - [Trace Backward from the Error](#trace-backward-from-the-error)
-  - [Git History Investigation](#git-history-investigation)
-  - [Log Analysis](#log-analysis)
-  - [Reasoning Through Architecture](#reasoning-through-architecture)
-- [Common Bug Categories](#common-bug-categories)
-  - [Test Failures](#test-failures)
-  - [Runtime Errors](#runtime-errors)
-  - [It Worked Before](#it-worked-before)
-  - [Intermittent Failures](#intermittent-failures)
-  - [Build and Configuration Errors](#build-and-configuration-errors)
-- [Using Subagents for Debugging](#using-subagents-for-debugging)
-- [Debugging Across Context Windows](#debugging-across-context-windows)
-- [Anti-Patterns](#anti-patterns)
-- [Best Practices](#best-practices)
-- [References](#references)
-
----
+- [Debugging Techniques: Systematic Troubleshooting with Claude Code](#debugging-techniques-systematic-troubleshooting-with-claude-code)
+  - [Executive Summary](#executive-summary)
+  - [Table of Contents](#table-of-contents)
+  - [The Debugging Framework](#the-debugging-framework)
+    - [Phase 1: Understand the Symptom](#phase-1-understand-the-symptom)
+    - [Phase 2: Reproduce](#phase-2-reproduce)
+    - [Phase 3: Investigate Root Cause](#phase-3-investigate-root-cause)
+    - [Phase 4: Fix and Verify](#phase-4-fix-and-verify)
+  - [Sharing Errors Effectively](#sharing-errors-effectively)
+    - [What to Include](#what-to-include)
+    - [What Not to Do](#what-not-to-do)
+  - [Tracing Techniques](#tracing-techniques)
+    - [Trace Backward from the Error](#trace-backward-from-the-error)
+    - [Git History Investigation](#git-history-investigation)
+    - [Log Analysis](#log-analysis)
+    - [Reasoning Through Architecture](#reasoning-through-architecture)
+  - [Common Bug Categories](#common-bug-categories)
+    - [Test Failures](#test-failures)
+    - [Runtime Errors](#runtime-errors)
+    - [It Worked Before](#it-worked-before)
+    - [Intermittent Failures](#intermittent-failures)
+    - [Build and Configuration Errors](#build-and-configuration-errors)
+  - [Using Subagents for Debugging](#using-subagents-for-debugging)
+  - [Debugging Across Context Windows](#debugging-across-context-windows)
+  - [Anti-Patterns](#anti-patterns)
+    - [Symptom Patching](#symptom-patching)
+    - [Shotgun Debugging](#shotgun-debugging)
+    - [Ignoring Error Messages](#ignoring-error-messages)
+    - [Fixing the Test Instead of the Code](#fixing-the-test-instead-of-the-code)
+    - [Accumulating Failed Attempts](#accumulating-failed-attempts)
+  - [Best Practices](#best-practices)
+  - [References](#references)
 
 ## The Debugging Framework
 
 Every debugging session should follow four phases. Skipping to phase 4 (the fix) without understanding the root cause produces patches that mask problems rather than solve them.
 
-```
+```text
 Phase 1: UNDERSTAND THE SYMPTOM
   What is happening? What should be happening?
        │
@@ -73,7 +77,7 @@ Phase 4: FIX AND VERIFY
 
 Before Claude can help, it needs to understand what's wrong. The more precise your description, the faster the investigation.
 
-```
+```text
 Vague (Claude has to guess):
   "the login is broken"
 
@@ -95,14 +99,14 @@ Key questions to answer:
 
 A bug you can't reproduce is a bug you can't verify you've fixed.
 
-```
+```text
 "the test fails with 'expected 200 but got 401'.
  reproduce it by running: go test ./internal/auth/..."
 ```
 
 For bugs that are hard to reproduce, ask Claude to write a minimal reproduction:
 
-```
+```text
 "users report that checkout fails intermittently.
  write a test that simulates concurrent checkout
  requests to reproduce the race condition"
@@ -110,7 +114,7 @@ For bugs that are hard to reproduce, ask Claude to write a minimal reproduction:
 
 If the bug is environment-specific:
 
-```
+```text
 "this only fails in CI. here's the CI log output:
  [paste]. the local environment uses Go 1.22 but
  CI uses Go 1.21. check if any 1.22 features are
@@ -123,7 +127,7 @@ This is where most debugging time is spent -- and where Claude provides the most
 
 **The backward trace:**
 
-```
+```text
 Symptom:    401 response on login
     ↑
 Immediate:  token validation fails
@@ -135,7 +139,7 @@ Root cause: clock skew between auth service and token issuer
 
 Claude is good at tracing backward through code if you point it to the right starting location:
 
-```
+```text
 "the error is in auth.go:47 where validateToken()
  returns false. trace backward to find where the
  token gets its expiry timestamp and why it might
@@ -146,7 +150,7 @@ Claude is good at tracing backward through code if you point it to the right sta
 
 Only after understanding the root cause should Claude attempt a fix. And every fix needs verification:
 
-```
+```text
 "fix the clock skew issue by using the token
  issuer's timestamp instead of the local clock.
  write a test that reproduces the original bug
@@ -158,8 +162,6 @@ The pattern: **write a failing test that captures the bug, then fix the code to 
 - You're fixing the right problem
 - The fix actually works
 - The bug can't silently regress
-
----
 
 ## Sharing Errors Effectively
 
@@ -178,7 +180,7 @@ The single most useful thing you can give Claude is the actual error output. Not
 
 ### What Not to Do
 
-```
+```text
 Bad:  "the test still fails, try something else"
       (Claude doesn't know what error to address)
 
@@ -188,7 +190,7 @@ Good: "the test fails with: 'panic: runtime error:
       (Claude knows exactly what's wrong and where)
 ```
 
-```
+```text
 Bad:  "it's broken again"
       (no information to work with)
 
@@ -201,15 +203,13 @@ Good: "same nil pointer, but now at auth.go:52.
 
 Paraphrasing error messages loses critical information. The exact text often contains the solution -- line numbers, variable names, expected vs actual values.
 
----
-
 ## Tracing Techniques
 
 ### Trace Backward from the Error
 
 The error location is rarely the root cause. Claude is effective at tracing backward through call chains:
 
-```
+```text
 "the panic is at handler.go:89 where it calls
  user.GetProfile(). trace backward to find how
  'user' gets its value -- it might be nil when
@@ -218,7 +218,7 @@ The error location is rarely the root cause. Claude is effective at tracing back
 
 Ask Claude to map the data flow:
 
-```
+```text
 "trace the request token from the HTTP header
  through the middleware chain to the handler.
  find where validation happens and what happens
@@ -229,14 +229,14 @@ Ask Claude to map the data flow:
 
 When something used to work, git history tells you what changed:
 
-```
+```text
 "this worked last week. look through the git log
  for changes to the auth module since Monday"
 ```
 
 For finding the exact breaking commit:
 
-```
+```text
 "use git bisect to find which commit broke the
  login test. the test is:
  go test -run TestLoginWithExpiredToken ./internal/auth/"
@@ -244,7 +244,7 @@ For finding the exact breaking commit:
 
 Claude can also investigate git blame for context:
 
-```
+```text
 "git blame auth.go around line 47. who changed
  this last and what was the commit message?"
 ```
@@ -253,7 +253,7 @@ Claude can also investigate git blame for context:
 
 For production issues where you have logs but can't easily reproduce:
 
-```
+```text
 "here's the error log from production: [paste].
  identify the pattern -- what requests trigger
  this error? is there a common thread (same user,
@@ -271,13 +271,13 @@ group by root cause and rank by frequency"
 
 For complex bugs, ask Claude to reason about what could go wrong:
 
-```
+```text
 "think through what happens if two users trigger
  checkout simultaneously. where could the race
  condition occur in our current checkout flow?"
 ```
 
-```
+```text
 "what could cause pagination to silently drop
  results? consider the database query, the
  cursor handling, and the response serialization"
@@ -285,13 +285,11 @@ For complex bugs, ask Claude to reason about what could go wrong:
 
 This generates focused investigation targets rather than blind searching.
 
----
-
 ## Common Bug Categories
 
 ### Test Failures
 
-```
+```text
 Step 1: Read the full error output
   "run go test ./internal/auth/ -v and show me
    the complete output"
@@ -313,7 +311,7 @@ Step 4: Fix at the source
 
 ### Runtime Errors
 
-```
+```text
 Step 1: Get the full stack trace
   "paste the complete panic/error output"
 
@@ -334,7 +332,7 @@ Step 4: Fix with validation at the source
 
 ### It Worked Before
 
-```
+```text
 Step 1: Find when it broke
   "this login test passed in CI last Wednesday.
    look at commits to the auth package since then"
@@ -356,7 +354,7 @@ Step 4: Fix appropriately
 
 For harder cases, git bisect automates the search:
 
-```
+```text
 "use git bisect with the login test to find which
  exact commit broke it. mark the last known good
  commit as HEAD~20 and the bad commit as HEAD"
@@ -371,7 +369,7 @@ These are the hardest bugs. Common causes:
 - **Resource exhaustion** -- Connection pools, file handles, memory
 - **External dependencies** -- Network timeouts, service degradation
 
-```
+```text
 "this test fails about 1 in 10 runs. look for:
  - shared mutable state accessed without locks
  - goroutines that assume execution order
@@ -381,7 +379,7 @@ These are the hardest bugs. Common causes:
 
 For race conditions specifically:
 
-```
+```text
 "run the tests with the Go race detector:
  go test -race ./internal/checkout/
  and show me any race conditions it finds"
@@ -389,7 +387,7 @@ For race conditions specifically:
 
 ### Build and Configuration Errors
 
-```
+```text
 Step 1: Share the exact build output
   "here's the build error: [paste]"
 
@@ -404,19 +402,17 @@ Step 3: Check for cascading effects
 
 For dependency issues:
 
-```
+```text
 "the build fails with a version conflict between
  library X and Y. read go.mod and figure out which
  version constraints are incompatible"
 ```
 
----
-
 ## Using Subagents for Debugging
 
 When debugging requires extensive codebase exploration, subagents keep your main context clean:
 
-```
+```text
 "use a subagent to investigate all the places
  where UserSession is created, modified, or
  invalidated. I need to understand the session
@@ -438,8 +434,6 @@ The subagent reads many files and reports back a summary. Your main context stay
 - The bug is in a single function
 - You already understand the subsystem
 
----
-
 ## Debugging Across Context Windows
 
 Long debugging sessions fill context with failed attempts and file reads. Strategies for managing this:
@@ -448,7 +442,7 @@ Long debugging sessions fill context with failed attempts and file reads. Strate
 
 If you've been debugging for a while and have accumulated several failed approaches, `/clear` and start fresh with what you've learned:
 
-```
+```text
 After failed attempts, start clean:
   "the nil pointer in auth.go:47 is because
    sessionLookup returns nil when the session
@@ -464,7 +458,7 @@ The clean prompt incorporates lessons from your investigation without the noise 
 
 For multi-session debugging, save what you've found:
 
-```
+```text
 "save your findings about the session timeout bug
  to progress.md: what we know, what we've tried,
  what the likely root cause is, and what to try next"
@@ -472,7 +466,7 @@ For multi-session debugging, save what you've found:
 
 **Use git commits as checkpoints:**
 
-```
+```text
 "commit the diagnostic logging we added so we don't
  lose it. message: 'add debug logging for session
  timeout investigation'"
@@ -480,13 +474,11 @@ For multi-session debugging, save what you've found:
 
 Even if the logging gets removed later, the commit preserves the investigation state.
 
----
-
 ## Anti-Patterns
 
 ### Symptom Patching
 
-```
+```text
 Bad:  "add a nil check to stop the panic"
       (hides the bug, doesn't fix it)
 
@@ -499,7 +491,7 @@ A nil check at the crash site stops the panic but doesn't fix the underlying pro
 
 ### Shotgun Debugging
 
-```
+```text
 Bad:  "try adding error handling here, and also
        here, and also change this timeout, and
        also try a different library version"
@@ -515,7 +507,7 @@ Multiple simultaneous changes make it impossible to know what fixed the problem 
 
 ### Ignoring Error Messages
 
-```
+```text
 Bad:  "the test fails, make it pass"
       (Claude doesn't know what the error is)
 
@@ -529,7 +521,7 @@ Error messages are diagnostic data. Read them carefully before asking for help.
 
 ### Fixing the Test Instead of the Code
 
-```
+```text
 Bad:  "the test expects 200 but gets 401, update
        the test to expect 401"
       (the test was correct, the code is broken)
@@ -545,7 +537,7 @@ Before changing a test, verify that the test is wrong and not the code. Tests th
 
 ### Accumulating Failed Attempts
 
-```
+```text
 Bad:  Attempt 1 failed → "try this instead" →
       Attempt 2 failed → "what about this?" →
       Attempt 3 failed → "maybe this?" →
@@ -560,8 +552,6 @@ Good: After 2 failed attempts →
 ```
 
 After two failed fix attempts, the context is polluted. Start fresh with a better prompt that incorporates your investigation findings.
-
----
 
 ## Best Practices
 
@@ -584,8 +574,6 @@ After two failed fix attempts, the context is polluted. Start fresh with a bette
 9. **Read the error message** -- It sounds obvious, but most debugging starts with actually reading what the error says. The answer is often in the message itself.
 
 10. **Don't fix the test** -- When a test fails, verify the test is correct before changing it. Tests that used to pass usually represent correct behavior.
-
----
 
 ## References
 

@@ -20,37 +20,41 @@ The quality of your results from Claude Code depends heavily on how you structur
 | **Use CLAUDE.md well**       | Persistent rules applied to every message       | One-time |
 | **Manage multi-window work** | Enables tasks that span beyond a single session | Medium   |
 
----
-
 ## Table of Contents
 
-- [How Claude Code Processes Your Messages](#how-claude-code-processes-your-messages)
-- [The Fundamentals](#the-fundamentals)
-  - [Be Explicit, Not Vague](#be-explicit-not-vague)
-  - [Action vs Suggestion](#action-vs-suggestion)
-  - [Provide Context and Motivation](#provide-context-and-motivation)
-  - [Reference Specific Code](#reference-specific-code)
-- [Task Decomposition](#task-decomposition)
-  - [When to Decompose](#when-to-decompose)
-  - [The Iterative Loop](#the-iterative-loop)
-  - [Plan Mode for Complex Work](#plan-mode-for-complex-work)
-- [CLAUDE.md: Persistent Prompting](#claudemd-persistent-prompting)
-  - [What Goes in CLAUDE.md](#what-goes-in-claudemd)
-  - [What Doesn't Belong in CLAUDE.md](#what-doesnt-belong-in-claudemd)
-  - [Keeping It Concise](#keeping-it-concise)
-- [Working Across Context Windows](#working-across-context-windows)
-  - [Tests-First Strategy](#tests-first-strategy)
-  - [State Files and Progress Notes](#state-files-and-progress-notes)
-  - [Starting Fresh vs Compaction](#starting-fresh-vs-compaction)
-- [Directing Tool Usage](#directing-tool-usage)
-  - [Subagent Delegation](#subagent-delegation)
-  - [Parallel Operations](#parallel-operations)
-  - [When Claude Over-Explores](#when-claude-over-explores)
-- [Common Anti-Patterns](#common-anti-patterns)
-- [Best Practices Summary](#best-practices-summary)
-- [References](#references)
-
----
+- [Effective Prompting: Getting Better Results from Claude Code](#effective-prompting-getting-better-results-from-claude-code)
+  - [Executive Summary](#executive-summary)
+  - [Table of Contents](#table-of-contents)
+  - [How Claude Code Processes Your Messages](#how-claude-code-processes-your-messages)
+  - [The Fundamentals](#the-fundamentals)
+    - [Be Explicit, Not Vague](#be-explicit-not-vague)
+    - [Action vs Suggestion](#action-vs-suggestion)
+    - [Provide Context and Motivation](#provide-context-and-motivation)
+    - [Reference Specific Code](#reference-specific-code)
+  - [Task Decomposition](#task-decomposition)
+    - [When to Decompose](#when-to-decompose)
+    - [The Iterative Loop](#the-iterative-loop)
+    - [Plan Mode for Complex Work](#plan-mode-for-complex-work)
+  - [CLAUDE.md: Persistent Prompting](#claudemd-persistent-prompting)
+    - [What Goes in CLAUDE.md](#what-goes-in-claudemd)
+    - [What Doesn't Belong in CLAUDE.md](#what-doesnt-belong-in-claudemd)
+    - [Keeping It Concise](#keeping-it-concise)
+  - [Working Across Context Windows](#working-across-context-windows)
+    - [Tests-First Strategy](#tests-first-strategy)
+    - [State Files and Progress Notes](#state-files-and-progress-notes)
+    - [Starting Fresh vs Compaction](#starting-fresh-vs-compaction)
+  - [Directing Tool Usage](#directing-tool-usage)
+    - [Subagent Delegation](#subagent-delegation)
+    - [Parallel Operations](#parallel-operations)
+    - [When Claude Over-Explores](#when-claude-over-explores)
+  - [Common Anti-Patterns](#common-anti-patterns)
+    - [The Vague Request](#the-vague-request)
+    - [Over-Constraining](#over-constraining)
+    - [Fighting the Model](#fighting-the-model)
+    - [Not Reading Output](#not-reading-output)
+    - [The Kitchen-Sink Prompt](#the-kitchen-sink-prompt)
+  - [Best Practices Summary](#best-practices-summary)
+  - [References](#references)
 
 ## How Claude Code Processes Your Messages
 
@@ -82,8 +86,6 @@ This has practical implications:
 2. **Claude has full conversation context** -- It remembers what you discussed earlier in the session. You can say "fix the issue we just discussed" and Claude knows what you mean.
 3. **File contents are in context** -- If Claude read a file earlier, that content is still in the conversation. You don't need to tell it to read the file again (unless the file changed).
 4. **Context is finite** -- The conversation history grows with each turn. Very long sessions eventually trigger [compaction]({{< relref "/internals/context-management" >}}), which summarizes older turns. New sessions start with fresh context.
-
----
 
 ## The Fundamentals
 
@@ -213,8 +215,6 @@ Useful specifics to include:
 - **Error messages** -- Paste the actual error, don't paraphrase
 - **Expected behavior** -- "should return 404" not "doesn't work right"
 
----
-
 ## Task Decomposition
 
 ### When to Decompose
@@ -309,8 +309,6 @@ Claude implements the approved plan
 
 The value: you review the approach before any code is written. This prevents the expensive scenario where Claude builds something significant that doesn't match what you wanted.
 
----
-
 ## CLAUDE.md: Persistent Prompting
 
 CLAUDE.md files are your persistent instructions -- they're sent to Claude on every message, so they function like a prompt that never has to be repeated.
@@ -381,8 +379,6 @@ Rules of thumb:
 - **User-scope CLAUDE.md** (`~/.claude/CLAUDE.md`) -- Your personal preferences that apply everywhere. Keep this focused.
 - **Project-scope CLAUDE.md** (repo root) -- Project-specific standards. Only include what's specific to this project.
 - **If it's longer than ~100 lines**, consider whether everything needs to be there on every message.
-
----
 
 ## Working Across Context Windows
 
@@ -466,8 +462,6 @@ New session prompt:
 
 Claude's latest models are effective at discovering state from the local filesystem -- often better than relying on a compacted summary of a long conversation.
 
----
-
 ## Directing Tool Usage
 
 ### Subagent Delegation
@@ -527,8 +521,6 @@ If Claude is spawning subagents for simple tasks:
 ```
 
 The pattern: tell Claude the scope of the task. If it's small, say it's small. If exploration isn't needed, say so.
-
----
 
 ## Common Anti-Patterns
 
@@ -606,8 +598,6 @@ Good: "Let's add OAuth support to the auth module. Start
 
 Giant prompts with multiple unrelated tasks produce worse results than focused, sequential requests. Each task deserves its own conversation turn where you can verify the result before moving on.
 
----
-
 ## Best Practices Summary
 
 1. **Be specific about what, where, and why** -- Don't make Claude guess your intent. State the goal, point to the location, explain the motivation.
@@ -629,8 +619,6 @@ Giant prompts with multiple unrelated tasks produce worse results than focused, 
 9. **Match scope language to task size** -- Tell Claude when something is small and targeted vs large and exploratory.
 
 10. **Commit progress on long tasks** -- Git commits create checkpoints that survive session boundaries. Claude can discover state from the filesystem.
-
----
 
 ## References
 

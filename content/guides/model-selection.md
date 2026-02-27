@@ -16,45 +16,49 @@ Claude Code offers three model tiers -- Opus, Sonnet, and Haiku -- each with dif
 | **Sonnet 4.5** | Daily coding, balanced          | $3         | $15         | $0.30      | Fast     |
 | **Haiku 4.5**  | Quick tasks, simple operations  | $1         | $5          | $0.10      | Fastest  |
 
----
-
 ## Table of Contents
 
-- [The Model Lineup](#the-model-lineup)
-  - [Opus 4.6](#opus-46)
-  - [Sonnet 4.5](#sonnet-45)
-  - [Haiku 4.5](#haiku-45)
-  - [Legacy Models](#legacy-models)
-- [When to Use Each Model](#when-to-use-each-model)
-  - [Decision Framework](#decision-framework)
-  - [Task-Based Recommendations](#task-based-recommendations)
-- [Configuring Models in Claude Code](#configuring-models-in-claude-code)
-  - [Model Aliases](#model-aliases)
-  - [Switching Models](#switching-models)
-  - [The opusplan Strategy](#the-opusplan-strategy)
-  - [Effort Levels](#effort-levels)
-  - [Extended Context](#extended-context)
-  - [Subagent Model Selection](#subagent-model-selection)
-- [Understanding Costs](#understanding-costs)
-  - [How Costs Accumulate](#how-costs-accumulate)
-  - [Prompt Caching Economics](#prompt-caching-economics)
-  - [Extended Thinking Costs](#extended-thinking-costs)
-  - [Typical Cost Ranges](#typical-cost-ranges)
-- [Cost Reduction Strategies](#cost-reduction-strategies)
-  - [Context Management](#context-management)
-  - [Model Selection Strategies](#model-selection-strategies)
-  - [MCP and Plugin Overhead](#mcp-and-plugin-overhead)
-  - [Hook-Based Preprocessing](#hook-based-preprocessing)
-  - [Headless Mode Budget Controls](#headless-mode-budget-controls)
-- [Tracking and Monitoring Costs](#tracking-and-monitoring-costs)
-  - [Session-Level Tracking](#session-level-tracking)
-  - [Team-Level Management](#team-level-management)
-  - [Rate Limit Planning](#rate-limit-planning)
-- [Best Practices](#best-practices)
-- [Anti-Patterns](#anti-patterns)
-- [References](#references)
-
----
+- [Model Selection \& Cost Management: Choosing the Right Model and Controlling Spend](#model-selection--cost-management-choosing-the-right-model-and-controlling-spend)
+  - [Executive Summary](#executive-summary)
+  - [Table of Contents](#table-of-contents)
+  - [The Model Lineup](#the-model-lineup)
+    - [Opus 4.6](#opus-46)
+    - [Sonnet 4.5](#sonnet-45)
+    - [Haiku 4.5](#haiku-45)
+    - [Legacy Models](#legacy-models)
+  - [When to Use Each Model](#when-to-use-each-model)
+    - [Decision Framework](#decision-framework)
+    - [Task-Based Recommendations](#task-based-recommendations)
+  - [Configuring Models in Claude Code](#configuring-models-in-claude-code)
+    - [Model Aliases](#model-aliases)
+    - [Switching Models](#switching-models)
+    - [The opusplan Strategy](#the-opusplan-strategy)
+    - [Effort Levels](#effort-levels)
+    - [Extended Context](#extended-context)
+    - [Subagent Model Selection](#subagent-model-selection)
+  - [Understanding Costs](#understanding-costs)
+    - [How Costs Accumulate](#how-costs-accumulate)
+    - [Prompt Caching Economics](#prompt-caching-economics)
+    - [Extended Thinking Costs](#extended-thinking-costs)
+    - [Typical Cost Ranges](#typical-cost-ranges)
+  - [Cost Reduction Strategies](#cost-reduction-strategies)
+    - [Context Management](#context-management)
+    - [Model Selection Strategies](#model-selection-strategies)
+    - [MCP and Plugin Overhead](#mcp-and-plugin-overhead)
+    - [Hook-Based Preprocessing](#hook-based-preprocessing)
+    - [Headless Mode Budget Controls](#headless-mode-budget-controls)
+  - [Tracking and Monitoring Costs](#tracking-and-monitoring-costs)
+    - [Session-Level Tracking](#session-level-tracking)
+    - [Team-Level Management](#team-level-management)
+    - [Rate Limit Planning](#rate-limit-planning)
+  - [Best Practices](#best-practices)
+  - [Anti-Patterns](#anti-patterns)
+    - [Using Opus for Everything](#using-opus-for-everything)
+    - [Never Clearing Context](#never-clearing-context)
+    - [Running Subagents on Opus](#running-subagents-on-opus)
+    - [No Budget Controls in CI](#no-budget-controls-in-ci)
+    - [Ignoring Prompt Caching](#ignoring-prompt-caching)
+  - [References](#references)
 
 ## The Model Lineup
 
@@ -120,8 +124,6 @@ Still available but migration recommended:
 
 Opus 4.6 is strictly better and cheaper than Opus 4.1 and Opus 4. There's no reason to stay on the older models.
 
----
-
 ## When to Use Each Model
 
 ### Decision Framework
@@ -157,8 +159,6 @@ Is it a simple lookup, quick fix, or subagent task?
 | Prompt/agent hooks (LLM evaluation) | Haiku             | Fast evaluation, binary decisions             |
 
 **The opusplan sweet spot:** For features that need careful planning but straightforward implementation, use `opusplan` -- Opus reasons through the design, Sonnet implements it.
-
----
 
 ## Configuring Models in Claude Code
 
@@ -277,8 +277,6 @@ CLAUDE_CODE_SUBAGENT_MODEL=haiku claude
 
 Running subagents on Haiku is one of the highest-leverage cost optimizations. Most subagent tasks -- file searches, pattern matching, codebase exploration -- don't need Opus-level reasoning.
 
----
-
 ## Understanding Costs
 
 ### How Costs Accumulate
@@ -340,8 +338,6 @@ From Anthropic's data:
 - **Background usage:** <$0.04/session (summarization, status checks)
 
 These numbers assume Sonnet 4.5. Opus sessions cost roughly 1.7x more for the same work due to higher input/output pricing.
-
----
 
 ## Cost Reduction Strategies
 
@@ -476,8 +472,6 @@ claude -p \
 | `--model sonnet`     | Use cheaper model for batch work      |
 | `--fallback-model`   | Auto-fallback when primary overloaded |
 
----
-
 ## Tracking and Monitoring Costs
 
 ### Session-Level Tracking
@@ -510,8 +504,6 @@ Recommended per-user Token Per Minute (TPM) allocations:
 
 TPM per user decreases with team size because fewer users are active concurrently. These are organization-level limits -- individuals can burst above their share when others are idle.
 
----
-
 ## Best Practices
 
 1. **Default to Sonnet.** Most coding tasks don't need Opus. Switch up only when you need deeper reasoning.
@@ -533,8 +525,6 @@ TPM per user decreases with team size because fewer users are active concurrentl
 9. **Disable unused MCP servers.** Each idle server adds tool definitions to every message. Run `/mcp` and disable what you're not using.
 
 10. **Reduce extended thinking for simple tasks.** Set `MAX_THINKING_TOKENS=8000` or disable thinking when deep reasoning isn't needed.
-
----
 
 ## Anti-Patterns
 
@@ -594,8 +584,6 @@ Good: Let prompt caching work. Cache reads are 10x cheaper
 ```
 
 Prompt caching is always net positive for Claude Code usage patterns. Don't disable it unless debugging specific issues.
-
----
 
 ## References
 

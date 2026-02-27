@@ -19,46 +19,50 @@ Testing is the highest-leverage tool for getting good results from Claude Code. 
 | **Hooks for auto-testing**      | All development                       | Immediate feedback after every edit            |
 | **Headless test runner**        | CI/CD, batch validation               | Automated verification at scale                |
 
----
-
 ## Table of Contents
 
-- [Why Tests Matter More with AI](#why-tests-matter-more-with-ai)
-- [Test-Driven Development with Claude Code](#test-driven-development-with-claude-code)
-  - [The Red-Green-Refactor Cycle](#the-red-green-refactor-cycle)
-  - [Prompting for Tests](#prompting-for-tests)
-  - [Committing the Cycle](#committing-the-cycle)
-- [Context Isolation: The Writer/Implementer Split](#context-isolation)
-  - [Why Isolation Matters](#why-isolation-matters)
-  - [Patterns for Isolation](#patterns-for-isolation)
-- [What Makes a Good Test with Claude Code](#what-makes-a-good-test-with-claude-code)
-  - [Match Existing Patterns](#match-existing-patterns)
-  - [Avoid Mocks Where Possible](#avoid-mocks-where-possible)
-  - [Test Behavior, Not Implementation](#test-behavior-not-implementation)
-  - [Edge Cases Claude Misses](#edge-cases-claude-misses)
-- [Tests as Durable Requirements](#tests-as-durable-requirements)
-  - [Surviving Context Windows](#surviving-context-windows)
-  - [Multi-Session TDD](#multi-session-tdd)
-  - [Structured Test Tracking](#structured-test-tracking)
-- [Automating Test Workflows](#automating-test-workflows)
-  - [Hooks for Auto-Testing](#hooks-for-auto-testing)
-  - [CLAUDE.md Testing Rules](#claudemd-testing-rules)
-  - [Headless Testing in CI](#headless-testing-in-ci)
-- [Test Coverage Strategies](#test-coverage-strategies)
-  - [Finding Untested Code](#finding-untested-code)
-  - [Incremental Coverage Improvement](#incremental-coverage-improvement)
-  - [When Coverage Tools Help](#when-coverage-tools-help)
-- [Common Testing Anti-Patterns](#common-testing-anti-patterns)
-- [Best Practices](#best-practices)
-- [References](#references)
-
----
+- [Testing Strategies: TDD Patterns and Test Automation with Claude Code](#testing-strategies-tdd-patterns-and-test-automation-with-claude-code)
+  - [Executive Summary](#executive-summary)
+  - [Table of Contents](#table-of-contents)
+  - [Why Tests Matter More with AI](#why-tests-matter-more-with-ai)
+  - [Test-Driven Development with Claude Code](#test-driven-development-with-claude-code)
+    - [The Red-Green-Refactor Cycle](#the-red-green-refactor-cycle)
+    - [Prompting for Tests](#prompting-for-tests)
+    - [Committing the Cycle](#committing-the-cycle)
+  - [Context Isolation](#context-isolation)
+    - [Why Isolation Matters](#why-isolation-matters)
+    - [Patterns for Isolation](#patterns-for-isolation)
+  - [What Makes a Good Test with Claude Code](#what-makes-a-good-test-with-claude-code)
+    - [Match Existing Patterns](#match-existing-patterns)
+    - [Avoid Mocks Where Possible](#avoid-mocks-where-possible)
+    - [Test Behavior, Not Implementation](#test-behavior-not-implementation)
+    - [Edge Cases Claude Misses](#edge-cases-claude-misses)
+  - [Tests as Durable Requirements](#tests-as-durable-requirements)
+    - [Surviving Context Windows](#surviving-context-windows)
+    - [Multi-Session TDD](#multi-session-tdd)
+    - [Structured Test Tracking](#structured-test-tracking)
+  - [Automating Test Workflows](#automating-test-workflows)
+    - [Hooks for Auto-Testing](#hooks-for-auto-testing)
+    - [CLAUDE.md Testing Rules](#claudemd-testing-rules)
+    - [Headless Testing in CI](#headless-testing-in-ci)
+  - [Test Coverage Strategies](#test-coverage-strategies)
+    - [Finding Untested Code](#finding-untested-code)
+    - [Incremental Coverage Improvement](#incremental-coverage-improvement)
+    - [When Coverage Tools Help](#when-coverage-tools-help)
+  - [Common Testing Anti-Patterns](#common-testing-anti-patterns)
+    - [Testing Mocked Behavior](#testing-mocked-behavior)
+    - [Deleting Failing Tests](#deleting-failing-tests)
+    - [Writing Tests After Implementation in the Same Session](#writing-tests-after-implementation-in-the-same-session)
+    - [Hard-Coding Test Values](#hard-coding-test-values)
+    - [Ignoring Test Output](#ignoring-test-output)
+  - [Best Practices](#best-practices)
+  - [References](#references)
 
 ## Why Tests Matter More with AI
 
 Claude Code performs dramatically better when it can verify its own work. This isn't just a nice-to-have -- it's the single highest-leverage pattern for improving Claude's output quality.
 
-```
+```text
 Without tests:
   You → "implement rate limiting"
   Claude → writes code that looks correct
@@ -79,15 +83,13 @@ The difference: without tests, you are the feedback loop. With tests, Claude has
 
 This applies to all types of work -- new features, bug fixes, refactoring, and migrations. If you can express the expected behavior as a test, Claude's success rate goes up significantly.
 
----
-
 ## Test-Driven Development with Claude Code
 
 ### The Red-Green-Refactor Cycle
 
 TDD with Claude Code follows the standard cycle, adapted for agentic development:
 
-```
+```text
 RED: Write failing tests
   Claude writes tests for functionality that
   doesn't exist yet. Tests should fail.
@@ -105,7 +107,7 @@ REFACTOR: Clean up with safety
 
 The practical workflow:
 
-```
+```text
 Step 1: Write tests first
   "write tests for a rate limiter that allows 5
    requests per minute per IP address. cover:
@@ -139,7 +141,7 @@ Step 6: Refactor (optional)
 
 Be explicit that you're doing TDD. This prevents Claude from writing mock implementations or stubbing out code that doesn't exist yet.
 
-```
+```text
 Explicit TDD prompt:
   "I'm doing TDD. Write tests FIRST for the feature
    described below. Do NOT create any implementation
@@ -167,7 +169,7 @@ The more specific your test requirements, the better the tests. Vague requests l
 
 Committing at each phase creates checkpoints:
 
-```
+```text
 Commit 1: "add rate limiter tests (red)"
   → Tests exist but fail. Requirements are captured.
 
@@ -183,15 +185,13 @@ This serves two purposes:
 1. Each phase is reversible -- you can rewind to any checkpoint
 2. The test commit is a standalone artifact that survives context transitions
 
----
-
 ## Context Isolation
 
 ### Why Isolation Matters
 
 When Claude writes both tests and implementation in the same context, there's a subtle bias: Claude designs the tests around the implementation it's already planning. The tests pass easily because they test exactly what Claude intended to build, not necessarily what you need.
 
-```
+```text
 Same context (biased):
   Claude thinks about implementation → writes tests
   that match its planned approach → writes code that
@@ -208,7 +208,7 @@ Separate contexts (unbiased):
 
 **Pattern 1: Two sessions**
 
-```
+```text
 Session A (test writer):
   "write comprehensive tests for user notification
    preferences. cover opt-in, opt-out, per-channel
@@ -223,7 +223,7 @@ Session B (implementer):
 
 **Pattern 2: Subagent writer**
 
-```
+```text
 "use a subagent to write tests for the checkout flow.
  the subagent should cover: adding items, removing
  items, applying discount codes, and calculating tax.
@@ -233,7 +233,7 @@ Session B (implementer):
 
 **Pattern 3: Test spec, then implement**
 
-```
+```text
 Step 1: Write a test specification
   "write a test plan for the search feature in
    TESTPLAN.md. list every test case with inputs
@@ -252,15 +252,13 @@ Step 4: Implement
 
 The `/clear` between steps 1 and 3 breaks the context connection, reducing bias.
 
----
-
 ## What Makes a Good Test with Claude Code
 
 ### Match Existing Patterns
 
 Claude examines existing test files to match style, frameworks, and assertion patterns. Point it to good examples:
 
-```
+```text
 "look at how tests are structured in user_test.go.
  follow the same patterns for the new auth tests:
  table-driven tests, testify assertions, test
@@ -273,7 +271,7 @@ If your codebase has inconsistent test patterns, specify which pattern to follow
 
 Mocks test that you called the mock correctly, not that the code works. For integration points, prefer real dependencies when feasible:
 
-```
+```text
 Good: "use testcontainers for database tests, matching
       the pattern in user_test.go"
 
@@ -291,7 +289,7 @@ There are valid uses for mocks -- external services you can't control, slow depe
 
 Tests that verify behavior survive refactoring. Tests that verify implementation break whenever the code changes:
 
-```
+```text
 Behavior test (durable):
   "test that a rate-limited request returns 429
    with a Retry-After header"
@@ -305,7 +303,7 @@ The behavior test works regardless of whether you use Redis, an in-memory counte
 
 Tell Claude to focus on behavior:
 
-```
+```text
 "write tests that verify the external behavior of the
  API -- inputs and outputs. don't test internal
  implementation details"
@@ -315,7 +313,7 @@ Tell Claude to focus on behavior:
 
 Claude is good at happy-path tests but sometimes misses edge cases. Prompt for them explicitly:
 
-```
+```text
 "after writing the main tests, add edge case tests for:
  - empty input
  - nil/null values
@@ -327,12 +325,10 @@ Claude is good at happy-path tests but sometimes misses edge cases. Prompt for t
 
 You can also ask Claude to identify edge cases it might have missed:
 
-```
+```text
 "review the tests you just wrote. what edge cases
  are missing? add them"
 ```
-
----
 
 ## Tests as Durable Requirements
 
@@ -340,7 +336,7 @@ You can also ask Claude to identify edge cases it might have missed:
 
 Tests are the most reliable way to carry requirements across context transitions. Unlike conversation history (which gets compacted) or instructions (which get summarized), test files persist on disk exactly as written.
 
-```
+```text
 Context window fills up → compaction happens →
   conversation summary may lose details →
   BUT test files on disk are unchanged
@@ -356,7 +352,7 @@ This is why committing tests before implementation matters -- the tests survive 
 
 For features that span multiple sessions:
 
-```
+```text
 Session 1: Write all the tests
   "write comprehensive tests for the notification
    system. commit them when done."
@@ -397,13 +393,11 @@ For large features with many test cases, track progress in a structured format:
 
 Claude can read and update this file as it works:
 
-```
+```text
 "read tests.json, implement the next failing test
  case, run the tests, and update the status in
  tests.json when it passes"
 ```
-
----
 
 ## Automating Test Workflows
 
@@ -488,15 +482,13 @@ patterns in existing test files. output only
 the test code" --output-format text > new_tests.go
 ```
 
----
-
 ## Test Coverage Strategies
 
 ### Finding Untested Code
 
 Ask Claude to identify gaps:
 
-```
+```text
 "find functions in the auth package that don't
  have corresponding tests. list them with a brief
  description of what each function does"
@@ -504,7 +496,7 @@ Ask Claude to identify gaps:
 
 Or use coverage tools:
 
-```
+```text
 "run go test -coverprofile=coverage.out ./... and
  then go tool cover -func=coverage.out. show me
  functions with less than 50% coverage"
@@ -514,7 +506,7 @@ Or use coverage tools:
 
 Don't try to go from 20% to 90% coverage in one session. Target the highest-value gaps first:
 
-```
+```text
 Step 1: Identify critical untested paths
   "which functions in the checkout package handle
    money or user data but don't have tests?"
@@ -533,7 +525,7 @@ Step 3: Run and verify
 
 Coverage tools are useful for finding gaps but not for measuring quality. 100% coverage with bad tests is worse than 60% coverage with good tests.
 
-```
+```text
 Coverage tells you:
   "this function has no tests at all"  ← useful
   "this function has 100% line coverage" ← doesn't
@@ -547,20 +539,18 @@ Better quality signal:
 
 Ask Claude to evaluate test quality, not just coverage:
 
-```
+```text
 "review the tests for the auth package. for each
  test, evaluate: does it test real behavior or just
  implementation details? would it catch a real bug?
  what edge cases are missing?"
 ```
 
----
-
 ## Common Testing Anti-Patterns
 
 ### Testing Mocked Behavior
 
-```
+```text
 Bad:  mock.Expect("GetUser").Return(user)
       service.Process()
       mock.AssertCalled("GetUser")
@@ -575,7 +565,7 @@ Good: db := testcontainer.StartPostgres()
 
 ### Deleting Failing Tests
 
-```
+```text
 Bad:  "this test keeps failing, delete it"
       (the test was probably right -- the code is broken)
 
@@ -587,7 +577,7 @@ Tests that used to pass represent correct behavior. Deleting them loses that kno
 
 ### Writing Tests After Implementation in the Same Session
 
-```
+```text
 Bad:  "implement the feature" → "now write tests"
       (tests are biased toward what was just implemented)
 
@@ -600,7 +590,7 @@ Best: Session A writes tests → Session B implements
 
 ### Hard-Coding Test Values
 
-```
+```text
 Bad:  "Claude hard-coded the expected API response in
        the test -- it matches the current output exactly
        but doesn't test the logic"
@@ -616,7 +606,7 @@ Tell Claude to test properties and constraints rather than exact values when the
 
 ### Ignoring Test Output
 
-```
+```text
 Bad:  "the tests pass" (didn't actually check)
 
 Good: "run the tests with -v and show me the output.
@@ -624,8 +614,6 @@ Good: "run the tests with -v and show me the output.
 ```
 
 Test output often reveals that tests pass for the wrong reasons -- skipped tests, empty test bodies, or tests that assert nothing. Use verbose output to verify tests are actually testing something.
-
----
 
 ## Best Practices
 
@@ -648,8 +636,6 @@ Test output often reveals that tests pass for the wrong reasons -- skipped tests
 9. **Never delete failing tests** -- Investigate whether the test or the code is wrong. Tests that used to pass usually represent correct behavior.
 
 10. **Automate with hooks** -- PostToolUse hooks that run tests after every edit give Claude immediate feedback without explicit prompting.
-
----
 
 ## References
 

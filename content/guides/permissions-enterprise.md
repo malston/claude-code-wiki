@@ -18,50 +18,49 @@ Claude Code's permission system controls what actions Claude can take -- from fi
 | **Project** | `.claude/settings.json`        | Team         | Above scopes  |
 | **User**    | `~/.claude/settings.json`      | Developer    | All above     |
 
----
-
 ## Table of Contents
 
-- [Permission Modes](#permission-modes)
-- [Permission Rules](#permission-rules)
-  - [Allow, Deny, Ask](#allow-deny-ask)
-  - [Rule Evaluation Order](#rule-evaluation-order)
-  - [Tool-Specific Syntax](#tool-specific-syntax)
-  - [Permission Prompts and UX](#permission-prompts-and-ux)
-- [Settings Cascade](#settings-cascade)
-  - [Scope Precedence](#scope-precedence)
-  - [Settings File Locations](#settings-file-locations)
-- [Sandboxing](#sandboxing)
-  - [OS-Level Enforcement](#os-level-enforcement)
-  - [Filesystem Isolation](#filesystem-isolation)
-  - [Network Isolation](#network-isolation)
-  - [Sandbox Configuration](#sandbox-configuration)
-  - [Security Limitations](#security-limitations)
-- [Enterprise Managed Settings](#enterprise-managed-settings)
-  - [Managed Settings File](#managed-settings-file)
-  - [Managed-Only Controls](#managed-only-controls)
-  - [Example Enterprise Configuration](#example-enterprise-configuration)
-  - [Company Announcements](#company-announcements)
-- [API Provider Configuration](#api-provider-configuration)
-  - [Anthropic (Default)](#anthropic-default)
-  - [AWS Bedrock](#aws-bedrock)
-  - [Google Vertex AI](#google-vertex-ai)
-  - [Microsoft Foundry](#microsoft-foundry)
-  - [LLM Gateway Support](#llm-gateway-support)
-  - [Authentication Helpers](#authentication-helpers)
-- [CI/CD Permission Strategies](#cicd-permission-strategies)
-  - [Headless Mode Permissions](#headless-mode-permissions)
-  - [GitHub Actions](#github-actions)
-- [Security Hardening](#security-hardening)
-  - [Minimal-Interruption Developer Setup](#minimal-interruption-developer-setup)
-  - [Strict Lockdown Setup](#strict-lockdown-setup)
-  - [Hooks for Security Enforcement](#hooks-for-security-enforcement)
-- [Debugging Permissions](#debugging-permissions)
-- [Best Practices](#best-practices)
-- [Anti-Patterns](#anti-patterns)
-- [References](#references)
-
----
+- [Permissions \& Enterprise Deployment: Securing and Scaling Claude Code](#permissions--enterprise-deployment-securing-and-scaling-claude-code)
+  - [Executive Summary](#executive-summary)
+  - [Table of Contents](#table-of-contents)
+  - [Permission Modes](#permission-modes)
+  - [Permission Rules](#permission-rules)
+    - [Allow, Deny, Ask](#allow-deny-ask)
+    - [Rule Evaluation Order](#rule-evaluation-order)
+    - [Tool-Specific Syntax](#tool-specific-syntax)
+    - [Permission Prompts and UX](#permission-prompts-and-ux)
+  - [Settings Cascade](#settings-cascade)
+    - [Scope Precedence](#scope-precedence)
+    - [Settings File Locations](#settings-file-locations)
+  - [Sandboxing](#sandboxing)
+    - [OS-Level Enforcement](#os-level-enforcement)
+    - [Filesystem Isolation](#filesystem-isolation)
+    - [Network Isolation](#network-isolation)
+    - [Sandbox Configuration](#sandbox-configuration)
+    - [Security Limitations](#security-limitations)
+  - [Enterprise Managed Settings](#enterprise-managed-settings)
+    - [Managed Settings File](#managed-settings-file)
+    - [Managed-Only Controls](#managed-only-controls)
+    - [Example Enterprise Configuration](#example-enterprise-configuration)
+    - [Company Announcements](#company-announcements)
+  - [API Provider Configuration](#api-provider-configuration)
+    - [Anthropic (Default)](#anthropic-default)
+    - [AWS Bedrock](#aws-bedrock)
+    - [Google Vertex AI](#google-vertex-ai)
+    - [Microsoft Foundry](#microsoft-foundry)
+    - [LLM Gateway Support](#llm-gateway-support)
+    - [Authentication Helpers](#authentication-helpers)
+  - [CI/CD Permission Strategies](#cicd-permission-strategies)
+    - [Headless Mode Permissions](#headless-mode-permissions)
+    - [GitHub Actions](#github-actions)
+  - [Security Hardening](#security-hardening)
+    - [Minimal-Interruption Developer Setup](#minimal-interruption-developer-setup)
+    - [Strict Lockdown Setup](#strict-lockdown-setup)
+    - [Hooks for Security Enforcement](#hooks-for-security-enforcement)
+  - [Debugging Permissions](#debugging-permissions)
+  - [Best Practices](#best-practices)
+  - [Anti-Patterns](#anti-patterns)
+  - [References](#references)
 
 ## Permission Modes
 
@@ -89,8 +88,6 @@ Set via settings:
 Or via CLI: `claude --permission-mode acceptEdits`
 
 **`bypassPermissions` warning:** This mode gives Claude unrestricted access to your filesystem, shell, and network. Only use in isolated environments (containers, VMs, CI runners). Enterprise admins can prevent this mode entirely with `disableBypassPermissionsMode`.
-
----
 
 ## Permission Rules
 
@@ -201,8 +198,6 @@ Additional behaviors:
 - Fail-closed matching: unmatched commands default to requiring approval
 - `/permissions` slash command shows all active rules and their source
 
----
-
 ## Settings Cascade
 
 ### Scope Precedence
@@ -234,8 +229,6 @@ If a permission is allowed in user settings but denied in project settings, it's
 - Windows: `C:\Program Files\ClaudeCode\managed-settings.json`
 
 All files use the same JSON format.
-
----
 
 ## Sandboxing
 
@@ -300,8 +293,6 @@ Enable via `/sandbox` command or settings.
 - `allowUnixSockets` for the Docker socket effectively grants host-level access
 - Overly broad filesystem write permissions can enable privilege escalation
 - `enableWeakerNestedSandbox` considerably weakens security (Docker use only)
-
----
 
 ## Enterprise Managed Settings
 
@@ -381,8 +372,6 @@ Organization-wide messaging displayed to all users:
   ]
 }
 ```
-
----
 
 ## API Provider Configuration
 
@@ -500,8 +489,6 @@ For dynamic credential rotation:
 
 The helper script is called after 5 minutes or on HTTP 401. Customize the interval with `CLAUDE_CODE_API_KEY_HELPER_TTL_MS`.
 
----
-
 ## CI/CD Permission Strategies
 
 ### Headless Mode Permissions
@@ -538,8 +525,6 @@ claude -p "Fix this" --max-turns 3
     max_budget_usd: "10.00"
     max_turns: "50"
 ```
-
----
 
 ## Security Hardening
 
@@ -616,8 +601,6 @@ exit 0
 
 See the [Custom Hooks Cookbook]({{< relref "/extending/hooks-cookbook" >}}) for complete security hook recipes.
 
----
-
 ## Debugging Permissions
 
 - **`/permissions`** -- lists all active rules and which settings file they come from
@@ -625,8 +608,6 @@ See the [Custom Hooks Cookbook]({{< relref "/extending/hooks-cookbook" >}}) for 
 - **`claude --debug`** -- full permission evaluation output
 - **`ANTHROPIC_LOG=debug`** -- logs API requests for provider debugging
 - **`Ctrl+O`** -- toggles verbose mode to see hook output
-
----
 
 ## Best Practices
 
@@ -650,8 +631,6 @@ See the [Custom Hooks Cookbook]({{< relref "/extending/hooks-cookbook" >}}) for 
 
 10. **Use authentication helpers for credential rotation.** The `apiKeyHelper` setting supports dynamic credential refresh, which is essential for enterprise environments with rotating secrets.
 
----
-
 ## Anti-Patterns
 
 1. **Using `--dangerously-skip-permissions` on developer machines.** This flag gives Claude unrestricted access. It's designed for isolated containers, not laptops with your SSH keys and cloud credentials.
@@ -669,8 +648,6 @@ See the [Custom Hooks Cookbook]({{< relref "/extending/hooks-cookbook" >}}) for 
 7. **Disabling all hooks in enterprise.** `disableAllHooks: true` removes useful automation. Use `allowManagedHooksOnly: true` instead to keep managed hooks while blocking user-defined ones.
 
 8. **Ignoring sandbox limitations.** Sandboxing is not bulletproof. Allowed domains can be used for data exfiltration. Docker socket access grants host-level privileges. Layer defenses.
-
----
 
 ## References
 

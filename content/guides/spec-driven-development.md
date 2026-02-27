@@ -18,42 +18,41 @@ Spec-driven development (SDD) is the practice of creating structured specificati
 | **Goal-backward verification**   | Verify that goals are achieved, not just tasks completed          | A passing task list doesn't mean the feature works    |
 | **Structured handoffs**          | Plans, summaries, and state files carry knowledge across sessions | No tribal knowledge lost between context windows      |
 
----
-
 ## Table of Contents
 
-- [The Problem SDD Solves](#the-problem-sdd-solves)
-  - [Context Rot](#context-rot)
-  - [The Vibecoding Trap](#the-vibecoding-trap)
-- [Core Principles](#core-principles)
-  - [Specifications Are Prompts](#specifications-are-prompts)
-  - [Fresh Contexts Prevent Quality Decay](#fresh-contexts-prevent-quality-decay)
-  - [Atomic Decomposition Maintains Quality](#atomic-decomposition-maintains-quality)
-  - [Goal-Backward Verification](#goal-backward-verification)
-  - [Structured Handoffs Bridge Context Boundaries](#structured-handoffs-bridge-context-boundaries)
-- [The Development Cycle](#the-development-cycle)
-  - [Research Phase](#research-phase)
-  - [Specification Phase](#specification-phase)
-  - [Planning Phase](#planning-phase)
-  - [Execution Phase](#execution-phase)
-  - [Verification Phase](#verification-phase)
-  - [Iteration](#iteration)
-- [Practical Patterns](#practical-patterns)
-  - [The Interview Pattern](#the-interview-pattern)
-  - [Dependency Graphs and Execution Waves](#dependency-graphs-and-execution-waves)
-  - [Atomic Commits](#atomic-commits)
-  - [Checkpoint Protocols](#checkpoint-protocols)
-  - [State Files for Continuity](#state-files-for-continuity)
-- [Tool Landscape](#tool-landscape)
-  - [Superpowers Skills](#superpowers-skills)
-  - [GSD (Get Shit Done)](#gsd-get-shit-done)
-  - [GitHub Spec Kit](#github-spec-kit)
-  - [Choosing an Approach](#choosing-an-approach)
-- [Anti-Patterns](#anti-patterns)
-- [Best Practices](#best-practices)
-- [References](#references)
-
----
+- [Spec-Driven Development: Structured Planning for AI-Assisted Projects](#spec-driven-development-structured-planning-for-ai-assisted-projects)
+  - [Executive Summary](#executive-summary)
+  - [Table of Contents](#table-of-contents)
+  - [The Problem SDD Solves](#the-problem-sdd-solves)
+    - [Context Rot](#context-rot)
+    - [The Vibecoding Trap](#the-vibecoding-trap)
+  - [Core Principles](#core-principles)
+    - [Specifications Are Prompts](#specifications-are-prompts)
+    - [Fresh Contexts Prevent Quality Decay](#fresh-contexts-prevent-quality-decay)
+    - [Atomic Decomposition Maintains Quality](#atomic-decomposition-maintains-quality)
+    - [Goal-Backward Verification](#goal-backward-verification)
+    - [Structured Handoffs Bridge Context Boundaries](#structured-handoffs-bridge-context-boundaries)
+  - [The Development Cycle](#the-development-cycle)
+    - [Research Phase](#research-phase)
+    - [Specification Phase](#specification-phase)
+    - [Planning Phase](#planning-phase)
+    - [Execution Phase](#execution-phase)
+    - [Verification Phase](#verification-phase)
+    - [Iteration](#iteration)
+  - [Practical Patterns](#practical-patterns)
+    - [The Interview Pattern](#the-interview-pattern)
+    - [Dependency Graphs and Execution Waves](#dependency-graphs-and-execution-waves)
+    - [Atomic Commits](#atomic-commits)
+    - [Checkpoint Protocols](#checkpoint-protocols)
+    - [State Files for Continuity](#state-files-for-continuity)
+  - [Tool Landscape](#tool-landscape)
+    - [Superpowers Skills](#superpowers-skills)
+    - [GSD (Get Shit Done)](#gsd-get-shit-done)
+    - [GitHub Spec Kit](#github-spec-kit)
+    - [Choosing an Approach](#choosing-an-approach)
+  - [Anti-Patterns](#anti-patterns)
+  - [Best Practices](#best-practices)
+  - [References](#references)
 
 ## The Problem SDD Solves
 
@@ -61,7 +60,7 @@ Spec-driven development (SDD) is the practice of creating structured specificati
 
 Claude Code's quality degrades as its context window fills. This isn't a bug -- it's an inherent consequence of how large language models work. Early in a session, Claude has plenty of room to reason carefully, consider edge cases, and produce clean implementations. Past ~50-70% context usage, it shifts into efficiency mode: shorter responses, less thorough reasoning, more shortcuts.
 
-```
+```text
 Quality vs. Context Usage
 
 100% |████████████████████████
@@ -87,8 +86,6 @@ For a small task that fits in one session, this doesn't matter. For a multi-day 
 
 SDD replaces this with a disciplined cycle: understand the problem, write a structured spec, decompose into atomic tasks, execute each in a fresh context, verify against goals.
 
----
-
 ## Core Principles
 
 ### Specifications Are Prompts
@@ -101,7 +98,7 @@ A traditional spec might read:
 
 An SDD spec reads more like:
 
-```
+```text
 Phase Goal: Users can register and log in securely
 
 Must-Haves:
@@ -130,7 +127,7 @@ The second version is specific enough that Claude can implement it without askin
 
 If context rot is the disease, fresh contexts are the cure. Instead of implementing an entire feature in one marathon session, SDD breaks work into tasks that each execute in an isolated context window:
 
-```
+```text
 ┌──────────────┐     ┌──────────────┐     ┌──────────────┐
 │   Task 1     │     │   Task 2     │     │   Task 3     │
 │              │     │              │     │              │
@@ -177,7 +174,7 @@ Goal-backward verification works in reverse:
 
 Then verify each level:
 
-```
+```text
 Artifact Verification Levels:
 
 Level 1 - Existence:    Does the file exist?
@@ -191,10 +188,10 @@ A file that exists but contains `// TODO: implement` passes Level 1 but fails Le
 
 When work spans multiple context windows, knowledge must travel between them. SDD uses structured documents -- plans, summaries, state files -- as the handoff mechanism:
 
-```
+```text
 Session 1           Handoff              Session 2
 ┌──────────┐     ┌──────────┐        ┌──────────┐
-│ Research  │────▶│ SPEC.md  │───────▶│ Planning │
+│ Research │────▶│ SPEC.md  │───────▶│ Planning │
 └──────────┘     └──────────┘        └────┬─────┘
                                           │
                                      ┌────▼─────┐
@@ -217,13 +214,11 @@ Each document serves a specific role:
 
 These aren't optional documentation -- they're the protocol that makes multi-session development coherent.
 
----
-
 ## The Development Cycle
 
-```
+```text
     ┌──────────┐
-    │ Research  │  Understand ecosystem, codebase, constraints
+    │ Research │  Understand ecosystem, codebase, constraints
     └────┬─────┘
          │
     ┌────▼─────┐
@@ -293,7 +288,7 @@ Planning decomposes the spec into executable tasks. Each task is a self-containe
 
 Tasks are organized into dependency graphs. Tasks with no dependencies can execute in parallel (Wave 1). Tasks that depend only on Wave 1 outputs form Wave 2, and so on.
 
-```
+```text
 Wave 1 (parallel)        Wave 2 (parallel)       Wave 3
 ┌─────────────┐         ┌─────────────┐         ┌─────────────┐
 │ User model  │────────▶│ Register    │────────▶│ Rate limit  │
@@ -347,15 +342,13 @@ When verification passes, the phase is complete and the cycle advances:
 - Archive phase artifacts
 - Begin research for the next phase
 
----
-
 ## Practical Patterns
 
 ### The Interview Pattern
 
 Before planning a complex feature, have Claude interview you to surface requirements you haven't articulated. Instead of dumping a vague request, start a conversation:
 
-```
+```text
 > I want to add user authentication to the app. Interview me
 > about requirements before we plan anything.
 ```
@@ -377,7 +370,7 @@ Parallel execution across waves can dramatically reduce wall-clock time for comp
 
 Every task produces its own commit immediately after verification:
 
-```
+```text
 feat(auth): create user model and migration
 feat(auth): add registration endpoint with validation
 feat(auth): add login endpoint with JWT cookies
@@ -424,8 +417,6 @@ resume_point: "Phase 3, Plan 2, Task 3 (rate limiting middleware)"
 
 This prevents repeated decisions, lost context, and the "where was I?" problem when resuming work after a break.
 
----
-
 ## Tool Landscape
 
 The principles above can be practiced manually with nothing more than markdown files and disciplined session management. But several tools automate parts of the cycle.
@@ -436,7 +427,7 @@ A collection of Claude Code skills that inject workflow discipline into your ses
 
 **The workflow chain:**
 
-```
+```text
 brainstorming → writing-plans → executing-plans → verification-before-completion
                                      │
                               (alternative)
@@ -459,7 +450,7 @@ A full orchestration system with specialized agents for each phase of developmen
 
 **The agent pipeline:**
 
-```
+```text
 gsd-project-researcher → gsd-planner → gsd-executor → gsd-verifier
          │                                                   │
          ▼                                                   ▼
@@ -489,7 +480,7 @@ An open-source toolkit from GitHub for spec-driven development across AI coding 
 
 **The artifact structure:**
 
-```
+```text
 .speckit/
 ├── constitution.md         # Project principles and guidelines
 └── features/
@@ -525,8 +516,6 @@ Supports both greenfield (new project from scratch) and brownfield (adding featu
 
 These tools are not mutually exclusive. You could use Spec Kit for requirements, then import those specs into a GSD or Superpowers workflow for execution. The principles are the same -- the tools just automate different parts of the cycle.
 
----
-
 ## Anti-Patterns
 
 **Over-specifying simple tasks.** If you can describe the change in one sentence and the diff would be under 20 lines, skip the spec. SDD adds value when complexity would otherwise cause quality to decay. For simple changes, it's pure overhead.
@@ -540,8 +529,6 @@ These tools are not mutually exclusive. You could use Spec Kit for requirements,
 **Planning without research.** Jumping straight to planning without understanding the ecosystem or codebase leads to plans that miss critical constraints, use deprecated libraries, or duplicate existing functionality.
 
 **Gold-plating specs.** Spending more time on the spec than the implementation would take. SDD should reduce total effort, not increase it. If the spec takes longer than just building the thing, the task probably doesn't need SDD.
-
----
 
 ## Best Practices
 
@@ -560,8 +547,6 @@ These tools are not mutually exclusive. You could use Spec Kit for requirements,
 7. **Fresh session for verification.** The session that wrote the code is biased toward thinking it's correct. Verify in a fresh context.
 
 8. **Calibrate depth to risk.** High-stakes code (auth, payments, data migration) deserves comprehensive specs and verification. Internal tooling can use a lighter touch.
-
----
 
 ## References
 

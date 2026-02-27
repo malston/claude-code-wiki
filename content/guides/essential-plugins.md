@@ -21,41 +21,40 @@ This guide covers the plugins that provide the highest value relative to their t
 | **hookify**           | Skill pack + subagent  | Hook creation from conversation analysis | ~250-500 tokens (5 skills + 1 subagent) | Medium      |
 | **pr-review-toolkit** | Skill pack + subagents | Specialized code review agents           | ~600+ tokens (6 subagents)              | Medium      |
 
----
-
 ## Table of Contents
 
-- [Two Types of Plugins](#two-types-of-plugins)
-  - [MCP Servers](#mcp-servers)
-  - [Skill Packs](#skill-packs)
-  - [How They Differ](#how-they-differ)
-- [Memory Plugins](#memory-plugins)
-  - [claude-mem: Structured Recall](#claude-mem-structured-recall)
-  - [episodic-memory: Conversation Search](#episodic-memory-conversation-search)
-  - [Why Both](#why-both)
-  - [Usage Patterns](#memory-usage-patterns)
-- [Documentation Access](#documentation-access)
-  - [context7: Library Documentation](#context7-library-documentation)
-  - [When It Helps](#when-context7-helps)
-- [Browser Automation](#browser-automation)
-  - [claude-in-chrome: Browser Control](#claude-in-chrome-browser-control)
-  - [When to Enable It](#when-to-enable-browser-automation)
-- [Workflow Automation](#workflow-automation)
-  - [hookify: Hook Generation](#hookify-hook-generation)
-  - [pr-review-toolkit: Code Review Agents](#pr-review-toolkit-code-review-agents)
-- [Token Cost Management](#token-cost-management)
-  - [The Per-Message Tax](#the-per-message-tax)
-  - [Measuring Your Plugin Overhead](#measuring-your-plugin-overhead)
-  - [Project-Level Plugin Selection](#project-level-plugin-selection)
-- [Installation and Configuration](#installation-and-configuration)
-- [Building Your Plugin Stack](#building-your-plugin-stack)
-  - [Minimal Setup](#minimal-setup)
-  - [Full Development Setup](#full-development-setup)
-  - [Evaluation Criteria](#evaluation-criteria)
-- [Best Practices](#best-practices)
-- [References](#references)
-
----
+- [Essential Plugins: Extending Claude Code with MCP Servers and Skill Packs](#essential-plugins-extending-claude-code-with-mcp-servers-and-skill-packs)
+  - [Executive Summary](#executive-summary)
+  - [Table of Contents](#table-of-contents)
+  - [Two Types of Plugins](#two-types-of-plugins)
+    - [MCP Servers](#mcp-servers)
+    - [Skill Packs](#skill-packs)
+    - [How They Differ](#how-they-differ)
+  - [Memory Plugins](#memory-plugins)
+    - [claude-mem: Structured Recall](#claude-mem-structured-recall)
+    - [episodic-memory: Conversation Search](#episodic-memory-conversation-search)
+    - [Why Both](#why-both)
+    - [Memory Usage Patterns](#memory-usage-patterns)
+  - [Documentation Access](#documentation-access)
+    - [context7: Library Documentation](#context7-library-documentation)
+    - [When context7 Helps](#when-context7-helps)
+  - [Browser Automation](#browser-automation)
+    - [claude-in-chrome: Browser Control](#claude-in-chrome-browser-control)
+    - [When to Enable Browser Automation](#when-to-enable-browser-automation)
+  - [Workflow Automation](#workflow-automation)
+    - [hookify: Hook Generation](#hookify-hook-generation)
+    - [pr-review-toolkit: Code Review Agents](#pr-review-toolkit-code-review-agents)
+  - [Token Cost Management](#token-cost-management)
+    - [The Per-Message Tax](#the-per-message-tax)
+    - [Measuring Your Plugin Overhead](#measuring-your-plugin-overhead)
+    - [Project-Level Plugin Selection](#project-level-plugin-selection)
+  - [Installation and Configuration](#installation-and-configuration)
+  - [Building Your Plugin Stack](#building-your-plugin-stack)
+    - [Minimal Setup](#minimal-setup)
+    - [Full Development Setup](#full-development-setup)
+    - [Evaluation Criteria](#evaluation-criteria)
+  - [Best Practices](#best-practices)
+  - [References](#references)
 
 ## Two Types of Plugins
 
@@ -77,7 +76,7 @@ MCP servers are stateless from Claude's perspective -- each tool call is indepen
 
 Skill packs bundle skills (knowledge injected into Claude's context on demand) and subagents (isolated Claude instances that handle delegated tasks). They're installed as plugins but extend Claude through the existing skill and subagent mechanisms rather than through new tools.
 
-```
+```text
 Plugin installs:
   ├── Skills (loaded into main context when triggered)
   │   └── "When user says /review-pr, inject this workflow"
@@ -96,8 +95,6 @@ Plugin installs:
 | **Isolation**             | Separate process                        | Skills share main context; subagents get their own |
 
 For a deeper look at the architecture, see the [Extension Mechanisms]({{< relref "extending/extension-mechanisms" >}}) article.
-
----
 
 ## Memory Plugins
 
@@ -120,7 +117,7 @@ Two plugins solve this from different angles. Together they cover the full spect
 
 **The 3-layer retrieval workflow:**
 
-```
+```text
 1. search(query)         → Get index with IDs (~50-100 tokens per result)
 2. timeline(anchor=ID)   → Get chronological context around interesting results
 3. get_observations(IDs) → Fetch full details ONLY for filtered IDs
@@ -141,7 +138,7 @@ Observations are written during work, either automatically by hooks or manually 
 
 The startup hook writes a context index into CLAUDE.md files, giving Claude a summary of recent activity without loading full observation details. A typical index entry:
 
-```
+```text
 | #17314 | 7:37 PM | Decision | Scoped Profiles Architecture for claudeup | ~536 tokens |
 ```
 
@@ -162,7 +159,7 @@ Plus a `search-conversations` subagent that can be delegated to for deeper inves
 
 **Search supports two modes:**
 
-```
+```text
 # Semantic search (finds conceptually similar content)
 search(query: "how did we handle authentication")
 
@@ -194,7 +191,7 @@ These plugins have different strengths and failure modes that complement each ot
 
 **Searching memories before asking the user:**
 
-```
+```text
 Before asking: "What testing framework do we use?"
 
 1. Check claude-mem: search(query: "testing framework")
@@ -205,8 +202,6 @@ Before asking: "What testing framework do we use?"
 **Recording important decisions:**
 
 When a significant technical decision is made during a session, claude-mem captures it as a structured observation. If the conversation is also captured by episodic-memory, both the conclusion and the reasoning are preserved.
-
----
 
 ## Documentation Access
 
@@ -243,8 +238,6 @@ Where it's less useful:
 - **Simple tasks** -- Looking up basic syntax rarely needs a documentation query
 - **Private libraries** -- context7 only indexes public documentation
 
----
-
 ## Browser Automation
 
 ### claude-in-chrome: Browser Control
@@ -272,8 +265,6 @@ This plugin carries the highest token cost of any common plugin (~600+ tokens ju
 - **Debugging frontend issues** by inspecting the DOM and console
 
 Disable it for pure backend work, CLI tool development, or projects where browser interaction adds nothing.
-
----
 
 ## Workflow Automation
 
@@ -303,8 +294,6 @@ For the hook system itself, see the [Hooks Cookbook]({{< relref "extending/hooks
 | **type-design-analyzer**  | Type design quality, encapsulation, invariants    |
 
 Each subagent runs in its own context window, so it doesn't bloat the main conversation. The trade-off is the catalog description cost -- six subagent descriptions in the system prompt on every message.
-
----
 
 ## Token Cost Management
 
@@ -357,8 +346,6 @@ Use `.claude/settings.json` at the project level to configure which MCP servers 
 
 Plugins not listed in the project settings won't load, even if they're configured globally.
 
----
-
 ## Installation and Configuration
 
 MCP servers are configured in `~/.claude/settings.json` (global) or `.claude/settings.json` (project). Each entry specifies the command to start the server:
@@ -390,8 +377,6 @@ claudeup local disable skills my-skill-pack
 
 Refer to each plugin's documentation for specific installation instructions. The exact command and arguments vary by plugin.
 
----
-
 ## Building Your Plugin Stack
 
 ### Minimal Setup
@@ -420,7 +405,7 @@ Add **claude-in-chrome** only for projects that involve web interaction.
 
 When deciding whether to add a plugin:
 
-```
+```text
 Is this plugin worth its token cost?
 │
 ├── Do I use it in most sessions?
@@ -435,8 +420,6 @@ Is this plugin worth its token cost?
     ├── Yes (catches bugs I'd miss, finds docs I need) → Keep
     └── No (nice to have but rarely changes outcomes) → Disable
 ```
-
----
 
 ## Best Practices
 
@@ -453,8 +436,6 @@ Is this plugin worth its token cost?
 6. **Evaluate plugins periodically.** Your needs change as projects evolve. A plugin that was essential during initial development might add nothing during maintenance. Review and adjust.
 
 7. **Check the token optimization article.** The [Token Optimization]({{< relref "/internals/token-optimization" >}}) guide covers how to audit your full setup and identify redundancy across plugins, skills, and subagents.
-
----
 
 ## References
 

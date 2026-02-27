@@ -21,51 +21,50 @@ Claude Code is an agentic coding tool -- it explores, plans, and implements rath
 | **Parallel Sessions**         | Independent tasks, writer/reviewer split | Git worktrees, headless mode             |
 | **Headless / CI Integration** | Automated checks, batch operations       | `claude -p` with structured output       |
 
----
-
 ## Table of Contents
 
-- [The Core Loop](#the-core-loop)
-- [Explore-Plan-Implement](#explore-plan-implement)
-  - [When to Plan vs When to Just Do It](#when-to-plan-vs-when-to-just-do-it)
-  - [The Four Phases](#the-four-phases)
-  - [The Interview Pattern](#the-interview-pattern)
-- [Fix with Verification](#fix-with-verification)
-  - [The Debugging Workflow](#the-debugging-workflow)
-  - [Providing Verification Criteria](#providing-verification-criteria)
-- [Test-Driven Development](#test-driven-development)
-  - [TDD with Claude Code](#tdd-with-claude-code)
-  - [Tests as Durable Requirements](#tests-as-durable-requirements)
-- [Code Review](#code-review)
-  - [Self-Review vs Fresh Session](#self-review-vs-fresh-session)
-  - [The Writer/Reviewer Pattern](#the-writerreviewer-pattern)
-- [Refactoring](#refactoring)
-  - [Small Steps with Verification](#small-steps-with-verification)
-  - [Large-Scale Migrations](#large-scale-migrations)
-- [Session Management](#session-management)
-  - [When to Clear Context](#when-to-clear-context)
-  - [Rewind and Checkpoints](#rewind-and-checkpoints)
-  - [Named Sessions](#named-sessions)
-  - [Resuming Work](#resuming-work)
-- [Multi-Session and Parallel Work](#multi-session-and-parallel-work)
-  - [Git Worktrees for Isolation](#git-worktrees-for-isolation)
-  - [Headless Mode for Automation](#headless-mode-for-automation)
-  - [Fan-Out Pattern](#fan-out-pattern)
-- [Subagent Patterns](#subagent-patterns)
-  - [Investigation Without Context Pollution](#investigation-without-context-pollution)
-  - [Post-Implementation Verification](#post-implementation-verification)
-  - [When Not to Use Subagents](#when-not-to-use-subagents)
-- [Common Failure Patterns](#common-failure-patterns)
-- [Best Practices](#best-practices)
-- [References](#references)
-
----
+- [Workflow Patterns: Common Development Workflows with Claude Code](#workflow-patterns-common-development-workflows-with-claude-code)
+  - [Executive Summary](#executive-summary)
+  - [Table of Contents](#table-of-contents)
+  - [The Core Loop](#the-core-loop)
+  - [Explore-Plan-Implement](#explore-plan-implement)
+    - [When to Plan vs When to Just Do It](#when-to-plan-vs-when-to-just-do-it)
+    - [The Four Phases](#the-four-phases)
+    - [The Interview Pattern](#the-interview-pattern)
+  - [Fix with Verification](#fix-with-verification)
+    - [The Debugging Workflow](#the-debugging-workflow)
+    - [Providing Verification Criteria](#providing-verification-criteria)
+  - [Test-Driven Development](#test-driven-development)
+    - [TDD with Claude Code](#tdd-with-claude-code)
+    - [Tests as Durable Requirements](#tests-as-durable-requirements)
+  - [Code Review](#code-review)
+    - [Self-Review vs Fresh Session](#self-review-vs-fresh-session)
+    - [The Writer/Reviewer Pattern](#the-writerreviewer-pattern)
+  - [Refactoring](#refactoring)
+    - [Small Steps with Verification](#small-steps-with-verification)
+    - [Large-Scale Migrations](#large-scale-migrations)
+  - [Session Management](#session-management)
+    - [When to Clear Context](#when-to-clear-context)
+    - [Rewind and Checkpoints](#rewind-and-checkpoints)
+    - [Named Sessions](#named-sessions)
+    - [Resuming Work](#resuming-work)
+  - [Multi-Session and Parallel Work](#multi-session-and-parallel-work)
+    - [Git Worktrees for Isolation](#git-worktrees-for-isolation)
+    - [Headless Mode for Automation](#headless-mode-for-automation)
+    - [Fan-Out Pattern](#fan-out-pattern)
+  - [Subagent Patterns](#subagent-patterns)
+    - [Investigation Without Context Pollution](#investigation-without-context-pollution)
+    - [Post-Implementation Verification](#post-implementation-verification)
+    - [When Not to Use Subagents](#when-not-to-use-subagents)
+  - [Common Failure Patterns](#common-failure-patterns)
+  - [Best Practices](#best-practices)
+  - [References](#references)
 
 ## The Core Loop
 
 Every Claude Code workflow follows the same fundamental loop:
 
-```
+```text
 1. Give a focused instruction
        │
 2. Claude acts (reads, edits, runs commands)
@@ -81,13 +80,11 @@ The key insight from the official best practices: **Claude performs dramatically
 
 Without verification, Claude produces code that looks right but may not work. With verification, Claude iterates until the output actually passes. This single pattern -- give Claude a way to check itself -- is the highest-leverage improvement to any workflow.
 
----
-
 ## Explore-Plan-Implement
 
 ### When to Plan vs When to Just Do It
 
-```
+```text
 Is the scope clear and the change small?
 │
 ├── YES → Just do it directly
@@ -164,15 +161,13 @@ write a complete spec to SPEC.md.
 
 Then start a fresh session to implement the spec. The new session has clean context focused entirely on implementation, and you have a written spec to reference.
 
----
-
 ## Fix with Verification
 
 ### The Debugging Workflow
 
 The most effective debugging pattern gives Claude the symptom, the likely location, and what "fixed" looks like:
 
-```
+```text
 Step 1: Share the symptom
   "users report that login fails after session timeout"
 
@@ -187,7 +182,7 @@ Step 3: Define verification
 
 Compare this to the less effective approach:
 
-```
+```text
 "fix the login bug"
   → Claude has to search for the bug, guess what's wrong,
     and hope its fix is correct
@@ -207,15 +202,13 @@ Always give Claude a way to verify its fix:
 
 The key: define what "done" looks like before Claude starts working.
 
----
-
 ## Test-Driven Development
 
 ### TDD with Claude Code
 
 TDD is a natural fit for Claude Code because tests provide the verification loop that makes Claude most effective.
 
-```
+```text
 Step 1: Write the tests first
   "write tests for a rate limiter that allows 5
    requests per minute per IP. test the happy path,
@@ -243,7 +236,7 @@ This works well because:
 
 Tests are the most reliable way to carry requirements across context windows and sessions:
 
-```
+```text
 Session 1: Write comprehensive tests
   → Tests committed to git
 
@@ -255,15 +248,13 @@ Session 2 (fresh context):
 
 This pattern is especially powerful for multi-session work. See [Working Across Context Windows]({{< relref "effective-prompting#working-across-context-windows" >}}) in the effective prompting article.
 
----
-
 ## Code Review
 
 ### Self-Review vs Fresh Session
 
 Claude in the same session that wrote the code is biased -- it just produced that code and is inclined to think it's correct. A fresh session provides a genuinely different perspective.
 
-```
+```text
 Same-session review (useful but biased):
   "review the changes you just made for edge cases"
 
@@ -278,7 +269,7 @@ Fresh-session review (unbiased):
 
 Use two sessions for higher-quality output:
 
-```
+```text
 Session A (Writer):
   "implement a rate limiter for our API endpoints"
        │
@@ -297,15 +288,13 @@ Session A (Writer):
 
 You can also split by tests and implementation:
 
-```
+```text
 Session A: Write tests for the feature
-       │
+        │
 Session B: Write code to pass Session A's tests
 ```
 
 This separation ensures tests aren't influenced by the implementation approach.
-
----
 
 ## Refactoring
 
@@ -313,7 +302,7 @@ This separation ensures tests aren't influenced by the implementation approach.
 
 Refactoring is safest in small, testable increments:
 
-```
+```text
 Step 1: Identify what to refactor
   "find deprecated API usage in our codebase"
 
@@ -335,15 +324,13 @@ Each step produces a reviewable, testable result. If something breaks, you know 
 
 For migrations that touch many files, use the fan-out pattern (described below in [Fan-Out Pattern](#fan-out-pattern)). The key: test the migration on a few files first, refine your prompt based on what goes wrong, then run at scale.
 
----
-
 ## Session Management
 
 ### When to Clear Context
 
 Context accumulates as Claude reads files, runs commands, and exchanges messages. Long sessions with mixed tasks degrade performance.
 
-```
+```text
 /clear between unrelated tasks:
   Task 1: Fix auth bug → /clear → Task 2: Add logging
 
@@ -363,7 +350,7 @@ A clean session with a better prompt almost always outperforms a long session wi
 
 Every action Claude takes creates a checkpoint. Double-tap **Escape** or run `/rewind` to restore conversation, code, or both to any previous state.
 
-```
+```text
 Workflow: Try something risky
   1. Claude makes a change
   2. You don't like the result
@@ -384,7 +371,7 @@ Checkpoints persist across sessions. You can close your terminal and rewind late
 
 Give sessions descriptive names with `/rename` so you can find them later:
 
-```
+```text
 > /rename oauth-migration
 > /rename debugging-memory-leak
 > /rename api-v2-endpoints
@@ -415,8 +402,6 @@ claude --from-pr 123
 ```
 
 From inside a session, `/resume` switches to a different conversation without leaving Claude Code.
-
----
 
 ## Multi-Session and Parallel Work
 
@@ -473,7 +458,7 @@ Add Claude to your build scripts:
 
 For large-scale migrations or batch operations, distribute work across parallel Claude invocations:
 
-```
+```text
 Step 1: Generate task list
   "list all Python files that need migrating to the
    new API"
@@ -489,15 +474,13 @@ done
 wait
 ```
 
-```
+```text
 Step 3: Test on a few files first
   Run on 2-3 files, refine the prompt based on
   what goes wrong, then run at scale.
 ```
 
 The `--allowedTools` flag restricts what Claude can do when running unattended.
-
----
 
 ## Subagent Patterns
 
@@ -539,8 +522,6 @@ Appropriate (direct approach):
 
 Use subagents when tasks can run in parallel, require isolated context, or involve independent workstreams. For simple searches, sequential operations, and single-file edits, work directly.
 
----
-
 ## Common Failure Patterns
 
 **The kitchen-sink session** -- Starting with one task, then asking something unrelated, then going back. Context fills with irrelevant information.
@@ -563,8 +544,6 @@ Use subagents when tasks can run in parallel, require isolated context, or invol
 
 > Fix: Prune ruthlessly. If Claude already does something without the instruction, delete it.
 
----
-
 ## Best Practices
 
 1. **Give Claude verification** -- Tests, linters, build commands, screenshots. This is the single highest-leverage pattern.
@@ -586,8 +565,6 @@ Use subagents when tasks can run in parallel, require isolated context, or invol
 9. **Write tests first for durable requirements** -- Tests survive context transitions, session boundaries, and compaction.
 
 10. **Don't fight -- restart** -- If a session has gone sideways after multiple corrections, start fresh. A clean session with lessons learned is faster than continuing to patch.
-
----
 
 ## References
 

@@ -73,13 +73,13 @@ These are baked into the managed-settings.json and deployed via MDM -- developer
 
 ## Deployment Topology
 
-```text
+```sh
 ┌─────────────────────────────────┐
 │  LLM Gateway (internal service) │
 │                                 │
-│  Deployment: ECS/EKS or VM     │
-│  URL: llm-gateway.internal.corp│
-│  Auth: SSO / OIDC              │
+│  Deployment: ECS/EKS or VM      │
+│  URL: llm-gateway.internal.corp │
+│  Auth: SSO / OIDC               │
 │                                 │
 │  Upstream: VPC Endpoint         │
 │  (PrivateLink to Bedrock)       │

@@ -43,10 +43,10 @@ weight: 6
 
 | Requirement                | Level 1     | Level 2     | Level 3                |
 | -------------------------- | ----------- | ----------- | ---------------------- |
-| Claude Code works          | ✅          | ✅          | ❌                     |
-| Data not sent to Anthropic | ✅          | ✅          | ✅                     |
-| No public internet transit | ❌          | ✅          | ✅                     |
-| Zero external connectivity | ❌          | ❌          | ✅                     |
+| Claude Code works          | ✅          | ✅          | ❌                      |
+| Data not sent to Anthropic | ✅          | ✅          | ✅                      |
+| No public internet transit | ❌          | ✅          | ✅                      |
+| Zero external connectivity | ❌          | ❌          | ✅                      |
 | Infrastructure complexity  | Low         | Medium      | High (different tool)  |
 | Model quality              | Full Claude | Full Claude | Significantly degraded |
 

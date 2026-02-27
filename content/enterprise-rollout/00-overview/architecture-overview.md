@@ -7,7 +7,7 @@ weight: 2
 
 ## End-to-End Request Flow
 
-```
+```sh
 ┌─────────────────────────────────────────────────────────────────────┐
 │                        CORPORATE NETWORK                            │
 │                                                                     │
@@ -80,7 +80,7 @@ weight: 2
 
 ## Configuration Hierarchy
 
-```
+```sh
 ┌───────────────────────────────────────────────────────────────┐
 │  HIGHEST PRIORITY (cannot be overridden)                      │
 │                                                               │
@@ -113,7 +113,7 @@ weight: 2
 
 ## Context Window Memory Hierarchy
 
-```
+```text
 Layer 0: Managed CLAUDE.md          ─── Always loaded, org-wide (~500 tokens)
 Layer 1: Project CLAUDE.md + Rules  ─── Loaded per-repo, path-scoped (~3K tokens)
 Layer 2: agent_docs/                ─── Loaded on-demand by Claude (~2-5K per doc)

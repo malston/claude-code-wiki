@@ -170,19 +170,19 @@ This is the GCP equivalent of AWS VPC PrivateLink. VPC Service Controls create a
 
 ### Architecture
 
-```
+```sh
 ┌──────────────────────────────────────────────────────┐
-│  VPC Service Controls Perimeter                       │
-│                                                       │
+│  VPC Service Controls Perimeter                      │
+│                                                      │
 │  ┌─────────────────┐    ┌──────────────────────────┐ │
-│  │ Developer VMs /  │    │ Vertex AI                │ │
-│  │ GKE Cluster      │───>│ (aiplatform.googleapis)  │ │
-│  │                  │    │                          │ │
+│  │ Developer VMs / │    │ Vertex AI                │ │
+│  │ GKE Cluster     │───>│ (aiplatform.googleapis)  │ │
+│  │                 │    │                          │ │
 │  └─────────────────┘    └──────────────────────────┘ │
-│          │                                            │
-│          │  Private Google Access                     │
-│          │  (restricted.googleapis.com)               │
-│          │  199.36.153.4/30                           │
+│          │                                           │
+│          │  Private Google Access                    │
+│          │  (restricted.googleapis.com)              │
+│          │  199.36.153.4/30                          │
 └──────────│───────────────────────────────────────────┘
            │
     Cloud Interconnect / Partner Interconnect / Cloud VPN
@@ -276,13 +276,13 @@ export CLAUDE_CODE_SKIP_VERTEX_AUTH=1  # Gateway handles GCP auth
 
 ### Deployment Topology
 
-```
+```sh
 ┌─────────────────────────────────────┐
 │  LLM Gateway (internal service)     │
 │                                     │
-│  Deployment: Cloud Run or GKE      │
-│  URL: llm-gateway.internal.corp    │
-│  Auth: SSO / OIDC                  │
+│  Deployment: Cloud Run or GKE       │
+│  URL: llm-gateway.internal.corp     │
+│  Auth: SSO / OIDC                   │
 │                                     │
 │  Upstream: Vertex AI endpoint       │
 │  (via Private Google Access)        │
@@ -298,7 +298,8 @@ The gateway authenticates to Vertex AI using **Workload Identity Federation** --
 1. Enable Workload Identity Federation on the cluster
 2. Create a Kubernetes ServiceAccount for the gateway
 3. Grant `roles/aiplatform.user` directly to the Kubernetes principal:
-   ```
+
+   ```text
    principal://iam.googleapis.com/projects/<PROJECT_NUMBER>/locations/global/workloadIdentityPools/<PROJECT_ID>.svc.id.goog/subject/ns/<NAMESPACE>/sa/<KSA_NAME>
    ```
 

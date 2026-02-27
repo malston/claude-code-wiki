@@ -83,7 +83,7 @@ With Foundry + Private Endpoint:
 
 ### API Endpoint Format
 
-```
+```text
 https://{resource-name}.services.ai.azure.com/anthropic/v1/messages
 ```
 
@@ -178,21 +178,21 @@ This is the Azure equivalent of AWS VPC PrivateLink. Private Endpoints create a 
 
 ### Architecture
 
-```
+```sh
 ┌──────────────────────────────────────────────────────┐
-│  Azure VNet                                           │
-│                                                       │
-│  ┌─────────────────┐    ┌──────────────────────────┐ │
-│  │ Developer VMs /  │    │ Private Endpoint          │ │
+│  Azure VNet                                          │
+│                                                      │
+│  ┌──────────────────┐    ┌─────────────────────────┐ │
+│  │ Developer VMs /  │    │ Private Endpoint        │ │
 │  │ AKS Cluster      │───>│ (10.x.x.x)              │ │
-│  │                  │    │                          │ │
-│  └─────────────────┘    │  -> Azure AI Foundry     │ │
-│                          │     resource              │ │
-│                          └──────────────────────────┘ │
-│                                                       │
-│  NSG: allow 443 from developer subnets only           │
-│                                                       │
-└───────────────────────────────────────────────────────┘
+│  │                  │    │                         │ │
+│  └──────────────────┘    │  -> Azure AI Foundry    │ │
+│                          │     resource            │ │
+│                          └─────────────────────────┘ │
+│                                                      │
+│  NSG: allow 443 from developer subnets only          │
+│                                                      │
+└──────────────────────────────────────────────────────┘
            │
     ExpressRoute / Site-to-Site VPN
            │
@@ -337,16 +337,16 @@ export CLAUDE_CODE_SKIP_FOUNDRY_AUTH=1
 
 ### Deployment Topology
 
-```
+```sh
 ┌─────────────────────────────────────┐
 │  LLM Gateway (internal service)     │
 │                                     │
-│  Deployment: Container Apps or AKS │
-│  URL: llm-gateway.internal.corp    │
-│  Auth: SSO / OIDC (Entra ID)      │
+│  Deployment: Container Apps or AKS  │
+│  URL: llm-gateway.internal.corp     │
+│  Auth: SSO / OIDC (Entra ID)        │
 │                                     │
 │  Upstream: Private Endpoint         │
-│  (to Azure AI Foundry resource)    │
+│  (to Azure AI Foundry resource)     │
 └─────────────────────────────────────┘
 ```
 

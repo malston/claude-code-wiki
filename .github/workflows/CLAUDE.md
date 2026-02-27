@@ -1,7 +1,3 @@
-<claude-mem-context>
-
-</claude-mem-context>
-
 # Style Review Instructions
 
 When reviewing pull requests that modify `content/**/*.md` files, read `STYLE-GUIDE.md` at the repository root and flag subjective violations as review suggestions.

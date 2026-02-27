@@ -101,7 +101,7 @@ For rules you need to be reliably active during tool-heavy workflows, the most d
 ## Summary
 
 | Context source | Available during reasoning | Active when processing tool results |
-|---|---|---|
+| -------------- | -------------------------- | ----------------------------------- |
 | System prompt / CLAUDE.md | Yes | Not re-injected, but in conversation history |
 | Skill file instructions | Yes | Same as above |
 | User message | Yes | Same as above |

@@ -20,34 +20,34 @@ Every Claude Code session carries a baseline token cost from skills, plugins, an
 
 A typical setup with 20+ plugins can consume **4,000-5,000+ tokens per message** just for the skill/subagent catalog -- before any actual work happens.
 
----
-
 ## Table of Contents
 
-- [How Token Overhead Works](#how-token-overhead-works)
-  - [The Two-Phase Cost Model](#the-two-phase-cost-model)
-  - [What Gets Loaded at Startup](#what-gets-loaded-at-startup)
-  - [Where Tokens Go](#where-tokens-go)
-- [Auditing Your Setup](#auditing-your-setup)
-  - [Step 1: Inventory Plugins](#step-1-inventory-plugins)
-  - [Step 2: Inventory Local Skills](#step-2-inventory-local-skills)
-  - [Step 3: Estimate Token Costs](#step-3-estimate-token-costs)
-- [Decision Framework](#decision-framework)
-  - [Keep, Disable, or Replace](#keep-disable-or-replace)
-  - [Identifying Redundancy](#identifying-redundancy)
-  - [The Superpowers Problem](#the-superpowers-problem)
-- [Worked Example: A Real Audit](#worked-example-a-real-audit)
-  - [Before: 21 Plugins + 5 Local Skills](#before-21-plugins--5-local-skills)
-  - [After: 9 Plugins + 3 Local Skills](#after-9-plugins--3-local-skills)
-  - [Estimated Savings](#estimated-savings)
-- [Managing Skills and Plugins](#managing-skills-and-plugins)
-  - [Local Skills with claudeup](#local-skills-with-claudeup)
-  - [Plugin Management](#plugin-management)
-  - [Per-Project Overrides](#per-project-overrides)
-- [Best Practices](#best-practices)
-- [References](#references)
-
----
+- [Optimizing Token Usage: Skills, Plugins, and Context Budget](#optimizing-token-usage-skills-plugins-and-context-budget)
+  - [Executive Summary](#executive-summary)
+  - [Table of Contents](#table-of-contents)
+  - [How Token Overhead Works](#how-token-overhead-works)
+    - [The Two-Phase Cost Model](#the-two-phase-cost-model)
+    - [What Gets Loaded at Startup](#what-gets-loaded-at-startup)
+    - [Where Tokens Go](#where-tokens-go)
+  - [Auditing Your Setup](#auditing-your-setup)
+    - [Step 1: Inventory Plugins](#step-1-inventory-plugins)
+    - [Step 2: Inventory Local Skills](#step-2-inventory-local-skills)
+    - [Step 3: Estimate Token Costs](#step-3-estimate-token-costs)
+  - [Decision Framework](#decision-framework)
+    - [Keep, Disable, or Replace](#keep-disable-or-replace)
+    - [Identifying Redundancy](#identifying-redundancy)
+    - [The Superpowers Problem](#the-superpowers-problem)
+  - [Worked Example: A Real Audit](#worked-example-a-real-audit)
+    - [Before: 21 Plugins + 5 Local Skills](#before-21-plugins--5-local-skills)
+    - [Applying the Decision Framework](#applying-the-decision-framework)
+    - [After: 9 Plugins + 3 Local Skills](#after-9-plugins--3-local-skills)
+    - [Estimated Savings](#estimated-savings)
+  - [Managing Skills and Plugins](#managing-skills-and-plugins)
+    - [Local Skills with claudeup](#local-skills-with-claudeup)
+    - [Plugin Management](#plugin-management)
+    - [Per-Project Overrides](#per-project-overrides)
+  - [Best Practices](#best-practices)
+  - [References](#references)
 
 ## How Token Overhead Works
 
@@ -63,7 +63,7 @@ The skill catalog -- names, descriptions, and trigger conditions for all enabled
 
 The full skill content (SKILL.md instructions, supporting files) loads only when the Skill tool is called. This is the expensive part but only happens when needed.
 
-```
+```text
 Every Message (unavoidable)
 ┌─────────────────────────────────────────────────┐
 │ System Prompt                                   │
@@ -107,8 +107,6 @@ For a session with 21 plugins and 5 local skills (a real configuration):
 
 That's 12,000+ tokens consumed before you type a single character. Over a 200-message session, the skill/subagent catalog alone costs roughly 1.2M input tokens.
 
----
-
 ## Auditing Your Setup
 
 ### Step 1: Inventory Plugins
@@ -148,15 +146,13 @@ Rough estimation by description length:
 
 Multiply by entry count for a rough total.
 
----
-
 ## Decision Framework
 
 ### Keep, Disable, or Replace
 
 For each plugin/skill, ask these questions:
 
-```
+```text
 Is this relevant to my current workflow?
 │
 ├── NO → Disable it
@@ -202,8 +198,6 @@ Options:
 3. **Disable entirely** -- If you rarely use any of its skills
 
 The break-even point: if a plugin provides N skills and you use M of them, the wasted overhead is roughly `(N - M) * tokens_per_skill` per message. For superpowers with 14 skills at ~100 tokens each, using only 3 wastes ~1,100 tokens/message.
-
----
 
 ## Worked Example: A Real Audit
 
@@ -289,8 +283,6 @@ Starting configuration:
 
 The dollar savings from catalog reduction are modest with [prompt caching]({{< relref "prompt-caching" >}}) (cache reads are 10x cheaper than base input). The real win is **context window space** -- those ~2,300 tokens freed up per message are available for actual conversation content.
 
----
-
 ## Managing Skills and Plugins
 
 ### Local Skills with claudeup
@@ -335,8 +327,6 @@ For project-specific needs, consider:
 - **Project CLAUDE.md** -- Project-specific instructions that don't bloat other projects
 - Enable/disable plugins per project by maintaining different settings profiles (manual process)
 
----
-
 ## Best Practices
 
 1. **Audit periodically** -- Review your enabled plugins every few weeks. Needs change; disabled plugins are easy to re-enable.
@@ -354,8 +344,6 @@ For project-specific needs, consider:
 7. **Restart after changes** -- Plugin enable/disable changes require a Claude Code restart to take effect.
 
 8. **Don't over-optimize** -- A few hundred tokens of overhead from a genuinely useful plugin is a good trade. Optimize the big wins first (unused plugins with many skills) before sweating small ones.
-
----
 
 ## References
 

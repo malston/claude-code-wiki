@@ -20,30 +20,29 @@ The system prompt is the hidden instruction text sent to the model on every API 
 | Environment + git context | Auto-detected                    | ~200-500 tokens           |
 | **Typical total**         |                                  | **~12,000-20,000 tokens** |
 
----
-
 ## Table of Contents
 
-- [What the System Prompt Is](#what-the-system-prompt-is)
-- [Anatomy of a Claude Code API Call](#anatomy-of-a-claude-code-api-call)
-- [System Prompt Components](#system-prompt-components)
-  - [Core Instructions](#core-instructions)
-  - [Tool Definitions](#tool-definitions)
-  - [CLAUDE.md Files](#claudemd-files)
-  - [Skill Catalog](#skill-catalog)
-  - [Subagent Catalog](#subagent-catalog)
-  - [MCP Server Instructions](#mcp-server-instructions)
-  - [Environment and Git Context](#environment-and-git-context)
-  - [Plugin-Injected Content](#plugin-injected-content)
-- [How It Gets Assembled](#how-it-gets-assembled)
-- [Why This Matters](#why-this-matters)
-  - [Token Cost](#token-cost)
-  - [Behavior Shaping](#behavior-shaping)
-  - [Prompt Caching](#prompt-caching)
-- [What You Can Control](#what-you-can-control)
-- [References](#references)
-
----
+- [The System Prompt: What Claude Reads Before You Say Anything](#the-system-prompt-what-claude-reads-before-you-say-anything)
+  - [Executive Summary](#executive-summary)
+  - [Table of Contents](#table-of-contents)
+  - [What the System Prompt Is](#what-the-system-prompt-is)
+  - [Anatomy of a Claude Code API Call](#anatomy-of-a-claude-code-api-call)
+  - [System Prompt Components](#system-prompt-components)
+    - [Core Instructions](#core-instructions)
+    - [Tool Definitions](#tool-definitions)
+    - [CLAUDE.md Files](#claudemd-files)
+    - [Skill Catalog](#skill-catalog)
+    - [Subagent Catalog](#subagent-catalog)
+    - [MCP Server Instructions](#mcp-server-instructions)
+    - [Environment and Git Context](#environment-and-git-context)
+    - [Plugin-Injected Content](#plugin-injected-content)
+  - [How It Gets Assembled](#how-it-gets-assembled)
+  - [Why This Matters](#why-this-matters)
+    - [Token Cost](#token-cost)
+    - [Behavior Shaping](#behavior-shaping)
+    - [Prompt Caching](#prompt-caching)
+  - [What You Can Control](#what-you-can-control)
+  - [References](#references)
 
 ## What the System Prompt Is
 
@@ -58,13 +57,11 @@ The user never sees the system prompt directly in the chat interface. But it det
 
 In Claude Code, the system prompt is not a single static document. It's dynamically assembled from multiple sources at startup and updated with minor additions (like system reminders) throughout the session.
 
----
-
 ## Anatomy of a Claude Code API Call
 
 Every message you send triggers an API call structured like this:
 
-```
+```text
 ┌─────────────────────────────────────────────┐
 │ System Prompt                               │  ← Re-sent every call
 │ ├── Core instructions                       │
@@ -91,8 +88,6 @@ Every message you send triggers an API call structured like this:
 ```
 
 The system prompt and conversation history are both input tokens -- you pay for all of them on every call. The system prompt is roughly the same size every time; the conversation history grows.
-
----
 
 ## System Prompt Components
 
@@ -133,7 +128,7 @@ Each connected MCP server adds its tool definitions. A server like `claude-in-ch
 
 All discovered CLAUDE.md files from every scope are loaded into the system prompt:
 
-```
+```text
 Precedence (highest to lowest):
 1. Enterprise policy    (organization-wide)
 2. Project CLAUDE.md    (repo root, version controlled)
@@ -153,7 +148,7 @@ Every enabled skill (local + plugin) contributes a catalog entry with its name, 
 
 Example catalog entry:
 
-```
+```text
 - golang: Go patterns for backend development, testing, and
   clean architecture. Use when writing Go code.
 ```
@@ -170,7 +165,7 @@ Plugin subagents are described in the Task tool's definition block. Each subagen
 
 Example (abbreviated):
 
-```
+```text
 - code-documentation:docs-architect: Creates comprehensive technical
   documentation from existing codebases. Use PROACTIVELY for system
   documentation, architecture guides, or technical deep-dives.
@@ -186,7 +181,7 @@ MCP servers can provide free-form instructions that get injected into the system
 
 Example:
 
-```
+```text
 ## context7
 Use this server to retrieve up-to-date documentation and code
 examples for any library.
@@ -221,13 +216,11 @@ Hook outputs appear as `<system-reminder>` blocks in the conversation, not in th
 
 **Typical size:** Variable (minimal for well-designed hooks)
 
----
-
 ## How It Gets Assembled
 
 At session startup:
 
-```
+```text
 1. Load core instructions (built-in, static)
         │
 2. Discover and load CLAUDE.md files (all scopes)
@@ -252,8 +245,6 @@ On subsequent messages, the system prompt stays largely the same. What changes:
 - System reminders get appended to the conversation (not the system prompt)
 - Context compaction may summarize older messages when approaching limits
 - Skill invocations add content to the conversation history
-
----
 
 ## Why This Matters
 
@@ -290,8 +281,6 @@ Claude Code uses prompt caching to mitigate the cost of re-sending the system pr
 
 This means the per-message cost of a large system prompt is real but partially mitigated. The first message in a session pays the full price; subsequent messages benefit from caching.
 
----
-
 ## What You Can Control
 
 | Component                 | Controllable? | How                               |
@@ -313,8 +302,6 @@ The biggest optimization levers:
 4. **Disable unused local skills** -- Removes catalog entries
 
 See the [token optimization article]({{< relref "token-optimization" >}}) for a detailed audit process.
-
----
 
 ## References
 

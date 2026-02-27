@@ -17,8 +17,6 @@ Claude Code connects to external systems through four integration mechanisms: MC
 | **Headless mode**  | Script Claude from outside    | External calls in    | Your script invokes it   |
 | **GitHub Actions** | CI/CD automation              | Events call Claude   | GitHub events trigger it |
 
----
-
 ## Table of Contents
 
 - [Integration Patterns: Connecting Claude Code with External Tools and Services](#integration-patterns-connecting-claude-code-with-external-tools-and-services)
@@ -66,8 +64,6 @@ Claude Code connects to external systems through four integration mechanisms: MC
     - [Over-Broad Hook Matchers](#over-broad-hook-matchers)
   - [References](#references)
 
----
-
 ## The Integration Landscape
 
 Claude Code integrates with external systems through four distinct mechanisms. Each operates at a different layer and serves a different purpose:
@@ -107,8 +103,6 @@ Claude Code integrates with external systems through four distinct mechanisms. E
 **Headless mode** (`claude -p`) turns Claude into a command-line tool that other programs can call. It reads a prompt, does the work, prints the result, and exits. This is what makes Claude composable with Unix pipelines and CI/CD systems.
 
 **GitHub Actions** trigger Claude in response to GitHub events -- PR comments, issue creation, scheduled runs. The official `anthropics/claude-code-action` wraps headless mode into a GitHub-native integration.
-
----
 
 ## MCP Servers: Connecting External Tools
 
@@ -257,8 +251,6 @@ MCP servers can expose resources that you reference with `@` mentions:
 ```
 
 Resources are fetched and included as attachments when referenced.
-
----
 
 ## Hooks: Automating Workflows
 
@@ -498,8 +490,6 @@ Async hooks cannot block or return decisions -- the triggering action has alread
 
 Use `/hooks` in Claude Code to manage hooks interactively.
 
----
-
 ## Headless Mode: CLI Automation
 
 The `-p` (or `--print`) flag runs Claude Code non-interactively: it reads a prompt, does the work, prints the result to stdout, and exits. This turns Claude into a composable command-line tool.
@@ -617,8 +607,6 @@ Authentication for headless mode uses the `CLAUDE_CODE_API_KEY` environment vari
 export CLAUDE_CODE_API_KEY="sk-ant-..."
 claude -p "Review this codebase for security issues"
 ```
-
----
 
 ## GitHub Actions: CI/CD Integration
 
@@ -742,8 +730,6 @@ Optimization tips:
 - Use GitHub concurrency controls to limit parallel runs
 - Be specific with `@claude` commands to reduce unnecessary work
 
----
-
 ## Claude as MCP Server
 
 Claude Code can expose itself as an MCP server that other applications connect to:
@@ -768,8 +754,6 @@ This makes Claude Code's tools (Read, Edit, Glob, Grep, etc.) available to other
 ```
 
 This enables scenarios where other AI assistants or tools delegate file operations to Claude Code.
-
----
 
 ## Plugins: Packaging Integrations
 
@@ -829,8 +813,6 @@ Hooks are defined in `hooks/hooks.json` within the plugin:
 }
 ```
 
----
-
 ## Integration Decision Framework
 
 Use this flowchart to choose the right integration mechanism:
@@ -870,8 +852,6 @@ Decision matrix for common scenarios:
 | Run tests after Claude edits files      | Hook (async)       | Background verification, non-blocking  |
 | Migrate 100 files with the same pattern | Headless mode      | Batch processing via loop              |
 | Share team tooling configuration        | Plugin             | Bundles MCP + hooks + skills together  |
-
----
 
 ## Combining Integration Patterns
 
@@ -961,8 +941,6 @@ When investigating production errors, always check Sentry first
 using the sentry MCP server before looking at logs.
 ```
 
----
-
 ## Best Practices
 
 1. **Start with the simplest mechanism.** If a hook can solve it, don't build an MCP server. If headless mode works, don't set up GitHub Actions.
@@ -984,8 +962,6 @@ using the sentry MCP server before looking at logs.
 9. **Use the `/hooks` and `/mcp` menus.** These interactive menus show what's configured and let you manage integrations without editing JSON files directly.
 
 10. **Document MCP server instructions.** If you're building an MCP server, the server instructions field helps Claude understand when to search for your tools (especially with Tool Search enabled).
-
----
 
 ## Anti-Patterns
 
@@ -1052,8 +1028,6 @@ Good: A PreToolUse hook with matcher "Bash" that only
 ```
 
 Use the most specific matcher possible to minimize unnecessary hook executions.
-
----
 
 ## References
 

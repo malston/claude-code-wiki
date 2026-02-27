@@ -20,61 +20,69 @@ Hooks let you run code at specific points in Claude Code's lifecycle -- before a
 | **Context**       | Inject reminders, load state, persist env vars        | SessionStart, UserPromptSubmit                 |
 | **Quality gates** | Block stopping until tasks complete, auto code review | Stop, SubagentStop, TaskCompleted, PostToolUse |
 
----
-
 ## Table of Contents
 
-- [Hook Fundamentals](#hook-fundamentals)
-  - [Where Hooks Live](#where-hooks-live)
-  - [The Three Hook Types](#the-three-hook-types)
-  - [Exit Code Protocol](#exit-code-protocol)
-  - [JSON Output Format](#json-output-format)
-  - [Environment Variables](#environment-variables)
-- [Event Reference](#event-reference)
-  - [Complete Event Table](#complete-event-table)
-  - [Matcher Syntax](#matcher-syntax)
-  - [Tool Input Schemas](#tool-input-schemas)
-- [Recipes: Code Quality](#recipes-code-quality)
-  - [Auto-Format with Prettier](#auto-format-with-prettier)
-  - [Auto-Format Go Files](#auto-format-go-files)
-  - [Run Ruff on Python Files](#run-ruff-on-python-files)
-  - [ESLint on Save](#eslint-on-save)
-- [Recipes: Safety](#recipes-safety)
-  - [Block Dangerous Commands](#block-dangerous-commands)
-  - [Protect Sensitive Files](#protect-sensitive-files)
-  - [Block Pushes to Protected Branches](#block-pushes-to-protected-branches)
-  - [Prevent Credential Leaks in Commands](#prevent-credential-leaks-in-commands)
-- [Recipes: Verification](#recipes-verification)
-  - [Run Tests After File Changes](#run-tests-after-file-changes)
-  - [Stop Hook Test Gate](#stop-hook-test-gate)
-  - [Task Completion Test Gate](#task-completion-test-gate)
-  - [Build Verification Gate](#build-verification-gate)
-- [Recipes: Notifications](#recipes-notifications)
-  - [macOS Desktop Notification](#macos-desktop-notification)
-  - [Linux Desktop Notification](#linux-desktop-notification)
-  - [Slack Webhook Notification](#slack-webhook-notification)
-- [Recipes: Logging and Auditing](#recipes-logging-and-auditing)
-  - [Log Every Bash Command](#log-every-bash-command)
-  - [Session Start Logger](#session-start-logger)
-  - [Debug Wrapper Script](#debug-wrapper-script)
-- [Recipes: Context Injection](#recipes-context-injection)
-  - [Inject Reminders After Compaction](#inject-reminders-after-compaction)
-  - [Load Project State on Session Start](#load-project-state-on-session-start)
-  - [Inject Sprint Context With Every Prompt](#inject-sprint-context-with-every-prompt)
-  - [Persist Environment Variables](#persist-environment-variables)
-- [Recipes: Quality Gates](#recipes-quality-gates)
-  - [Prompt-Based Stop Gate](#prompt-based-stop-gate)
-  - [Agent-Based Verification Gate](#agent-based-verification-gate)
-  - [Stop Hook Code Review](#stop-hook-code-review)
-- [Combining Hooks](#combining-hooks)
-  - [A Complete Safety Setup](#a-complete-safety-setup)
-  - [A Complete CI-Style Setup](#a-complete-ci-style-setup)
-- [Gotchas and Debugging](#gotchas-and-debugging)
-- [Best Practices](#best-practices)
-- [Anti-Patterns](#anti-patterns)
-- [References](#references)
-
----
+- [Custom Hooks Cookbook: Practical Recipes for Automating Claude Code](#custom-hooks-cookbook-practical-recipes-for-automating-claude-code)
+  - [Executive Summary](#executive-summary)
+  - [Table of Contents](#table-of-contents)
+  - [Hook Fundamentals](#hook-fundamentals)
+    - [Where Hooks Live](#where-hooks-live)
+    - [The Three Hook Types](#the-three-hook-types)
+    - [Exit Code Protocol](#exit-code-protocol)
+    - [JSON Output Format](#json-output-format)
+    - [Environment Variables](#environment-variables)
+  - [Event Reference](#event-reference)
+    - [Complete Event Table](#complete-event-table)
+    - [Matcher Syntax](#matcher-syntax)
+    - [Tool Input Schemas](#tool-input-schemas)
+  - [Recipes: Code Quality](#recipes-code-quality)
+    - [Auto-Format with Prettier](#auto-format-with-prettier)
+    - [Auto-Format Go Files](#auto-format-go-files)
+    - [Run Ruff on Python Files](#run-ruff-on-python-files)
+    - [ESLint on Save](#eslint-on-save)
+  - [Recipes: Safety](#recipes-safety)
+    - [Block Dangerous Commands](#block-dangerous-commands)
+    - [Protect Sensitive Files](#protect-sensitive-files)
+    - [Block Pushes to Protected Branches](#block-pushes-to-protected-branches)
+    - [Prevent Credential Leaks in Commands](#prevent-credential-leaks-in-commands)
+  - [Recipes: Verification](#recipes-verification)
+    - [Run Tests After File Changes](#run-tests-after-file-changes)
+    - [Stop Hook Test Gate](#stop-hook-test-gate)
+    - [Task Completion Test Gate](#task-completion-test-gate)
+    - [Build Verification Gate](#build-verification-gate)
+  - [Recipes: Notifications](#recipes-notifications)
+    - [macOS Desktop Notification](#macos-desktop-notification)
+    - [Linux Desktop Notification](#linux-desktop-notification)
+    - [Slack Webhook Notification](#slack-webhook-notification)
+  - [Recipes: Logging and Auditing](#recipes-logging-and-auditing)
+    - [Log Every Bash Command](#log-every-bash-command)
+    - [Session Start Logger](#session-start-logger)
+    - [Debug Wrapper Script](#debug-wrapper-script)
+  - [Recipes: Context Injection](#recipes-context-injection)
+    - [Inject Reminders After Compaction](#inject-reminders-after-compaction)
+    - [Load Project State on Session Start](#load-project-state-on-session-start)
+    - [Inject Sprint Context With Every Prompt](#inject-sprint-context-with-every-prompt)
+    - [Persist Environment Variables](#persist-environment-variables)
+  - [Recipes: Quality Gates](#recipes-quality-gates)
+    - [Prompt-Based Stop Gate](#prompt-based-stop-gate)
+    - [Agent-Based Verification Gate](#agent-based-verification-gate)
+    - [Stop Hook Code Review](#stop-hook-code-review)
+  - [Combining Hooks](#combining-hooks)
+    - [A Complete Safety Setup](#a-complete-safety-setup)
+    - [A Complete CI-Style Setup](#a-complete-ci-style-setup)
+  - [Gotchas and Debugging](#gotchas-and-debugging)
+    - [The Stop Hook Infinite Loop](#the-stop-hook-infinite-loop)
+    - [Shell Profile Pollution](#shell-profile-pollution)
+    - [Hook Snapshot at Startup](#hook-snapshot-at-startup)
+    - [Async Hooks Cannot Block](#async-hooks-cannot-block)
+    - [Exit 2 vs JSON -- Choose One](#exit-2-vs-json----choose-one)
+    - [PermissionRequest Hooks Don't Fire in Headless Mode](#permissionrequest-hooks-dont-fire-in-headless-mode)
+    - [PostToolUse Cannot Undo](#posttooluse-cannot-undo)
+    - [The hookEventName Bug](#the-hookeventname-bug)
+    - [Debugging Commands](#debugging-commands)
+  - [Best Practices](#best-practices)
+  - [Anti-Patterns](#anti-patterns)
+  - [References](#references)
 
 ## Hook Fundamentals
 
@@ -175,8 +183,6 @@ The three permission decisions: `allow` (skip permission prompt), `deny` (block 
 | `CLAUDE_CODE_REMOTE` | All hooks    | `"true"` in remote web environments               |
 | `CLAUDE_ENV_FILE`    | SessionStart | Path to file for persisting environment variables |
 
----
-
 ## Event Reference
 
 ### Complete Event Table
@@ -247,8 +253,6 @@ When writing PreToolUse or PostToolUse hooks, the `tool_input` field varies by t
 | **Glob**  | `pattern`, `path`                                        |
 | **Grep**  | `pattern`, `path`, `glob`, `output_mode`                 |
 | **Task**  | `prompt`, `description`, `subagent_type`, `model`        |
-
----
 
 ## Recipes: Code Quality
 
@@ -367,8 +371,6 @@ Run ESLint with auto-fix on TypeScript/JavaScript files.
   }
 }
 ```
-
----
 
 ## Recipes: Safety
 
@@ -563,8 +565,6 @@ done
 exit 0
 ```
 
----
-
 ## Recipes: Verification
 
 ### Run Tests After File Changes
@@ -729,8 +729,6 @@ fi
 exit 0
 ```
 
----
-
 ## Recipes: Notifications
 
 ### macOS Desktop Notification
@@ -819,8 +817,6 @@ exit 0
 
 Using `async: true` prevents the Slack request from blocking Claude's flow.
 
----
-
 ## Recipes: Logging and Auditing
 
 ### Log Every Bash Command
@@ -903,8 +899,6 @@ exit $CODE
   "command": ".claude/hooks/debug-wrapper.sh .claude/hooks/protect-branches.sh"
 }
 ```
-
----
 
 ## Recipes: Context Injection
 
@@ -1037,8 +1031,6 @@ exit 0
 ```
 
 `CLAUDE_ENV_FILE` is only available to SessionStart hooks. Other hook types do not have access to it.
-
----
 
 ## Recipes: Quality Gates
 
@@ -1261,8 +1253,6 @@ protect its own invariants.
 
 This pattern is adapted from [claude-skillz](https://github.com/NTCoding/claude-skillz) by Nick Tune.
 
----
-
 ## Combining Hooks
 
 ### A Complete Safety Setup
@@ -1380,8 +1370,6 @@ A project-level setup focused on code quality and verification, suitable for `.c
 }
 ```
 
----
-
 ## Gotchas and Debugging
 
 ### The Stop Hook Infinite Loop
@@ -1450,8 +1438,6 @@ echo '{"tool_name":"Bash","tool_input":{"command":"rm -rf /"}}' | .claude/hooks/
 echo "Exit code: $?"
 ```
 
----
-
 ## Best Practices
 
 1. **Start simple.** One or two safety hooks are better than a complex multi-hook pipeline. Add hooks as you find specific needs, not speculatively.
@@ -1473,8 +1459,6 @@ echo "Exit code: $?"
 9. **Truncate large output.** If a hook outputs test results or build logs, truncate to the last 20-30 lines. Long outputs consume context tokens.
 
 10. **Use `jq -r` for field extraction.** It handles missing fields gracefully (returns "null" or empty string) and avoids fragile grep/sed parsing.
-
----
 
 ## Anti-Patterns
 
@@ -1507,8 +1491,6 @@ echo "Exit code: $?"
 7. **Ignoring exit codes from tools.** If your hook calls `npm test` but doesn't check `$?`, it silently passes even when tests fail.
 
 8. **Multiple blocking hooks that duplicate checks.** If you have both a PreToolUse hook and a PermissionRequest hook checking the same thing, you'll get duplicate prompts or conflicting decisions.
-
----
 
 ## References
 

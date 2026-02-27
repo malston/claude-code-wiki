@@ -173,15 +173,13 @@ Or per-session: `claude --teammate-mode in-process`
 - `Escape` -- interrupt teammate
 - `Ctrl+T` -- show task list
 
----
-
 ## Starting a Team
 
 ### Natural Language Creation
 
 Describe the team structure in your prompt. Claude creates and manages the team:
 
-```
+```text
 Create an agent team to refactor the authentication module:
 - One teammate designs the API surface
 - One teammate implements the core logic
@@ -194,7 +192,7 @@ Claude will spawn three teammates, assign initial tasks, and coordinate their wo
 
 Control cost by specifying models for teammates:
 
-```
+```text
 Create a team with 3 teammates to review this codebase.
 Use Sonnet for each teammate to keep costs down.
 ```
@@ -209,12 +207,10 @@ By default, the lead can both coordinate and implement. Toggle **delegate mode**
 
 This prevents a common problem where the lead starts implementing instead of delegating. You can also instruct the lead explicitly:
 
-```
+```text
 You are the team coordinator. Do not implement anything yourself.
 Delegate all coding tasks to your teammates.
 ```
-
----
 
 ## The Task System
 
@@ -232,8 +228,8 @@ Tasks can also be deleted if no longer needed.
 
 Tasks can depend on other tasks. A task with unresolved dependencies cannot be claimed:
 
-```
-Task 1: Design API schema          [no dependencies]
+```text
+Task 1: Design API schema           [no dependencies]
 Task 2: Implement endpoints         [blocked by Task 1]
 Task 3: Write integration tests     [blocked by Task 2]
 Task 4: Write unit tests            [blocked by Task 1]
@@ -247,15 +243,13 @@ Teammates can self-claim the next available, unblocked task after finishing thei
 
 The lead can also assign tasks explicitly to specific teammates.
 
----
-
 ## Communication
 
 ### Direct Messages
 
 Send a message to a specific teammate:
 
-```
+```text
 message researcher "What did you find about the rate limiting approach?"
 ```
 
@@ -265,7 +259,7 @@ Messages arrive at the recipient's next turn. They don't interrupt work in progr
 
 Send a message to all teammates at once:
 
-```
+```text
 broadcast "Heads up: I'm changing the auth module API. Don't modify auth.ts."
 ```
 
@@ -278,8 +272,6 @@ When a teammate finishes its current work, it automatically notifies the lead. T
 - Assign new tasks
 - Ask the teammate to review someone else's work
 - Shut down the teammate if done
-
----
 
 ## Hooks for Teams
 
@@ -357,13 +349,11 @@ exit 0
 - No matcher support
 - Only `type: "command"` hooks supported
 
----
-
 ## Plan Approval
 
 You can require teammates to plan before implementing. The teammate works in read-only plan mode, submits a plan to the lead, and waits for approval:
 
-```
+```text
 Spawn an architect teammate to refactor the auth module.
 Require plan approval before they make any changes.
 ```
@@ -372,15 +362,13 @@ When the lead rejects a plan, the teammate stays in plan mode, revises based on 
 
 This pattern is useful for high-stakes changes where you want a review gate before code modification.
 
----
-
 ## Team Patterns
 
 ### Competing Hypotheses (Debugging)
 
 Spawn multiple investigators to explore different theories about a bug. Have them communicate and challenge each other's findings:
 
-```
+```text
 Users report the app exits after one message instead of staying connected.
 Spawn 5 teammates to investigate different hypotheses:
 1. WebSocket connection lifecycle
@@ -399,7 +387,7 @@ This fights anchoring bias -- sequential investigation tends to find one explana
 
 Three specialized reviewers examine the same PR from different angles:
 
-```
+```text
 Create an agent team to review PR #142:
 - Security reviewer: check for vulnerabilities and auth issues
 - Performance reviewer: check for N+1 queries, unnecessary allocations
@@ -412,7 +400,7 @@ Synthesize into a final review.
 ### Research + Implementation
 
 Separate research from coding with task dependencies:
-
+text
 ```
 Create a team:
 - 2 researchers: investigate the GraphQL library API, edge cases, and patterns
@@ -427,7 +415,7 @@ Task dependencies (`blocked by`) ensure the implementer doesn't start until rese
 
 Each teammate owns a different layer, preventing file conflicts:
 
-```
+```text
 Create a team for the new user settings feature:
 - Frontend teammate: React components in src/components/settings/
 - Backend teammate: API endpoints in src/api/settings/
@@ -440,15 +428,13 @@ Clear file ownership avoids merge conflicts. Communication through messaging han
 
 Break a large task into independent pieces, process in parallel, synthesize:
 
-```
+```text
 Analyze all 12 API endpoint files for security vulnerabilities.
 Spawn 4 teammates, each analyzing 3 files.
 When all finish, compile findings into a single report.
 ```
 
 The shared task list handles coordination. The lead synthesizes results in the fan-in phase.
-
----
 
 ## CLI Flags
 
@@ -497,8 +483,6 @@ claude --teammate-mode in-process    # All in main terminal
 claude --teammate-mode tmux          # Split into tmux panes
 ```
 
----
-
 ## Permissions
 
 Teammates inherit the lead's permission settings at spawn time:
@@ -508,8 +492,6 @@ Teammates inherit the lead's permission settings at spawn time:
 - You can change individual teammate modes after spawning (not at spawn time)
 
 **Recommendation:** Pre-approve common operations in your permission settings before spawning teammates. Constant permission prompts create friction in team workflows.
-
----
 
 ## Limitations
 
@@ -525,8 +507,6 @@ Teammates inherit the lead's permission settings at spawn time:
 | **Permissions at spawn**   | All teammates inherit lead's mode; change individually after    |
 | **Split-pane limitations** | Not supported in VS Code terminal, Windows Terminal, or Ghostty |
 | **No context inheritance** | Teammates don't get the lead's conversation history             |
-
----
 
 ## Best Practices
 
@@ -550,8 +530,6 @@ Teammates inherit the lead's permission settings at spawn time:
 
 10. **Consider cost.** Each teammate is a full Claude instance. Three teammates on Opus for complex work can consume 3-4x the tokens of a single session. Use Sonnet teammates where possible.
 
----
-
 ## Anti-Patterns
 
 1. **Using teams for simple sequential tasks.** If work is naturally sequential (step 1 then step 2 then step 3), a single session is simpler and cheaper. Teams shine when work can be parallelized.
@@ -569,8 +547,6 @@ Teammates inherit the lead's permission settings at spawn time:
 7. **Broadcasting frequently.** Every broadcast sends a message to every teammate, consuming tokens per recipient. Use direct messages for teammate-specific communication.
 
 8. **Not pre-approving permissions.** Permission prompts interrupt team flow. Pre-approve common operations before starting the team.
-
----
 
 ## References
 

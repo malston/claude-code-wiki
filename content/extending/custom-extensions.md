@@ -16,8 +16,6 @@ Claude Code's capabilities can be extended through custom subagents (autonomous 
 | **Skill**    | Injected instructions        | `.claude/skills/*/SKILL.md` | Auto-discovered or `/invoked` |
 | **Plugin**   | Packaged bundle of all three | Plugin marketplace or local | When plugin is enabled        |
 
----
-
 ## Table of Contents
 
 - [Building Custom Subagents \& Skills: Extending Claude Code](#building-custom-subagents--skills-extending-claude-code)
@@ -74,8 +72,6 @@ Claude Code's capabilities can be extended through custom subagents (autonomous 
   - [Best Practices](#best-practices)
   - [Anti-Patterns](#anti-patterns)
   - [References](#references)
-
----
 
 ## Subagents
 
@@ -381,8 +377,6 @@ You run tests and fix failures.
 - Run the full suite after each fix to check for regressions
 ```
 
----
-
 ## Skills
 
 ### What Skills Are
@@ -647,8 +641,6 @@ allowed-tools: Bash(gh *), Read, Grep, Glob
 4. Summarize findings with file:line references
 ```
 
----
-
 ## The Lens + Reviewer Pattern
 
 ### Lens Reviewer Architecture
@@ -758,8 +750,6 @@ For each finding:
 
 Summarize with a risk rating: Pass / Conditional Pass / Fail.
 ```
-
----
 
 ## Plugins
 
@@ -901,8 +891,6 @@ Or toggle plugins in `settings.json`:
 }
 ```
 
----
-
 ## Managing Extensions with claudeup
 
 `claudeup local` is a tool for managing local extensions (personal skills, agents, hooks, rules, and output styles).
@@ -957,8 +945,6 @@ Items live in the library directory. Enablement works via symlinks:
 
 `claudeup local enable skills golang` creates the symlink. `claudeup local disable skills golang` removes it. The `.library/` directory is the source of truth; `~/.claude/skills/` and `~/.claude/agents/` are the active set.
 
----
-
 ## Scope and Priority
 
 When multiple scopes define the same extension, priority resolves conflicts:
@@ -996,8 +982,6 @@ You can restrict which skills and subagents are available:
 }
 ```
 
----
-
 ## Best Practices
 
 1. **Start with a skill, graduate to a subagent.** If you find a skill's instructions insufficient because the task needs multi-file investigation, convert it to a subagent. Don't start with a subagent for simple guidance.
@@ -1020,8 +1004,6 @@ You can restrict which skills and subagents are available:
 
 10. **Use `CLAUDE_CODE_SUBAGENT_MODEL` for cost control.** Set it to `haiku` when doing bulk operations that spawn many subagents, then unset it for normal work.
 
----
-
 ## Anti-Patterns
 
 1. **Subagents for simple guidance.** If the task is "follow these coding standards," that's a skill. Subagents add overhead (context switching, API calls) that's wasted on simple instruction injection.
@@ -1039,8 +1021,6 @@ You can restrict which skills and subagents are available:
 7. **Forgetting `hookEventName` in PreToolUse JSON.** The `hookSpecificOutput` object must include `"hookEventName": "PreToolUse"` or the response fails to parse. This is a common bug.
 
 8. **Duplicating content between skills and CLAUDE.md.** If a rule belongs in CLAUDE.md (applies always), don't also put it in a skill. If it only applies during a specific workflow, put it in a skill only.
-
----
 
 ## References
 

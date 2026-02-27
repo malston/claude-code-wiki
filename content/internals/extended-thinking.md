@@ -19,40 +19,39 @@ Extended thinking gives Claude additional tokens to reason before responding. On
 | **Billing**                    | Thinking tokens billed as output tokens                |
 | **Visibility**                 | Summarized view; `Ctrl+O` for verbose thinking text    |
 
----
-
 ## Table of Contents
 
-- [How Extended Thinking Works](#how-extended-thinking-works)
-  - [Why Intermediate Tokens Help](#why-intermediate-tokens-help)
-  - [The Thinking Process](#the-thinking-process)
-  - [Adaptive Thinking](#adaptive-thinking)
-  - [Summarized Thinking](#summarized-thinking)
-  - [Interleaved Thinking](#interleaved-thinking)
-- [Effort Levels](#effort-levels)
-  - [Available Levels](#available-levels)
-  - [What Effort Controls](#what-effort-controls)
-  - [Setting Effort in Claude Code](#setting-effort-in-claude-code)
-- [Configuration](#configuration)
-  - [Toggle Thinking On/Off](#toggle-thinking-onoff)
-  - [MAX_THINKING_TOKENS](#max_thinking_tokens)
-  - [Thinking Budget vs Output Budget](#thinking-budget-vs-output-budget)
-  - [Context Window Interaction](#context-window-interaction)
-  - [Thinking in Subagents](#thinking-in-subagents)
-- [When to Use Extended Thinking](#when-to-use-extended-thinking)
-  - [Tasks That Benefit](#tasks-that-benefit)
-  - [Tasks Where It's Overkill](#tasks-where-its-overkill)
-- [Cost Management](#cost-management)
-  - [How Thinking Tokens Are Billed](#how-thinking-tokens-are-billed)
-  - [Cost Control Levers](#cost-control-levers)
-  - [Cost Estimates](#cost-estimates)
-- [Model Support](#model-support)
-  - [Feature Compatibility](#feature-compatibility)
-- [Best Practices](#best-practices)
-- [Anti-Patterns](#anti-patterns)
-- [References](#references)
-
----
+- [Extended Thinking: How Claude Reasons Through Complex Problems](#extended-thinking-how-claude-reasons-through-complex-problems)
+  - [Executive Summary](#executive-summary)
+  - [Table of Contents](#table-of-contents)
+  - [How Extended Thinking Works](#how-extended-thinking-works)
+    - [Why Intermediate Tokens Help](#why-intermediate-tokens-help)
+    - [The Thinking Process](#the-thinking-process)
+    - [Adaptive Thinking](#adaptive-thinking)
+    - [Summarized Thinking](#summarized-thinking)
+    - [Interleaved Thinking](#interleaved-thinking)
+  - [Effort Levels](#effort-levels)
+    - [Available Levels](#available-levels)
+    - [What Effort Controls](#what-effort-controls)
+    - [Setting Effort in Claude Code](#setting-effort-in-claude-code)
+  - [Configuration](#configuration)
+    - [Toggle Thinking On/Off](#toggle-thinking-onoff)
+    - [MAX\_THINKING\_TOKENS](#max_thinking_tokens)
+    - [Thinking Budget vs Output Budget](#thinking-budget-vs-output-budget)
+    - [Context Window Interaction](#context-window-interaction)
+    - [Thinking in Subagents](#thinking-in-subagents)
+  - [When to Use Extended Thinking](#when-to-use-extended-thinking)
+    - [Tasks That Benefit](#tasks-that-benefit)
+    - [Tasks Where It's Overkill](#tasks-where-its-overkill)
+  - [Cost Management](#cost-management)
+    - [How Thinking Tokens Are Billed](#how-thinking-tokens-are-billed)
+    - [Cost Control Levers](#cost-control-levers)
+    - [Cost Estimates](#cost-estimates)
+  - [Model Support](#model-support)
+    - [Feature Compatibility](#feature-compatibility)
+  - [Best Practices](#best-practices)
+  - [Anti-Patterns](#anti-patterns)
+  - [References](#references)
 
 ## How Extended Thinking Works
 
@@ -167,8 +166,6 @@ Three methods, in order of priority:
 - Environment variable: `CLAUDE_CODE_EFFORT_LEVEL=low|medium|high`
 - Settings file: Set `effortLevel` in your settings JSON.
 
----
-
 ## Configuration
 
 ### Toggle Thinking On/Off
@@ -237,8 +234,6 @@ Each subagent has its own context window and thinking budget. Considerations:
 - `CLAUDE_CODE_SUBAGENT_MODEL` overrides all subagent model settings
 - Low effort is recommended for subagents doing simple tasks (research, file searching)
 - Thinking adds latency -- for parallel subagent work, lower effort means faster results
-
----
 
 ## When to Use Extended Thinking
 

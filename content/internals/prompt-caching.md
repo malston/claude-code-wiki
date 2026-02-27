@@ -25,35 +25,34 @@ Prompt caching allows the API to reuse previously processed prompt prefixes, red
 | Cache read               | 0.1x                     | $0.50/MTok         | $0.30/MTok           |
 | Uncached input           | 1x                       | $5/MTok            | $3/MTok              |
 
----
-
 ## Table of Contents
 
-- [How Prompt Caching Works](#how-prompt-caching-works)
-  - [The Basic Mechanism](#the-basic-mechanism)
-  - [Cache Lifetime (TTL)](#cache-lifetime-ttl)
-  - [What Gets Cached](#what-gets-cached)
-- [Prompt Caching in Claude Code](#prompt-caching-in-claude-code)
-  - [Why It Matters for Claude Code](#why-it-matters-for-claude-code)
-  - [The Cache Hierarchy](#the-cache-hierarchy)
-  - [What Stays Cached Between Messages](#what-stays-cached-between-messages)
-  - [What Breaks the Cache](#what-breaks-the-cache)
-- [The Economics](#the-economics)
-  - [Model Pricing](#model-pricing)
-  - [Worked Example: A Typical Claude Code Session](#worked-example-a-typical-claude-code-session)
-  - [The Real Cost of System Prompt Bloat](#the-real-cost-of-system-prompt-bloat)
-- [Cache Mechanics](#cache-mechanics)
-  - [Prefix Matching](#prefix-matching)
-  - [Minimum Token Requirements](#minimum-token-requirements)
-  - [Cache Breakpoints](#cache-breakpoints)
-  - [Cache Invalidation Rules](#cache-invalidation-rules)
-- [What This Means for Optimization](#what-this-means-for-optimization)
-  - [Cost Optimization vs Context Optimization](#cost-optimization-vs-context-optimization)
-  - [When to Worry About Caching](#when-to-worry-about-caching)
-  - [When Not to Worry](#when-not-to-worry)
-- [References](#references)
-
----
+- [Prompt Caching: Why Your System Prompt Doesn't Cost What You Think](#prompt-caching-why-your-system-prompt-doesnt-cost-what-you-think)
+  - [Executive Summary](#executive-summary)
+  - [Table of Contents](#table-of-contents)
+  - [How Prompt Caching Works](#how-prompt-caching-works)
+    - [The Basic Mechanism](#the-basic-mechanism)
+    - [Cache Lifetime (TTL)](#cache-lifetime-ttl)
+    - [What Gets Cached](#what-gets-cached)
+  - [Prompt Caching in Claude Code](#prompt-caching-in-claude-code)
+    - [Why It Matters for Claude Code](#why-it-matters-for-claude-code)
+    - [The Cache Hierarchy](#the-cache-hierarchy)
+    - [What Stays Cached Between Messages](#what-stays-cached-between-messages)
+    - [What Breaks the Cache](#what-breaks-the-cache)
+  - [The Economics](#the-economics)
+    - [Model Pricing](#model-pricing)
+    - [Worked Example: A Typical Claude Code Session](#worked-example-a-typical-claude-code-session)
+    - [The Real Cost of System Prompt Bloat](#the-real-cost-of-system-prompt-bloat)
+  - [Cache Mechanics](#cache-mechanics)
+    - [Prefix Matching](#prefix-matching)
+    - [Minimum Token Requirements](#minimum-token-requirements)
+    - [Cache Breakpoints](#cache-breakpoints)
+    - [Cache Invalidation Rules](#cache-invalidation-rules)
+  - [What This Means for Optimization](#what-this-means-for-optimization)
+    - [Cost Optimization vs Context Optimization](#cost-optimization-vs-context-optimization)
+    - [When to Worry About Caching](#when-to-worry-about-caching)
+    - [When Not to Worry](#when-not-to-worry)
+  - [References](#references)
 
 ## How Prompt Caching Works
 
@@ -61,7 +60,7 @@ Prompt caching allows the API to reuse previously processed prompt prefixes, red
 
 Every API call sends the full prompt to the model. Without caching, the model processes every token from scratch each time. With caching, the model can reuse previously processed prefixes:
 
-```
+```text
 Message 1 (no cache exists yet):
 ┌─────────────────────────────────────────┐
 │ System prompt (15,000 tokens)           │ ← Processed and written to cache
@@ -102,8 +101,6 @@ Cacheable content includes:
 
 **Not cacheable:** Thinking blocks (from extended thinking) cannot be explicitly cached, though they get cached implicitly when passed back in tool use flows.
 
----
-
 ## Prompt Caching in Claude Code
 
 ### Why It Matters for Claude Code
@@ -120,7 +117,7 @@ Without caching, a Claude Code session would be prohibitively expensive. The sys
 
 Claude Code's prompt follows the standard cache hierarchy:
 
-```
+```text
 1. Tool definitions (Read, Edit, Bash, Glob, Grep, Task, etc.)
    + MCP tool definitions (context7, episodic-memory, etc.)
        │
@@ -172,8 +169,6 @@ Changes to the prompt prefix invalidate the cache from that point forward:
 
 **In practice, cache invalidation rarely happens within a Claude Code session.** The system prompt doesn't change mid-session. The main cause of partial invalidation is context compaction in very long sessions, where older messages get summarized.
 
----
-
 ## The Economics
 
 ### Model Pricing
@@ -200,14 +195,14 @@ Assumptions:
 
 **Without caching:**
 
-```
+```text
 200 messages × 15,000 tokens × $5/MTok = $15.00
 (just for the system prompt -- conversation tokens add more)
 ```
 
 **With caching:**
 
-```
+```text
 Message 1 (cache write):
   15,000 tokens × $6.25/MTok = $0.09
 
@@ -234,8 +229,6 @@ Even with caching, system prompt size matters:
 (Opus 4.6 pricing)
 
 The cost difference between a 10K and 30K system prompt is ~$2 per session with caching -- noticeable over many sessions but not catastrophic. The more significant impact of a bloated system prompt is **context window space**: those 30,000 tokens are unavailable for conversation content regardless of caching.
-
----
 
 ## Cache Mechanics
 
@@ -271,7 +264,7 @@ The system automatically checks for cache hits by looking backwards from each br
 
 The cache follows the hierarchy: **tools → system → messages**. Changes at each level invalidate that level and everything after it.
 
-```
+```text
 tools change    → tools, system, messages all invalidated
 system changes  → system and messages invalidated (tools still cached)
 messages change → only messages invalidated (tools and system still cached)
@@ -288,8 +281,6 @@ Specific invalidation triggers:
 | Images added/removed      | Valid       | Valid        | Invalidated    |
 | Thinking params changed   | Valid       | Valid        | Invalidated    |
 
----
-
 ## What This Means for Optimization
 
 ### Cost Optimization vs Context Optimization
@@ -300,7 +291,7 @@ Prompt caching creates an important distinction between two types of optimizatio
 
 **Context optimization** -- Reducing the context window space consumed by the system prompt. Caching does **not** help here. A 20,000-token system prompt still occupies 20,000 tokens of your context window on every message, whether those tokens are cached or not.
 
-```
+```text
 Context window budget (e.g., 200K tokens):
 ┌──────────────────────────────────────────────┐
 │ System prompt: 20,000 tokens                 │ ← Cheap (cached) but takes space
@@ -324,8 +315,6 @@ You generally don't need to think about prompt caching in Claude Code -- it's ha
 - **System prompt size (for cost)** -- With caching, the cost difference between a 10K and 30K system prompt is ~$2 per 200-message session. Not worth agonizing over.
 - **Conversation length** -- Previous turns get cached incrementally. Long conversations are efficiently handled.
 - **Cache management** -- Claude Code handles breakpoint placement and cache strategy automatically. There's nothing to configure.
-
----
 
 ## References
 

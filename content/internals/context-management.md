@@ -22,8 +22,6 @@ The 1M token context window is currently available in beta on the API only. Stan
 
 **Key insight:** [Prompt caching]({{< relref "prompt-caching" >}}) reduces the _cost_ of repeated content, but every token still occupies context window _space_. You can afford a 20,000-token system prompt financially, but those 20,000 tokens are unavailable for conversation content regardless.
 
----
-
 ## Table of Contents
 
 - [Context Management: Working Within the Token Budget](#context-management-working-within-the-token-budget)
@@ -60,8 +58,6 @@ The 1M token context window is currently available in beta on the API only. Stan
     - [What You Can Do About It](#what-you-can-do-about-it)
   - [Practical Tips](#practical-tips)
   - [References](#references)
-
----
 
 ## What the Context Window Is
 

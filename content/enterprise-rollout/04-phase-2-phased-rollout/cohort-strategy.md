@@ -10,8 +10,6 @@ weight: 1
 
 Don't light up 500 developers at once. Each cohort discovers different classes of issues and builds institutional knowledge for the next cohort.
 
----
-
 ## Cohort 1: Power Users (25 developers, Weeks 5–6)
 
 ### Selection Criteria
@@ -52,8 +50,6 @@ Don't light up 500 developers at once. Each cohort discovers different classes o
 - Daily Slack channel for issues during first week
 - 30-minute stand-up twice per week with Cohort 1
 - Same-day turnaround on configuration issues
-
----
 
 ## Cohort 2: Full Teams (100 developers, Weeks 7–9)
 
@@ -98,8 +94,6 @@ Don't light up 500 developers at once. Each cohort discovers different classes o
 - Weekly office hours for questions
 - Bi-weekly feedback surveys
 
----
-
 ## Cohort 3: Full Organization (375 developers, Weeks 10–12)
 
 ### Prerequisites (Must Be True Before Launching)
@@ -133,8 +127,6 @@ Don't light up 500 developers at once. Each cohort discovers different classes o
 - Total cost within 10% of projection
 - No security incidents
 
----
-
 ## Rollback Plan
 
 ### Principle
@@ -165,8 +157,6 @@ Rollback is cohort-level, not all-or-nothing. If a cohort encounters serious iss
 ### Re-Engagement After Rollback
 
 If you roll back a cohort, fix the root cause and re-launch with a smaller pilot (5-10 developers) before re-expanding. Don't re-launch at the previous cohort size until the fix is validated.
-
----
 
 ## Timeline Summary
 

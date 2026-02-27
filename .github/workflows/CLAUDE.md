@@ -2,14 +2,12 @@
 
 When reviewing pull requests that modify `content/**/*.md` files, read `STYLE-GUIDE.md` at the repository root and flag subjective violations as review suggestions.
 
-Mechanical checks (em dash characters, bare code fences, banned opener phrases) are enforced separately in CI. Do not duplicate those checks here.
+Mechanical checks are enforced separately in CI (`scripts/check-style.sh`): em dashes, bare code fences, banned openers, contrastive reframes, superlative filler, horizontal rules, and slop phrases. Do not duplicate those checks here.
 
 ## What to Look For
 
 Focus on patterns that require judgment and cannot be caught by regex:
 
-- **Contrastive reframes** -- "It's not X, it's Y" structures that create false depth
-- **Superlative filler** -- adjectives like "powerful", "seamless", "elegant", "robust" that carry no information
 - **Triplet lists** -- groups of three abstract nouns used for rhetorical rhythm rather than content ("speed, precision, and reliability")
 - **Hedged bold sandwiches** -- a hedge, then a strong claim, then another hedge
 - **Relative timeline phrasing** -- "new", "recently added", "improved", "legacy" used to position features on a product timeline (fine in non-relative contexts like "create a new file")

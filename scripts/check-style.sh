@@ -247,18 +247,24 @@ check_slop_phrases() {
         [[ "$in_code_block" == true ]] && continue
         local lower
         lower="$(echo "$line" | tr '[:upper:]' '[:lower:]')"
-        [[ "$lower" == *"delv"* ]] && \
+        if [[ "$lower" == *"delv"* ]]; then
             report "$file" "$line_num" "slop: \"delve\" variant (Tier 1 AI tell)" "$line"
-        [[ "$lower" == *"it's worth noting"* ]] && \
+        fi
+        if [[ "$lower" == *"it's worth noting"* ]]; then
             report "$file" "$line_num" "slop: \"it's worth noting\"" "$line"
-        [[ "$lower" == *"pivotal"* ]] && \
+        fi
+        if [[ "$lower" == *"pivotal"* ]]; then
             report "$file" "$line_num" "slop: \"pivotal\" (Tier 1 AI tell)" "$line"
-        [[ "$lower" == *"revolutionary"* ]] && \
+        fi
+        if [[ "$lower" == *"revolutionary"* ]]; then
             report "$file" "$line_num" "slop: \"revolutionary\" (Tier 1 AI tell)" "$line"
-        [[ "$lower" == *"moreover"* ]] && \
+        fi
+        if [[ "$lower" == *"moreover"* ]]; then
             report "$file" "$line_num" "slop: \"moreover\" transition" "$line"
-        [[ "$lower" == *"furthermore"* ]] && \
+        fi
+        if [[ "$lower" == *"furthermore"* ]]; then
             report "$file" "$line_num" "slop: \"furthermore\" transition" "$line"
+        fi
     done < "$file"
 }
 

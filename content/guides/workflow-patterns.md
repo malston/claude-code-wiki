@@ -18,7 +18,7 @@ Claude Code is an agentic coding tool -- it explores, plans, and implements rath
 | **Code Review**               | Before merge, after implementation       | Fresh session, different perspective     |
 | **Refactor**                  | Code improvement, migration              | Small steps with continuous verification |
 | **Multi-Session**             | Large features, multi-day work           | State files, named sessions, checkpoints |
-| **Parallel Sessions**         | Independent tasks, writer/reviewer split | Git worktrees, headless mode             |
+| **Parallel Sessions**         | Independent tasks, writer/reviewer split | `--worktree`, `--tmux`, headless mode    |
 | **Headless / CI Integration** | Automated checks, batch operations       | `claude -p` with structured output       |
 
 ## Table of Contents
@@ -50,6 +50,7 @@ Claude Code is an agentic coding tool -- it explores, plans, and implements rath
     - [Resuming Work](#resuming-work)
   - [Multi-Session and Parallel Work](#multi-session-and-parallel-work)
     - [Git Worktrees for Isolation](#git-worktrees-for-isolation)
+    - [tmux Monitoring Layouts](#tmux-monitoring-layouts)
     - [Headless Mode for Automation](#headless-mode-for-automation)
     - [Fan-Out Pattern](#fan-out-pattern)
   - [Subagent Patterns](#subagent-patterns)
@@ -407,7 +408,28 @@ From inside a session, `/resume` switches to a different conversation without le
 
 ### Git Worktrees for Isolation
 
-Run multiple Claude Code sessions simultaneously with full code isolation:
+Run multiple Claude Code sessions simultaneously with full code isolation. Each worktree gets its own file state, branch, and auto-memory scope. Claude instances can't interfere with each other.
+
+#### The `--worktree` Flag
+
+```bash
+# Start a session in an isolated worktree
+claude --worktree feature-auth
+
+# Short form
+claude -w feature-auth
+
+# Let Claude generate a name
+claude --worktree
+```
+
+This creates a worktree at `.claude/worktrees/<name>/` with a branch based on HEAD. On exit, the worktree is removed automatically if no changes were made. If changes exist, Claude prompts you to keep or remove it.
+
+Add `--tmux` to launch the worktree session inside a tmux pane (`claude --worktree feature-auth --tmux`). This requires `--worktree` and auto-detects iTerm2 for native split panes. Pass `--tmux=classic` to force traditional tmux. For multi-agent pane layouts, see the [agent teams]({{< relref "/extending/agent-teams" >}}) article's tmux display mode.
+
+#### Manual Worktrees
+
+When you need custom branch names or non-standard worktree locations, create worktrees directly with git:
 
 ```bash
 # Create isolated worktrees for parallel tasks
@@ -422,7 +444,98 @@ cd ../project-bugfix && claude
 git worktree remove ../project-feature-a
 ```
 
-Each worktree has its own file state. Changes in one don't affect the other. Claude instances can't interfere with each other.
+### tmux Monitoring Layouts
+
+Many developers run Claude Code inside tmux with dedicated panes for monitoring. The core idea: a test runner or dev server in a side pane gives you an independent verification channel that updates in real time as Claude edits files, without consuming Claude's tool calls.
+
+#### Watch Mode Test Runners
+
+A filesystem watcher re-runs tests automatically whenever Claude saves a file:
+
+```bash
+# JavaScript/TypeScript
+jest --watch          # or vitest (watch mode is its default)
+
+# Go
+find . -name '*.go' | entr -c go test ./...
+
+# Python
+ptw                   # pytest-watch
+
+# Rust
+cargo watch -x test
+```
+
+The watcher detects Claude's file writes and re-runs affected tests within seconds. You see raw test output -- pass/fail, stack traces, timing -- without relying on Claude to report results accurately. This matters during long autonomous runs: you spot a wrong approach in the test output before Claude commits to a fix path.
+
+Claude can still run tests itself via the Bash tool. The watch pane is supplementary -- it provides always-on visibility that runs regardless of what Claude is doing.
+
+#### Common Pane Layouts
+
+A typical four-pane layout:
+
+```text
++----------------------------+-------------+
+|                            | Dev server  |
+|   Claude Code (main)       | (npm run    |
+|                            |  dev)       |
++----------------------------+-------------+
+| Git / shell                | Test runner |
+|                            | (--watch)   |
++----------------------------+-------------+
+```
+
+A simpler two-pane split works when you only need one monitoring channel:
+
+```text
++-------------------+-------------------+
+|                   |                   |
+|   Claude Code     |  Test watcher     |
+|                   |                   |
++-------------------+-------------------+
+```
+
+Other panes developers pair with Claude Code:
+
+- **Dev server with live reload** -- `npm run dev`, `vite`, `next dev`. Claude's edits trigger hot reload; you see errors in the server output as they happen.
+- **Log tailing** -- `tail -f logs/app.log` or `docker logs -f <container>`.
+- **Token monitoring** -- tmux status bar plugins like `tmux-claude-live` display token usage, burn rate, and cost with color-coded warnings.
+
+#### Example Session Script
+
+```bash
+#!/bin/bash
+SESSION="claude-dev"
+DIR="$(pwd)"
+
+# -P -F '#{pane_id}' returns the ID of each pane as it's created,
+# so send-keys targets the right pane regardless of base-index config.
+CLAUDE=$(tmux new-session -d -s "$SESSION" -c "$DIR" -P -F '#{pane_id}')
+tmux send-keys -t "$CLAUDE" "claude" Enter
+
+# Test watcher (right side, 35% width)
+TESTS=$(tmux split-window -h -t "$CLAUDE" -c "$DIR" -p 35 -P -F '#{pane_id}')
+tmux send-keys -t "$TESTS" "npm run test:watch" Enter
+
+# Dev server (bottom right, 50% of test pane height)
+DEV=$(tmux split-window -v -t "$TESTS" -c "$DIR" -p 50 -P -F '#{pane_id}')
+tmux send-keys -t "$DEV" "npm run dev" Enter
+
+# Focus Claude pane
+tmux select-pane -t "$CLAUDE"
+
+tmux attach -t "$SESSION"
+```
+
+#### Letting Claude Read Pane Output
+
+Claude understands tmux commands. You can tell it to read output from another pane:
+
+```text
+"check the test output in tmux pane 1 using tmux capture-pane"
+```
+
+Claude runs `tmux capture-pane -t :.1 -p` to read the watcher's output, then acts on the failures it finds. This separates the test-running process from Claude's execution context -- the watcher runs continuously while Claude reads its output on demand.
 
 ### Headless Mode for Automation
 

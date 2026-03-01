@@ -1,6 +1,6 @@
 ---
 title: "Training"
-weight: 6
+weight: 7
 bookCollapseSection: false
 ---
 

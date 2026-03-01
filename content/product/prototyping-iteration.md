@@ -29,7 +29,7 @@ A prototype is a question in code form. You build it to answer a specific questi
 
 ## Prototypes Are Questions
 
-Every prototype starts with a hypothesis. Without one, you're writing exploratory code with no criteria for success or failure. The hypothesis doesn't need to be formal -- "I think the Stripe API can handle idempotent retries for our use case" is enough -- but it needs to be falsifiable. You should know, before you start coding, what answer would make you stop.
+Every prototype starts with a hypothesis. Without one, you're writing exploratory code with no criteria for success or failure. The hypothesis doesn't need to be formal -- "I think the payment gateway API can handle idempotent retries for our use case" is enough -- but it needs to be falsifiable. You should know, before you start coding, what answer would make you stop.
 
 This is what separates prototyping from hacking. Hacking is open-ended exploration. Prototyping is a time-boxed experiment with a specific outcome. You build the minimum thing that confirms or invalidates your hypothesis, record what you learned, and move on.
 
@@ -187,7 +187,7 @@ The prototype is done. You have an answer. Now what?
 Your assumption holds. The API works, the integration connects, the data is clean enough. Move forward:
 
 1. Write [requirements]({{< relref "requirements-specifications" >}}) informed by what you learned. The prototype often reveals constraints and edge cases that belong in the spec.
-2. Enter the build cycle with spec-driven development. The prototype told you it's feasible -- the requirements tell you what to build.
+2. Enter the build cycle with [spec-driven development]({{< relref "/guides/spec-driven-development" >}}). The prototype told you it's feasible -- the requirements tell you what to build.
 3. Do not use the prototype code. Start fresh with production standards: error handling, tests, logging, code review.
 
 ### If the Hypothesis Was Invalidated

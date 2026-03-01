@@ -90,23 +90,25 @@ The workarounds question is particularly valuable. When users build shell script
 
 You don't need a market research firm for competitive analysis. You need to understand what alternatives your users have and where those alternatives fail. This is especially relevant for internal tools, where the "competitor" is often a spreadsheet, a shell script, or the old system that was supposed to be retired.
 
-Describe what you know about alternatives and ask Claude Code to help structure the analysis:
+If a competing tool is open-source or has a public CLI, you can analyze it directly. Clone the repo or install the tool, then ask Claude Code to compare it against your own codebase:
 
 ```text
-We're building an internal incident management tool. Our users currently
-use a combination of:
-- A shared Google Doc per incident (manually created)
-- PagerDuty for alerting
-- Slack threads for coordination
-- A post-incident spreadsheet for tracking action items
+I have two CLI tools:
+- Our deploy tool in ./cmd/deploy/ (our codebase)
+- A competitor's open-source deploy tool cloned to ./competitor-deploy/
 
-Map out: what does each tool handle well, what falls through the cracks
-between them, and where do users lose time on manual steps that could
-be automated? Focus on the handoff points -- where information moves
-from one tool to another.
+Compare the two command-line interfaces:
+1. What subcommands and flags does each tool expose?
+2. Where does the competitor support workflows that our tool doesn't?
+3. Where does our tool require multiple commands for something the
+   competitor handles in one?
+4. Read both tools' error messages for common failure cases -- which
+   tool gives more actionable output?
 ```
 
-The handoff points are where most user pain lives. Each copy-paste between tools is a chance for information to get lost, a manual step that could be forgotten under pressure, and a context switch that slows people down.
+This works because Claude Code can read both codebases and do the comparison structurally, not from memory or marketing copy. For closed-source tools, substitute their documentation or `--help` output for the source code.
+
+The handoff points between tools are where most user pain lives. If your users combine multiple tools for one workflow, each copy-paste between them is a manual step that could be forgotten under pressure and a context switch that slows people down.
 
 ## Usage Data Interpretation
 
@@ -136,7 +138,18 @@ Research tells you what the problem is. Validation tells you whether your propos
 
 A fake door test adds a UI element (button, menu item, link) for a feature that doesn't exist yet. When users click it, you record the click and show a message like "This feature is coming soon -- want to be notified?" The click rate tells you whether anyone cares enough to try the feature. Low click rates save you from building something nobody wants.
 
-Claude Code can generate the instrumentation code for a fake door test in minutes. Describe the feature, the placement, and the tracking event you want to fire, and you'll get a working implementation.
+Claude Code can generate the instrumentation code for a fake door test in minutes:
+
+```text
+Add a "Rollback" button to the deployment detail page at
+./frontend/src/pages/DeploymentDetail.tsx. The button should:
+- Appear next to the existing "Redeploy" button
+- Be styled consistently with other action buttons on the page
+- On click, fire a tracking event: { action: "fake_door_click",
+  feature: "one_click_rollback", deployment_id: <current id> }
+- Show a toast: "Rollback is coming soon. We've noted your interest."
+- Do NOT implement actual rollback logic
+```
 
 ### Survey Questions from Assumptions
 

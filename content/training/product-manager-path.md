@@ -114,7 +114,7 @@ Feature decomposition is where Claude Code earns its keep. Take a large feature,
 
 Prioritization frameworks only work when you actually run the numbers. Most teams say they use RICE but do it in their heads. Claude Code can model the full framework -- calculate scores, compare alternatives, surface which assumptions drive the ranking.
 
-The value isn't the score. It's the conversation the model forces. When Claude calculates that Feature A scores higher than the one your stakeholder is pushing for, you have data to point at instead of opinions to argue about.
+The model's value is the conversation it forces about priorities and assumptions. When Claude calculates that Feature A scores higher than the one your stakeholder is pushing for, you have data to point at instead of opinions to argue about.
 
 ### Exercises
 
@@ -133,7 +133,7 @@ The value isn't the score. It's the conversation the model forces. When Claude c
 
 ### Key Concepts
 
-**You don't need to write code.** You need to recognize when technical decisions are being made on your behalf and know the right questions to ask.
+**Your job is to recognize when technical decisions are being made on your behalf and know the right questions to ask.**
 
 **Design principles that affect your work:**
 
@@ -143,13 +143,13 @@ YAGNI (You Aren't Gonna Need It) applies to your roadmap too. Every "while we're
 
 **Architecture trade-offs to recognize:**
 
-Every choice has costs. Monolith vs. microservices, SQL vs. NoSQL, build vs. buy -- none have universal answers. Your job isn't to pick the technology. It's to make sure the choice aligns with business priorities. Three questions that cut through most architecture discussions: "What's the simplest thing that could work?" "What happens if this fails?" "How many teams coordinate to deploy this?"
+Every choice has costs. Monolith vs. microservices, SQL vs. NoSQL, build vs. buy -- each option trades simplicity, flexibility, and operational overhead differently. Focus on whether the technology choice aligns with business priorities. Three questions that cut through most architecture discussions: "What's the simplest thing that could work?" "What happens if this fails?" "How many teams coordinate to deploy this?"
 
 Reversibility matters. Push for choices that are easy to change when the team is uncertain. A database migration across millions of rows is expensive to reverse. An internal API change between two services is cheap.
 
 **Why standards and TDD matter to you:**
 
-Coding standards and CLAUDE.md directly control the quality of AI-generated code. Supporting your team's investment in these isn't a technical luxury -- it's how you get consistent output from Claude Code. Don't push for "just ship it" when code doesn't match standards. Inconsistent code costs more later than it saves now.
+Coding standards and CLAUDE.md directly control the quality of AI-generated code. Supporting your team's investment in these gives you more consistent output from Claude Code. Don't push for "just ship it" when code doesn't match standards. Inconsistent code costs more later than it saves now.
 
 TDD means tests are written before code. The tests _are_ the requirements in executable form. When you write acceptance criteria precise enough to test -- "POST /login with invalid credentials returns 401" -- you're writing something a developer can turn directly into a test. Vague criteria ("the user should be able to log in") can't become tests without interpretation, and interpretation introduces bugs.
 

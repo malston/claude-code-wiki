@@ -508,6 +508,10 @@ Other panes developers pair with Claude Code:
 SESSION="claude-dev"
 DIR="$(pwd)"
 
+if tmux has-session -t "$SESSION" 2>/dev/null; then
+    exec tmux attach -t "$SESSION"
+fi
+
 # -P -F '#{pane_id}' returns the ID of each pane as it's created,
 # so send-keys targets the right pane regardless of base-index config.
 CLAUDE=$(tmux new-session -d -s "$SESSION" -c "$DIR" -P -F '#{pane_id}')
@@ -532,10 +536,10 @@ tmux attach -t "$SESSION"
 Claude understands tmux commands. You can tell it to read output from another pane:
 
 ```text
-"check the test output in tmux pane 1 using tmux capture-pane"
+"check the test output in the other tmux pane using tmux capture-pane"
 ```
 
-Claude runs `tmux capture-pane -t :.1 -p` to read the watcher's output, then acts on the failures it finds. This separates the test-running process from Claude's execution context -- the watcher runs continuously while Claude reads its output on demand.
+Claude discovers available panes with `tmux list-panes`, reads the watcher's output with `capture-pane`, then acts on the failures it finds. This separates the test-running process from Claude's execution context -- the watcher runs continuously while Claude reads its output on demand.
 
 ### Headless Mode for Automation
 

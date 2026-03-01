@@ -16,6 +16,7 @@ Most engineers build what they're told to build, and build it well. The gap is t
 | [User Research & Validation]({{< relref "user-research" >}})                  | Discovering what users need                  | Interview techniques, assumption mapping, validation methods                                         |
 | [Requirements & Specifications]({{< relref "requirements-specifications" >}}) | Turning research into buildable definitions  | Spec writing, acceptance criteria, traceability                                                      |
 | [Prototyping & Iteration]({{< relref "prototyping-iteration" >}})             | Building to learn, not to ship               | Throwaway prototypes, feedback loops, iteration discipline                                           |
+| [Prioritization & Trade-offs]({{< relref "prioritization-tradeoffs" >}})      | Deciding what to build next                  | Impact vs. effort, RICE scoring, opportunity cost, cost of delay, saying no                          |
 
 ## Table of Contents
 
@@ -77,7 +78,7 @@ Claude Code doesn't replace product managers. It lowers the mechanical overhead 
 
 ## How This Section Is Organized
 
-The three articles that follow this one map to a cycle: discover, define, build-to-learn.
+The four articles that follow this one map to a cycle: discover, define, build-to-learn, decide.
 
 **[User Research & Validation]({{< relref "user-research" >}})** covers the discover phase. How to identify assumptions, talk to users, analyze feedback, and validate that you're solving a real problem. Includes techniques you can run from your terminal with Claude Code.
 
@@ -85,6 +86,8 @@ The three articles that follow this one map to a cycle: discover, define, build-
 
 **[Prototyping & Iteration]({{< relref "prototyping-iteration" >}})** covers the build-to-learn phase. How to build throwaway prototypes that test assumptions, collect feedback, and feed back into the next round of research.
 
-The cycle is intentionally circular. Prototyping generates data that feeds back into research. Research surfaces questions that change specs. Specs reveal gaps that require more prototyping. The goal is to keep this loop tight -- hours or days, not quarters.
+**[Prioritization & Trade-offs]({{< relref "prioritization-tradeoffs" >}})** covers the decide phase. How to rank competing features, calculate opportunity cost, and say no with data instead of opinions. Includes frameworks you can apply with Claude Code to model trade-offs quantitatively.
+
+The cycle is intentionally circular. Prototyping generates data that feeds back into research. Research surfaces questions that change specs. Prioritization forces you to choose between validated ideas when capacity is limited. The goal is to keep this loop tight -- hours or days, not quarters.
 
 You don't need to read these in order, though the sequence follows the natural flow of product work. Start with whichever article matches your current need.

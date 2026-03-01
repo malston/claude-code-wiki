@@ -5,241 +5,167 @@ weight: 3
 
 # Product Manager Path
 
-Technical literacy for product managers working alongside developers who use Claude Code. This path covers enough software design, architecture, coding standards, and TDD for you to make informed decisions and participate in developer workflows.
+Technical literacy for product managers using Claude Code. This path starts with what PMs can do directly -- research synthesis, prioritization modeling, requirements writing -- then builds the technical context needed to collaborate effectively with development teams.
 
-| Module                                                                            | Focus                                       | Prerequisites |
-| --------------------------------------------------------------------------------- | ------------------------------------------- | ------------- |
-| [1. How Claude Code Works](#module-1-how-claude-code-works)                       | What Claude Code is and isn't               | None          |
-| [2. Software Design Principles](#module-2-software-design-principles)             | What makes software maintainable            | Module 1      |
-| [3. Architecture Decisions](#module-3-architecture-decisions)                     | How to evaluate technical trade-offs        | Module 2      |
-| [4. Coding Standards](#module-4-coding-standards)                                 | Why conventions matter and what to look for | Module 2      |
-| [5. Test-Driven Development](#module-5-test-driven-development)                   | How TDD shapes planning and estimation      | Modules 2-4   |
-| [6. Working with Developer Workflows](#module-6-working-with-developer-workflows) | Participating in the development process    | Modules 1-5   |
+| Module                                                                        | Focus                                           | Prerequisites |
+| ----------------------------------------------------------------------------- | ----------------------------------------------- | ------------- |
+| [1. How Claude Code Works](#module-1-how-claude-code-works)                   | What it is, what PMs can do with it             | None          |
+| [2. Product Research & Discovery](#module-2-product-research--discovery)      | Research synthesis, validation, prototyping     | Module 1      |
+| [3. Requirements & Prioritization](#module-3-requirements--prioritization)    | Specs, decomposition, trade-off modeling        | Module 2      |
+| [4. Technical Literacy](#module-4-technical-literacy)                         | Design, architecture, standards, TDD essentials | Module 2      |
+| [5. Working with Development Teams](#module-5-working-with-development-teams) | Tickets, reviews, session planning              | Modules 1-4   |
 
-## Exercise Materials
-
-Clone the exercise repo for hands-on practice alongside each module:
-
-```bash
-git clone https://github.com/malston/training-pm-exercises.git ~/code/training-pm-exercises
-cd ~/code/training-pm-exercises
-```
-
-The repo contains a working Spring Boot order service with a mock product backlog, PR branches for review practice, and exercises for each module from understanding Claude Code to feature decomposition.
+Modules 3 and 4 can be taken in either order. Both depend on Module 2, and Module 5 depends on all four.
 
 ## Module 1: How Claude Code Works
 
-**Goal:** Understand what Claude Code does so you can set realistic expectations for your team.
+**Goal:** Understand what Claude Code does so you can use it for product work and set realistic expectations for your team.
 
 ### Key Concepts
 
-**Claude Code is a CLI tool that writes code through conversation.** A developer describes what they need, Claude reads the codebase, generates code, runs tests, and iterates. It's interactive, not a batch process.
+**Claude Code is a CLI tool that works through conversation.** You describe what you need, it reads files, generates output, and iterates. It's interactive, and the quality of output depends on the quality of input.
 
-**What Claude Code does well:**
+**What PMs can use Claude Code for:**
 
-- Implementing features when given clear requirements and acceptance criteria
-- Debugging with access to error output and test results
-- Refactoring code while maintaining test coverage
-- Exploring unfamiliar codebases and explaining how things work
-- Interacting with external services through MCP tools (databases, APIs, browsers) when configured
+- Synthesizing support tickets, interview notes, and usage data into patterns
+- Modeling prioritization frameworks (RICE scoring, trade-off matrices)
+- Drafting requirements and acceptance criteria from research findings
+- Prototyping ideas to validate feasibility before committing engineering time
+- Decomposing features into independently deliverable slices
 
-**What Claude Code doesn't do:**
+**What Claude Code needs from you:**
 
-- Replace developer judgment on architecture and design
-- Understand your business context without being told
-- Guarantee correct code without verification (tests, reviews)
-- Work well with vague requirements ("make it better")
+- Specific context (paste the data, describe the situation, state constraints)
+- Clear outcomes ("identify the top 3 pain points" not "analyze this")
+- Verification (Claude proposes, you decide -- same as with developers)
 
-**The quality of output depends on the quality of input.** Specific requirements with clear acceptance criteria produce better code than vague feature requests. This matters for how you write tickets and specs.
+**Limitations that affect how you work:**
 
-**Context windows are finite.** Claude Code can only "see" ~200K tokens at a time. Long conversations get summarized, and earlier details can be lost. This means large, complex tasks work better when broken into smaller pieces.
-
-### Key Questions to Answer
-
-- What's the difference between Claude Code generating code and a developer writing code? (Answer: Claude still needs verification, review, and human judgment on design)
-- Why do specific requirements produce better results? (Answer: Claude doesn't have your business context -- you have to provide it)
-- Why should large features be broken into smaller tasks? (Answer: context window limits, verification at each step, easier to course-correct)
+- Context windows are finite (~200K tokens). Long sessions lose earlier details. Break complex analysis into focused tasks.
+- Claude doesn't have your business context unless you provide it. "Our enterprise customers" means nothing without specifics.
+- Output needs verification. Claude will confidently synthesize patterns that aren't there if the input data is thin.
 
 ### Exercises
 
-**Starter materials:** `modules/01-claude-code-basics/` in the [exercise repo](https://github.com/malston/training-pm-exercises) -- exercises using the order service and mock backlog to explore Claude Code's capabilities and limitations.
-
-1. Compare two backlog tickets (`backlog/features/001-order-search.md` vs `backlog/features/002-order-history-export.md`). Which gives Claude enough information to implement correctly? What's missing from the vague one?
-2. Review `backlog/features/005-customer-dashboard.md` -- this feature is too large for one Claude Code session. List which parts you'd split into separate tasks.
-3. Pair with a developer on a Claude Code session and note 3 things that surprised you about how it works.
+1. Pick a real product question you're working on. Write two versions of a Claude Code prompt for it -- one vague, one specific. Run both and compare the outputs.
+2. Take a document you'd normally summarize manually (meeting notes, a competitor's changelog, a support ticket batch). Feed it to Claude Code and evaluate whether the synthesis captures what you'd have caught yourself.
 
 ### Reference
 
-- [Context Management]({{< relref "internals/context-management" >}}) -- How Claude Code's context window works and why it matters for task sizing
+- [Context Management]({{< relref "internals/context-management" >}}) -- why session length and task scoping matter
+- [Effective Prompting]({{< relref "guides/effective-prompting" >}}) -- how prompt specificity translates to better output
 
-## Module 2: Software Design Principles
+## Module 2: Product Research & Discovery
 
-**Goal:** Understand the principles developers use to keep software maintainable, so you can recognize good and bad design in discussions.
-
-### Key Concepts
-
-**The initial implementation is the cheap part.** Maintenance -- reading, understanding, debugging, extending -- accounts for the majority of the cost over a system's lifetime. Every design decision should favor long-term maintainability.
-
-**YAGNI: You Aren't Gonna Need It.** Don't build for hypothetical future requirements. Build what's needed now, and only add complexity when there's a concrete need. This applies to your roadmap too -- resist feature requests that "might be useful someday."
-
-**Separation of concerns.** Each component should do one thing. When a single module handles authentication, data validation, and email sending, changes to any one concern risk breaking the others. Watch for this in architecture discussions -- "this service does X and also Y and also Z" is a warning sign.
-
-**Naming matters.** Code names should describe what something does, not how it's implemented or its history. If a developer names something "NewAuthService" or "ImprovedValidator," ask what it actually does -- the name should describe the domain concept, not the refactoring history.
-
-### What This Means for PMs
-
-- When estimating work, factor in maintenance cost alongside initial implementation
-- When requesting features, be specific about the need, not the solution. "Users need to filter orders by date range" is better than "add a date picker component"
-- When reviewing designs, ask: "What happens when we need to change X?" If the answer involves touching many unrelated files, the design may have a coupling problem
-
-### Exercises
-
-**Starter materials:** `modules/02-design-principles/` in the [exercise repo](https://github.com/malston/training-pm-exercises) -- exercises using the order service to practice recognizing separation of concerns, YAGNI violations, and naming quality.
-
-1. Read `OrderService.java` and `OrderController.java`. Why are they separate? If you needed to add email notifications on cancellation, which file changes?
-2. Review the full backlog and classify each ticket as "need now," "might need later," or "over-engineering." Which would you defer?
-3. Check the `feature/order-notifications` branch -- the developer added email, SMS, and Slack when the ticket only asked for email. Which design principle does this violate?
-
-### Reference
-
-- [Effective Prompting]({{< relref "guides/effective-prompting" >}}) -- How specificity in requirements translates to better AI-generated code
-
-## Module 3: Architecture Decisions
-
-**Goal:** Evaluate technical trade-offs in architecture discussions without needing to write code.
+**Goal:** Use Claude Code to turn raw research inputs into actionable product insights.
 
 ### Key Concepts
 
-**Every architectural choice has costs and benefits.** There's no universal answer to "microservices or monolith" -- it depends on team size, deployment needs, and complexity.
+**Product decisions are only as good as the research behind them.** Most PMs have more data than they can process -- support tickets piling up, interview recordings they haven't revisited, competitor releases they skimmed. Claude Code closes the gap between data collected and data used.
 
-**Common trade-offs you'll encounter:**
+**Research synthesis with Claude Code:**
 
-| Decision                   | Option A              | Option B                    | Key Factor                           |
-| -------------------------- | --------------------- | --------------------------- | ------------------------------------ |
-| Service architecture       | Monolith (simpler)    | Microservices (scalable)    | Team size and deployment needs       |
-| Data storage               | SQL (structured)      | NoSQL (flexible)            | Query patterns and consistency needs |
-| Build vs. buy              | Custom code (control) | Third-party service (speed) | Maintenance burden vs. vendor risk   |
-| Performance vs. simplicity | Optimized (complex)   | Simple (slower)             | Whether users notice the difference  |
-
-**Questions to ask in architecture discussions:**
-
-- "What's the simplest thing that could work?" -- pushes back on over-engineering
-- "What happens if this component fails?" -- reveals single points of failure
-- "How does this change if we have 10x more users?" -- tests scalability assumptions
-- "How many teams need to coordinate to deploy this?" -- reveals organizational complexity
-
-**Reversibility matters.** Prefer decisions that are easy to change later. A database schema change that requires migrating millions of rows is hard to reverse. An internal API redesign between two services is relatively easy. Push for reversible choices when the team is uncertain.
-
-### What This Means for PMs
-
-- Don't default to "whatever the engineers recommend" -- ask about trade-offs and make sure the choice aligns with business priorities
-- Separate "we need this now" from "we might need this later" -- YAGNI applies to architecture too
-- When developers say "this will take longer because we need to do it right," ask what "right" means in concrete terms (e.g., "we need to add a database migration" vs. "we need to redesign the service boundary")
-
-### Exercises
-
-**Starter materials:** `modules/03-architecture/` in the [exercise repo](https://github.com/malston/training-pm-exercises) -- trade-off analysis, reversibility assessment, and scalability exercises using the order service.
-
-1. The order service uses an in-memory H2 database. Fill out the trade-off table comparing H2 vs. PostgreSQL for production. What questions would you ask the team?
-2. Rate 5 proposed changes (from adding an endpoint to switching frameworks) as easy, moderate, or hard to reverse.
-3. Review the customer dashboard feature spec and ask: if user volume grows 10x, which parts break first?
-
-### Reference
-
-- [Architecture Overview]({{< relref "enterprise-rollout/00-overview/architecture-overview" >}}) -- Claude Code request flow and enterprise configuration hierarchy
-
-## Module 4: Coding Standards
-
-**Goal:** Understand why coding standards exist and what to look for when teams adopt them.
-
-### Key Concepts
-
-**Coding standards reduce cognitive load.** When all code in a project follows the same patterns, developers spend less time understanding structure and more time understanding logic. This is the same principle as having a consistent document template -- you know where to find things.
-
-**Standards cover three areas:**
-
-1. **Formatting** -- indentation, line length, file organization. Automated by tools (linters, formatters). Not worth debating.
-2. **Naming** -- variable names, function names, file names. Describes what code does. Good names make code self-documenting.
-3. **Patterns** -- how to handle errors, structure tests, organize modules. These require judgment and team agreement.
-
-**Claude Code follows project standards automatically** when they're documented in CLAUDE.md. A well-maintained CLAUDE.md file directly controls the quality of AI-generated code -- it tells Claude exactly how to write code that matches the project's conventions.
-
-**Style guides and CLAUDE.md are related but different:**
-
-- Style guides define the rules for humans to follow
-- CLAUDE.md encodes those rules (plus project-specific context) for Claude to follow
-- Both should be kept in sync
-
-### What This Means for PMs
-
-- Support your team's investment in CLAUDE.md and coding standards -- they directly improve the quality of AI-generated code
-- When evaluating Claude Code's output, ask whether it follows the team's patterns. If it doesn't, the CLAUDE.md may need updating.
-- Don't push for "just ship it" when code doesn't match standards. Inconsistent code costs more to maintain later than it saves now.
-
-### Exercises
-
-**Starter materials:** `modules/04-coding-standards/` in the [exercise repo](https://github.com/malston/training-pm-exercises) -- exercises for reviewing CLAUDE.md, checking PR consistency, and making the business case for standards.
-
-1. Read the project's `CLAUDE.md`. What conventions does it enforce? What's missing that would help Claude produce more consistent code?
-2. Compare the three PR branches against the patterns in main. Which is most consistent? Which deviates the most?
-3. Make the business case for investing a sprint in CLAUDE.md and coding standards documentation instead of building features.
-
-### Reference
-
-- [Memory Organization]({{< relref "guides/memory-organization" >}}) -- How CLAUDE.md files structure project context for Claude Code
-
-## Module 5: Test-Driven Development
-
-**Goal:** Understand how TDD works and how it affects planning, estimation, and feature delivery.
-
-### Key Concepts
-
-**TDD means writing tests before writing code.** The cycle is:
+Support tickets and feedback are the most underused research source. You can paste a batch of tickets and ask Claude to categorize by pain point, identify frequency patterns, and surface quotes that illustrate each theme. The key is giving Claude the raw data and a specific lens:
 
 ```text
-1. Write a test that describes the desired behavior → it fails
-2. Write the minimum code to make the test pass
-3. Clean up the code while keeping tests passing
+Categorize these support tickets by the workflow stage where
+the user got stuck. For each category, list the frequency and
+one representative quote.
 ```
 
-This feels backwards at first, but it produces code that's verified by definition -- if the tests pass, the feature works as specified.
+"Categorize by workflow stage" produces different (and more useful) output than "summarize these tickets." The lens determines what Claude finds.
 
-**Tests are executable requirements.** A test file says exactly what the software should do, in a way that can be verified automatically. "The login endpoint returns 401 when the password is wrong" -- that's a test, and it's also a requirement.
+Interview synthesis works the same way. Paste transcript excerpts, ask Claude to identify recurring themes across participants, flag contradictions, and pull supporting quotes. One focused session per research question beats one massive "analyze everything" session.
 
-**How TDD affects planning:**
+**Validation and prototyping:**
 
-- Features need acceptance criteria precise enough to become tests
-- "The user should be able to log in" isn't testable. "POST /login with valid credentials returns a session token; invalid credentials return 401" is.
-- Writing good acceptance criteria is a PM skill that directly improves developer productivity
+Research tells you what the problem might be. Prototyping tests whether your solution makes sense before engineering commits to it. Claude Code can generate throwaway prototypes -- a CLI tool, a data transformation, a mock API response -- that let you test assumptions with real structure rather than slide decks.
 
-**How TDD affects estimation:**
-
-- TDD doesn't make development slower -- it shifts debugging time to the beginning
-- Without TDD: implement fast, debug later when things break
-- With TDD: specify behavior first, implement against the spec, catch bugs immediately
-- Total time is similar, but TDD catches problems earlier when they're cheaper to fix
-
-**With Claude Code, tests are especially valuable.** Tests give Claude concrete verification. Without tests, Claude has to guess whether its code works. With tests, it runs them and knows.
-
-### What This Means for PMs
-
-- Write acceptance criteria as specific behaviors, not vague outcomes. Each criterion should be verifiable: given X input, expect Y output.
-- Don't pressure developers to skip tests to "move faster." Tests save time over the lifecycle of a feature.
-- When Claude Code is used with TDD, the test suite becomes the source of truth for what the software does. Review the tests as well as the code.
+The critical discipline: prototypes are for learning, not shipping. If you find yourself polishing a prototype, you've stopped researching and started building.
 
 ### Exercises
 
-**Starter materials:** `modules/05-tdd/` in the [exercise repo](https://github.com/malston/training-pm-exercises) -- before/after examples of vague vs. testable acceptance criteria, plus the mock product backlog in `backlog/`.
-
-1. Read through the mock product backlog. Identify which tickets have testable acceptance criteria and which don't. What's missing from the vague ones?
-2. Pick a vague ticket and rewrite its acceptance criteria using Given/When/Then format. Compare your version with the examples in `modules/05-tdd/examples.md`.
-3. Review the existing `OrderControllerTest.java` -- can you trace each test back to a specific acceptance criterion? Where are the gaps?
+1. Gather 10-20 support tickets or feature requests related to a single area. Run a Claude Code session to categorize them by underlying need (not surface request). Compare Claude's groupings against your intuition -- where do they diverge?
+2. Take a feature idea you're considering and ask Claude Code to build the simplest possible prototype that would test the core assumption. Evaluate: did building it reveal anything the spec alone didn't?
+3. Write a prompt that asks Claude to find contradictions in a set of user feedback. Run it against real data and assess whether the contradictions are genuine or artifacts of Claude over-reading the input.
 
 ### Reference
 
-- [Testing Strategies]({{< relref "guides/testing-strategies" >}}) -- TDD patterns and how tests serve as durable requirements for AI-assisted development
+- [User Research & Validation]({{< relref "product/user-research" >}}) -- research techniques and Claude Code prompts for each
+- [Prototyping & Iteration]({{< relref "product/prototyping-iteration" >}}) -- prototype types, workflow, and anti-patterns
 
-## Module 6: Working with Developer Workflows
+## Module 3: Requirements & Prioritization
+
+**Goal:** Turn research into buildable specs and decide what to build next using quantitative frameworks.
+
+### Key Concepts
+
+**The gap between "we understand the problem" and "the team can build a solution" is where most product work stalls.** Requirements that are too vague produce rework. Requirements that are too detailed waste PM time on implementation decisions that belong to engineers. The target is precise enough to verify, open enough to allow good design.
+
+**From research to requirements:**
+
+Good requirements describe behaviors, not interfaces. "Users can filter orders by date range" is a requirement. "Add a date picker component to the orders page" is a design decision wearing a requirement's clothes.
+
+Claude Code can help bridge the gap. Feed it your research synthesis and ask it to extract testable acceptance criteria. The output needs your judgment -- Claude will generate criteria that are technically precise but may miss business context -- but it gets you from "pile of insights" to "draft spec" faster than starting from scratch.
+
+Feature decomposition is where Claude Code earns its keep. Take a large feature, ask Claude to break it into vertical slices that each deliver user value independently. Push back on slices that are just technical layers ("set up the database" isn't a user-facing slice).
+
+**Prioritization with Claude Code:**
+
+Prioritization frameworks only work when you actually run the numbers. Most teams say they use RICE but do it in their heads. Claude Code can model the full framework -- calculate scores, compare alternatives, surface which assumptions drive the ranking.
+
+The model's value is the conversation it forces about priorities and assumptions. When Claude calculates that Feature A scores higher than the one your stakeholder is pushing for, you have data to point at instead of opinions to argue about.
+
+### Exercises
+
+1. Take a feature request from a stakeholder and write acceptance criteria in Given/When/Then format. Then feed the same request to Claude Code and compare its criteria against yours. Where is Claude more precise? Where does it miss intent?
+2. List 5-8 features on your current backlog. Use Claude Code to score them with RICE. Identify which single assumption, if changed, would most alter the ranking.
+3. Pick a feature your team estimated as "large" and ask Claude Code to decompose it into vertical slices. Evaluate: could the first slice ship independently and deliver value?
+
+### Reference
+
+- [Requirements & Specifications]({{< relref "product/requirements-specifications" >}}) -- requirement formats, vertical slicing, worked example
+- [Prioritization & Trade-offs]({{< relref "product/prioritization-tradeoffs" >}}) -- RICE, opportunity cost, cost of delay, saying no with data
+
+## Module 4: Technical Literacy
+
+**Goal:** Understand enough about software design to ask good questions, evaluate trade-offs, and write requirements that developers (and Claude) can build against.
+
+### Key Concepts
+
+**Your job is to recognize when technical decisions are being made on your behalf and know the right questions to ask.**
+
+**Design principles that affect your work:**
+
+The initial implementation is the cheap part. Maintenance -- reading, understanding, debugging, extending -- is where the cost lives. When developers push back on a "quick" feature, they're usually seeing maintenance cost you can't. Ask: "What makes this expensive to change later?"
+
+YAGNI (You Aren't Gonna Need It) applies to your roadmap too. Every "while we're in there, let's also..." adds scope. If a developer builds email, SMS, and Slack notifications when the ticket asked for email, that's not initiative -- it's scope creep that needs testing, documentation, and maintenance.
+
+**Architecture trade-offs to recognize:**
+
+Every choice has costs. Monolith vs. microservices, SQL vs. NoSQL, build vs. buy -- each option trades simplicity, flexibility, and operational overhead differently. Focus on whether the technology choice aligns with business priorities. Three questions that cut through most architecture discussions: "What's the simplest thing that could work?" "What happens if this fails?" "How many teams coordinate to deploy this?"
+
+Reversibility matters. Push for choices that are easy to change when the team is uncertain. A database migration across millions of rows is expensive to reverse. An internal API change between two services is cheap.
+
+**Why standards and TDD matter to you:**
+
+Coding standards and CLAUDE.md directly control the quality of AI-generated code. Supporting your team's investment in these gives you more consistent output from Claude Code. Don't push for "just ship it" when code doesn't match standards. Inconsistent code costs more later than it saves now.
+
+TDD means tests are written before code. The tests _are_ the requirements in executable form. When you write acceptance criteria precise enough to test -- "POST /login with invalid credentials returns 401" -- you're writing something a developer can turn directly into a test. Vague criteria ("the user should be able to log in") can't become tests without interpretation, and interpretation introduces bugs.
+
+### Exercises
+
+1. Sit in on a technical discussion or read an architecture decision record. Identify the trade-off being made. What's being optimized for? What's being sacrificed? Do you agree with the priority?
+2. Take a ticket you wrote recently and evaluate: could a developer turn each acceptance criterion directly into a test without asking you clarifying questions? Rewrite the ones that fail this test.
+3. Review your team's CLAUDE.md. What conventions does it enforce? Ask a developer: what's missing that would help Claude produce more consistent code?
+
+### Reference
+
+- [Effective Prompting]({{< relref "guides/effective-prompting" >}}) -- how specificity in requirements translates to better AI-generated code
+- [Testing Strategies]({{< relref "guides/testing-strategies" >}}) -- TDD patterns and how tests serve as durable requirements
+- [Memory Organization]({{< relref "guides/memory-organization" >}}) -- how CLAUDE.md structures project context
+
+## Module 5: Working with Development Teams
 
 **Goal:** Participate effectively in the development process alongside developers using Claude Code.
 
@@ -247,61 +173,44 @@ This feels backwards at first, but it produces code that's verified by definitio
 
 **How developers use Claude Code day-to-day:**
 
-```text
-1. Start a session with a specific task
-2. Provide context (files, errors, requirements)
-3. Claude reads code, proposes changes, runs tests
-4. Developer reviews, accepts/rejects, course-corrects
-5. Iterate until the task is complete
-6. Commit, push, open a PR for review
-```
+A developer starts a session with a specific task, provides context, and iterates with Claude -- reading code, proposing changes, running tests -- until the task is complete. Then they commit, push, and open a PR. The developer is still in control. Claude proposes, the developer decides.
 
-The developer is still in control -- Claude proposes, the developer decides.
+This matters for you because the inputs to that process -- tickets, specs, acceptance criteria -- come from your work. The better those inputs are, the fewer round-trips the developer needs with Claude, and the closer the first output is to what you intended.
 
-**Writing good tickets for AI-assisted development:**
+**Writing tickets for AI-assisted development:**
 
-A ticket that works well with Claude Code includes:
+A ticket that works well with Claude Code includes clear scope (what to build, where it lives), testable acceptance criteria (Given/When/Then), context (why this feature exists, what problem it solves), and constraints (what's out of scope, what shouldn't change).
 
-- **Clear scope:** what to build, where it lives in the codebase
-- **Acceptance criteria:** specific, testable behaviors (see Module 5)
-- **Context:** why this feature exists, what problem it solves
-- **Constraints:** what's out of scope, what shouldn't change
+A ticket that produces rework: "Improve the dashboard." "Make it faster." "Fix the bug." No specific outcome, no measurement, no reproduction steps. Claude will generate _something_ for these -- that's the danger. It'll look like progress but miss the actual need.
 
-A ticket that works poorly:
+**Session planning affects delivery:**
 
-- "Improve the dashboard" (no specific outcome)
-- "Make it faster" (no measurement, no target)
-- "Fix the bug" (no reproduction steps, no expected behavior)
+Claude Code sessions have context limits. Large features work better as a sequence of small, independently verifiable steps. When you decompose features into vertical slices (Module 3), you're also creating natural session boundaries for developers. Each slice becomes one focused Claude Code session with clear inputs and verifiable outputs.
 
-**Code reviews still matter.** Claude Code generates code, but a human reviews it before it's merged. As a PM, you won't review the code itself, but you can:
+**Your role in code review:**
 
-- Review that acceptance criteria are met
-- Check that the feature behaves correctly in testing
-- Verify that the scope matches the ticket (no over-engineering, no missing pieces)
-
-**Session management affects delivery.** Claude Code sessions have context limits. Large features should be broken into tasks that each fit within a session. If you're planning a sprint, think about features as a sequence of small, independently verifiable steps rather than one big deliverable.
+You won't review code syntax, but you can review that acceptance criteria are met, the feature behaves correctly in testing, and the scope matches the ticket -- no over-engineering, no missing pieces. When Claude Code is used with TDD, the test suite becomes the source of truth for what the software does. Skimming test names can tell you whether your requirements were understood.
 
 ### Exercises
 
-**Starter materials:** `modules/06-workflows/` in the [exercise repo](https://github.com/malston/training-pm-exercises) -- three PR branches for review practice and a feature decomposition exercise using the customer dashboard spec.
-
-1. Review the three PR branches (`feature/order-search`, `feature/order-notifications`, `feature/bulk-status`). For each, compare the PR changes against the corresponding backlog ticket. Which PR matches its ticket? Which has scope creep? Which is missing acceptance criteria?
-2. Take the customer dashboard feature spec (`backlog/features/005-customer-dashboard.md`) and decompose it into smaller tasks using the template in `templates/decomposition-template.md`. Each task should be independently verifiable.
-3. Pick a vague ticket from the backlog and rewrite it with testable acceptance criteria. For each criterion, write it as: "Given [context], when [action], then [expected result]."
+1. Pull up three recent tickets your team completed. For each, evaluate: did the output match the ticket's intent? Where there was a gap, was it a ticket clarity problem or an implementation problem?
+2. Take a feature you're planning and decompose it into tasks where each task could be completed in a single Claude Code session (roughly: one clear outcome, testable independently). Write the acceptance criteria for the first task.
+3. Review a recent PR from your team. Read just the test file names and descriptions. Can you tell what the feature does from the tests alone? If not, what's missing from the acceptance criteria?
 
 ### Reference
 
-- [Workflow Patterns]({{< relref "guides/workflow-patterns" >}}) -- How developers structure work sessions, plan-then-implement, and manage parallel tasks
+- [Workflow Patterns]({{< relref "guides/workflow-patterns" >}}) -- how developers structure sessions, plan-then-implement, and manage parallel tasks
+- [Product Thinking]({{< relref "product/product-thinking" >}}) -- the product development cycle and how each phase connects
 
 ## What's Next
 
 After completing this path, you should be able to:
 
-- Set realistic expectations for Claude Code's capabilities
-- Recognize good and bad software design in discussions
-- Ask informed questions in architecture decision meetings
-- Understand why coding standards and CLAUDE.md matter
-- Write acceptance criteria that developers (and Claude) can test against
-- Break features into tasks suited for AI-assisted development
+- Use Claude Code to synthesize research, model priorities, and draft specifications
+- Evaluate whether a prototype validated the right assumption
+- Write acceptance criteria precise enough to become tests
+- Identify the trade-off in an architecture decision and assess whether it aligns with business priorities
+- Decompose features into tasks suited for AI-assisted development
+- Review PRs against acceptance criteria and scope
 
-For hands-on developer skills, see the [Developer Path]({{< relref "training/developer-path" >}}). For infrastructure and deployment concerns, see the [Platform Engineer Path]({{< relref "training/platform-engineer-path" >}}).
+For hands-on developer skills, see the [Developer Path]({{< relref "training/developer-path" >}}). For infrastructure and deployment, see the [Platform Engineer Path]({{< relref "training/platform-engineer-path" >}}). For deeper product frameworks, see the [Product Development]({{< relref "product/product-thinking" >}}) section.

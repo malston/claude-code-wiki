@@ -10,4 +10,4 @@ Structured learning paths for ramping up on Claude Code -- organized by role so 
 
 - **[Developer Path]({{< relref "training/developer-path" >}})** -- Prompting, debugging, testing, context management, and extensions. A systematic progression from basic usage to advanced workflows.
 - **[Platform Engineer Path]({{< relref "training/platform-engineer-path" >}})** -- Infrastructure setup, managed settings, permissions, rollout strategy, and observability. Everything needed to onboard teams to Claude Code.
-- **[Product Manager Path]({{< relref "training/product-manager-path" >}})** -- Software design principles, architecture decisions, coding standards, and TDD. Building the technical literacy to make informed product decisions alongside developers.
+- **[Product Manager Path]({{< relref "training/product-manager-path" >}})** -- Research synthesis, prioritization modeling, requirements writing, and technical literacy. Using Claude Code for product work and collaborating effectively with development teams.

@@ -10,12 +10,12 @@ weight: 1
 
 Most engineers build what they're told to build, and build it well. The gap is that "well" usually means technically sound -- correct algorithms, clean architecture, good test coverage -- while the thing being built may not solve the problem it was meant to solve. Product thinking is the discipline of questioning what you're building and why, before optimizing how.
 
-| Article                                                                       | Focus                                        | What You'll Get                                              |
-| ----------------------------------------------------------------------------- | -------------------------------------------- | ------------------------------------------------------------ |
-| Product Thinking (this page)                                                  | Why engineers should care about product work | The case for adding product thinking to your toolkit         |
-| [User Research & Validation]({{< relref "user-research" >}})                  | Discovering what users need                  | Interview techniques, assumption mapping, validation methods |
-| [Requirements & Specifications]({{< relref "requirements-specifications" >}}) | Turning research into buildable definitions  | Spec writing, acceptance criteria, traceability              |
-| [Prototyping & Iteration]({{< relref "prototyping-iteration" >}})             | Building to learn, not to ship               | Throwaway prototypes, feedback loops, iteration discipline   |
+| Article                                                                       | Focus                                        | What You'll Get                                                                                      |
+| ----------------------------------------------------------------------------- | -------------------------------------------- | ---------------------------------------------------------------------------------------------------- |
+| Product Thinking (this page)                                                  | Why engineers should care about product work | A concrete example of product-blind vs. product-aware engineering, and how the section fits together |
+| [User Research & Validation]({{< relref "user-research" >}})                  | Discovering what users need                  | Interview techniques, assumption mapping, validation methods                                         |
+| [Requirements & Specifications]({{< relref "requirements-specifications" >}}) | Turning research into buildable definitions  | Spec writing, acceptance criteria, traceability                                                      |
+| [Prototyping & Iteration]({{< relref "prototyping-iteration" >}})             | Building to learn, not to ship               | Throwaway prototypes, feedback loops, iteration discipline                                           |
 
 ## Table of Contents
 
@@ -37,13 +37,11 @@ Product thinking fills that gap. It's the practice of asking -- before you write
 
 ## What Product Thinking Is
 
-Product thinking is three activities:
+Product thinking starts with understanding users -- who uses this feature, what they're trying to accomplish, and where they get stuck. These questions sound obvious. In practice, most engineers inherit a ticket with a description and acceptance criteria, and start implementing without asking any of them.
 
-**Understanding users.** Who uses this feature? What are they trying to accomplish? Where do they get stuck? These questions sound obvious. In practice, most engineers inherit a ticket with a description and acceptance criteria, and start implementing without asking any of them.
+The next step is validating assumptions. Every feature is built on assumptions: users want this, users will find it, users will understand how it works, this will change their behavior in a measurable way. Identifying those assumptions and testing them before investing weeks of engineering effort is the core discipline.
 
-**Validating assumptions.** Every feature is built on assumptions: users want this, users will find it, users will understand how it works, this will change their behavior in a measurable way. Product thinking means identifying those assumptions and testing them before investing weeks of engineering effort.
-
-**Measuring outcomes.** A shipped feature is a hypothesis, not a conclusion. Did it change behavior? Did it solve the problem you thought it would? Measurement closes the loop between "we built it" and "it worked."
+Then there's measuring outcomes. A shipped feature is a hypothesis, not a conclusion. Did it change behavior? Did it solve the problem you thought it would? Measurement closes the loop between "we built it" and "it worked."
 
 None of this requires a product management title or a design degree. It requires asking questions that engineering culture tends to skip.
 
@@ -61,7 +59,7 @@ Engineer B's approach isn't slower. The investigation took less time than the tr
 
 ## How Claude Code Changes the Equation
 
-Engineers who want to do product work face a practical obstacle: the tools and workflows are different. User research means scheduling interviews, building surveys, synthesizing qualitative data. Requirements work means writing specs in formats unfamiliar to most engineers. These activities feel like switching careers, not extending a skillset.
+Engineers who want to do product work face a practical obstacle: the tools and workflows are different. User research means scheduling interviews, building surveys, synthesizing qualitative data. Requirements work means writing specs in formats unfamiliar to most engineers. These activities take time to learn and use different tools than most engineers are used to.
 
 Claude Code collapses that barrier. You can do product work in the same terminal where you write code, using the same conversational interface.
 
@@ -75,7 +73,7 @@ Concrete examples:
 
 - **Prototype to test an assumption.** Use Claude Code to build a throwaway prototype that tests a specific hypothesis. Spin it up in a [worktree]({{< relref "guides/workflow-patterns" >}}), get feedback, and discard or refine.
 
-Claude Code doesn't replace product managers. It drops the mechanical overhead of product work -- the writing, the synthesis, the formatting -- low enough that engineers can do it themselves as part of their normal workflow.
+Claude Code doesn't replace product managers. It lowers the mechanical overhead of product work -- the writing, the synthesis, the formatting -- enough that engineers can do it themselves as part of their normal workflow.
 
 ## How This Section Is Organized
 

@@ -16,7 +16,7 @@ Most engineers build what they're told to build, and build it well. The gap is t
 | [User Research & Validation]({{< relref "user-research" >}})                  | Discovering what users need                  | Interview techniques, assumption mapping, validation methods                                         |
 | [Requirements & Specifications]({{< relref "requirements-specifications" >}}) | Turning research into buildable definitions  | Spec writing, acceptance criteria, traceability                                                      |
 | [Prototyping & Iteration]({{< relref "prototyping-iteration" >}})             | Building to learn, not to ship               | Throwaway prototypes, feedback loops, iteration discipline                                           |
-| [Prioritization & Trade-offs]({{< relref "prioritization-tradeoffs" >}})      | Deciding what to build next                  | Impact vs. effort, RICE scoring, opportunity cost, saying no                                         |
+| [Prioritization & Trade-offs]({{< relref "prioritization-tradeoffs" >}})      | Deciding what to build next                  | Impact vs. effort, RICE scoring, opportunity cost, cost of delay, saying no                          |
 
 ## Table of Contents
 

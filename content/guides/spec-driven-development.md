@@ -275,7 +275,7 @@ A good spec includes:
 - **Constraints** -- Technology choices, performance requirements, compatibility needs
 - **Acceptance criteria** -- How to verify the goal is achieved
 
-Specs can be as lightweight as a section in a plan file or as formal as a dedicated requirements document. The formality should match the complexity of what you're building.
+Specs can be as lightweight as a section in a plan file or as formal as a dedicated requirements document. The formality should match the complexity of what you're building. For guidance on writing requirements that work as spec inputs -- choosing formats, decomposing vague requests, and discovering edge cases -- see [Requirements & Specifications]({{< relref "/product/requirements-specifications" >}}).
 
 ### Planning Phase
 

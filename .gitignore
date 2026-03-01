@@ -22,6 +22,9 @@ resources/
 # OS files
 .DS_Store
 
+# Worktrees
+.worktrees/
+
 # Editor
 .idea/
 *.swp

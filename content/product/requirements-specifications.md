@@ -55,7 +55,7 @@ The [user research]({{< relref "user-research" >}}) article covers how to figure
 
 **Acceptance criteria** define verifiable outcomes. "Given a deployment that failed health checks, when the user clicks Rollback, then the previous version is deployed within 60 seconds and the user sees a confirmation with the restored version number." These translate directly into test cases. Their weakness: they can over-specify implementation details and become brittle if the design changes.
 
-Combine them: a job story for situation and motivation, a user story to scope the feature, acceptance criteria to define "done."
+For the deployment rollback feature above, you'd use all three: a job story captures the 3am urgency, a user story scopes the dashboard interaction, and acceptance criteria define the 60-second completion target.
 
 ### Decomposing Vague Requests
 
@@ -82,7 +82,7 @@ This produces specific statements because it gives Claude Code research data to 
 
 A requirement good enough for a human is often too vague for Claude Code. Humans fill gaps with institutional knowledge; Claude Code fills gaps with assumptions. Good requirements and good prompts need the same things: specific inputs and outputs, constraints, and verification criteria.
 
-"Add rate limiting to the login endpoint" becomes a better build prompt when it specifies: which endpoint (POST /api/auth/login), what limit (5 attempts per email per 15 minutes), what response (429 with Retry-After header), and what happens at the boundary (6th attempt blocked, counter resets after 15 minutes). Five extra minutes of specificity saves 30 minutes of implementation rework.
+"Add rate limiting to the login endpoint" becomes a better build prompt when it specifies: which endpoint (POST /api/auth/login), what limit (5 attempts per email per 15 minutes), what response (429 with Retry-After header), and what happens at the boundary (6th attempt blocked, counter resets after 15 minutes). Specificity in requirements prevents rework during implementation.
 
 ## Feature Decomposition
 
@@ -135,7 +135,7 @@ operations, data integrity, external dependencies, user error,
 and timing conditions.
 ```
 
-A typical response covers cases you'd catch in code review -- what if there's no previous deployment? What if a rollback is already in progress? -- alongside cases you might miss until production: what if the previous container image has been garbage-collected from the registry?
+The output typically includes cases at different levels of obviousness: no previous deployment exists, a rollback is already in progress, the previous container image has been garbage-collected from the registry, or a health check passes initially but the service crashes 30 seconds later. The last two are the ones that tend to surface in production rather than code review.
 
 For each edge case, decide: handle it now, defer it as a documented limitation, or accept the risk.
 

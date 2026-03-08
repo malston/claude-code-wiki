@@ -239,6 +239,25 @@ the existing handler patterns.
 
 This approach trades completeness for focus. Claude gets exactly the context it needs without burning tokens on implementation details it doesn't need to see.
 
+### Delegate exploration to subagents
+
+When you need to understand a large area of the codebase before making a change, spawn a subagent to do the reading. The subagent gets its own isolated context window, does the exploration, and returns a summary. Your main session receives only the summary -- not the thousands of tokens the subagent consumed reading files.
+
+```text
+Use a subagent to read all files in pkg/auth/ and summarize:
+- The public API surface (exported types and functions)
+- How token validation works end-to-end
+- What test patterns are used
+
+Then come back and tell me what you found.
+```
+
+The subagent might read 15 files and consume 30,000 tokens doing it. Your main session receives a 500-token summary. That's a ~97% reduction in context cost for the same information.
+
+This matters most when you need to understand cross-cutting concerns -- tracing how a request flows through multiple packages, mapping dependency relationships, or auditing usage patterns across the codebase. These tasks require reading many files, but the main session only needs the conclusions.
+
+You can also run multiple exploration subagents in parallel -- one per module or concern -- and collect the summaries before deciding on an approach. This is the research phase of the read-plan-implement pattern from Strategy 1, scaled up with delegation.
+
 ## Strategy 6: Chain Smaller Steps for Large Refactors
 
 Rather than asking Claude to refactor an entire module in one shot, chain smaller requests where each step stays within context limits:
@@ -297,6 +316,7 @@ For very long sessions, consider `/clear` and starting fresh. If you've committe
 | Large refactor with ordered dependencies         | Chained smaller steps with commits                |
 | Recurring patterns across sessions               | Skills and CLAUDE.md                              |
 | Monorepo or multi-service codebase               | Hierarchical CLAUDE.md with per-module context    |
+| Need to understand unfamiliar code before acting | Subagent exploration, then act on the summary     |
 | Context getting heavy mid-session                | `/compact` at logical breakpoints                 |
 
 ## Further Reading

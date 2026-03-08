@@ -141,6 +141,26 @@ These files go stale. A few maintenance strategies:
 
 The hierarchy pays off most when the codebase has clear module boundaries with distinct domain knowledge per module. If your codebase is a tangled monolith where every change touches everything, the root `CLAUDE.md` alone may be the better investment until you untangle the architecture.
 
+### First-session codebase mapping
+
+When you join a large codebase for the first time -- or return to one you haven't touched in months -- your first session should produce a structural map, not code changes.
+
+```text
+Explore this codebase and produce a structural map. For each top-level
+directory, identify:
+- What it contains (services, libraries, config, generated code)
+- Key exported types and entry points
+- Dependencies on sibling directories
+
+Write the map to CODEBASE-MAP.md in the root.
+```
+
+The map captures the shape of the codebase while it's fresh in context. On subsequent sessions, Claude reads the map instead of re-exploring the file tree -- a 200-token file replaces 10,000+ tokens of directory traversal and file reads.
+
+For large codebases, delegate the exploration to parallel subagents -- one per top-level directory -- and have a root agent synthesize the results. This is the same bootstrapping pattern described above for hierarchical CLAUDE.md, applied to initial orientation rather than ongoing documentation.
+
+The map is a disposable artifact. Once you've turned its insights into proper `CLAUDE.md` content, delete it. Its job was to get you oriented fast without burning your first session's context on exploration that produces no durable output.
+
 ## Strategy 3: Use /batch for Wide, Parallel Changes
 
 The `/batch` command is purpose-built for changes that touch many files with the same kind of transformation. It solves the context window problem directly -- each spawned agent gets its own isolated context window, so no single instance needs to hold the entire codebase.
@@ -317,6 +337,7 @@ For very long sessions, consider `/clear` and starting fresh. If you've committe
 | Recurring patterns across sessions               | Skills and CLAUDE.md                              |
 | Monorepo or multi-service codebase               | Hierarchical CLAUDE.md with per-module context    |
 | Need to understand unfamiliar code before acting | Subagent exploration, then act on the summary     |
+| First session on a new or unfamiliar codebase    | Codebase mapping, then convert to CLAUDE.md       |
 | Context getting heavy mid-session                | `/compact` at logical breakpoints                 |
 
 ## Further Reading

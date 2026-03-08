@@ -95,11 +95,11 @@ This kind of concise map saves hundreds of tokens per session compared to Claude
 
 ### Hierarchical CLAUDE.md for large codebases
 
-A single root `CLAUDE.md` works for small-to-medium projects. For large codebases -- monorepos, multi-service platforms, anything with distinct subsystems -- a flat file either gets too long (burning context tokens) or too shallow (missing the detail Claude needs when working in a specific module).
+A single root `CLAUDE.md` works for small-to-medium projects. For large codebases -- monorepos, multi-service platforms -- a flat file either gets too long (burning context tokens) or too shallow (missing the detail Claude needs when working in a specific module).
 
 The solution is a nested hierarchy. Claude Code already supports this -- when it reads files in a subdirectory, it also loads any `CLAUDE.md` in that directory, layering the local context on top of the root context. You get architectural knowledge that loads on demand.
 
-```bash
+```text
 CLAUDE.md                          ← project-wide: module boundaries, shared conventions, build commands
 apps/
   api-gateway/CLAUDE.md            ← gateway-specific: routing patterns, middleware chain, rate limiting config
@@ -129,13 +129,13 @@ The approach:
 
 4. A root-level agent synthesizes the module-level outputs into the top-level `CLAUDE.md`, capturing cross-cutting concerns and module relationships.
 
-This is the parallelization workflow pattern applied to documentation generation. Each subagent only needs to understand its own slice of the codebase, so context pressure stays low.
+This is the [parallelization workflow pattern]({{< relref "/guides/workflow-patterns" >}}) applied to documentation generation. Each subagent only needs to understand its own slice of the codebase, so context pressure stays low.
 
 **Keeping the hierarchy current:**
 
 These files go stale. A few maintenance strategies:
 
-- **Hook on PR merge:** Flag when files in a directory have changed significantly but its `CLAUDE.md` hasn't been updated. A simple line-count diff threshold works as a heuristic.
+- **CI check on PR merge:** Flag when files in a directory have changed significantly but its `CLAUDE.md` hasn't been updated. A simple line-count diff threshold works as a heuristic.
 - **Periodic regeneration:** Run the bootstrapping sweep on a schedule (weekly, or as a CI job) and diff the output against existing files to surface drift.
 - **Convention in CLAUDE.md itself:** Add a `Last validated:` date at the top of each file so staleness is visible at a glance.
 

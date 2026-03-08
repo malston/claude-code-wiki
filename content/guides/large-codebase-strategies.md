@@ -93,6 +93,74 @@ A well-maintained `CLAUDE.md` means Claude starts every session with a working m
 
 This kind of concise map saves hundreds of tokens per session compared to Claude exploring the file tree.
 
+### Hierarchical CLAUDE.md for large codebases
+
+A single root `CLAUDE.md` works for small-to-medium projects. For large codebases -- monorepos, multi-service platforms -- a flat file either gets too long (burning context tokens) or too shallow (missing the detail Claude needs when working in a specific module).
+
+The solution is a nested hierarchy. Claude Code already supports this -- when it reads files in a subdirectory, it also loads any `CLAUDE.md` in that directory, layering the local context on top of the root context. You get architectural knowledge that loads on demand.
+
+```text
+CLAUDE.md                          ← project-wide: module boundaries, shared conventions, build commands
+apps/
+  api-gateway/CLAUDE.md            ← gateway-specific: routing patterns, middleware chain, rate limiting config
+  billing-service/CLAUDE.md        ← billing-specific: payment provider integration, idempotency patterns
+pkg/
+  auth/CLAUDE.md                   ← auth internals: token validation flow, RBAC model, test fixtures
+  observability/CLAUDE.md          ← tracing/metrics conventions, span naming, log levels
+```
+
+**What goes where:**
+
+The root file covers things that apply everywhere -- module layout, dependency direction, shared conventions, CI commands. Each child file covers what Claude needs to know when working _in that directory_ -- key types, entry points, dependencies on sibling modules, local test patterns, known gotchas.
+
+The root file should reference children rather than duplicate them: "auth middleware details in `pkg/auth/CLAUDE.md`." This avoids paying for the same information twice when Claude happens to read both levels.
+
+**Bootstrapping with parallel subagents:**
+
+Writing these by hand across a large codebase is tedious. You can automate the initial generation by spawning parallel subagents -- one per module -- that each analyze their local scope and produce a draft `CLAUDE.md`.
+
+The approach:
+
+1. Write a custom command or skill that defines a standard template for what each local `CLAUDE.md` should cover: key types, entry points, inter-module dependencies, test patterns, and domain-specific notes.
+
+2. Glob your top-level packages or service directories.
+
+3. Spawn a subagent per directory (with worktree isolation if they'll be writing files). Each subagent reads the local code, identifies the patterns, and writes a `CLAUDE.md` following the template.
+
+4. A root-level agent synthesizes the module-level outputs into the top-level `CLAUDE.md`, capturing cross-cutting concerns and module relationships.
+
+This is the [parallelization workflow pattern]({{< relref "/guides/workflow-patterns" >}}) applied to documentation generation. Each subagent only needs to understand its own slice of the codebase, so context pressure stays low.
+
+**Keeping the hierarchy current:**
+
+These files go stale. A few maintenance strategies:
+
+- **CI check on PR merge:** Flag when files in a directory have changed significantly but its `CLAUDE.md` hasn't been updated. A simple line-count diff threshold works as a heuristic.
+- **Periodic regeneration:** Run the bootstrapping sweep on a schedule (weekly, or as a CI job) and diff the output against existing files to surface drift.
+- **Convention in CLAUDE.md itself:** Add a `Last validated:` date at the top of each file so staleness is visible at a glance.
+
+The hierarchy pays off most when the codebase has clear module boundaries with distinct domain knowledge per module. If your codebase is a tangled monolith where every change touches everything, the root `CLAUDE.md` alone may be the better investment until you untangle the architecture.
+
+### First-session codebase mapping
+
+When you join a large codebase for the first time -- or return to one you haven't touched in months -- your first session should produce a structural map, not code changes.
+
+```text
+Explore this codebase and produce a structural map. For each top-level
+directory, identify:
+- What it contains (services, libraries, config, generated code)
+- Key exported types and entry points
+- Dependencies on sibling directories
+
+Write the map to CODEBASE-MAP.md in the root.
+```
+
+The map captures the shape of the codebase while it's fresh in context. On subsequent sessions, Claude reads the map instead of re-exploring the file tree -- a 200-token file replaces 10,000+ tokens of directory traversal and file reads.
+
+For large codebases, delegate the exploration to parallel subagents -- one per top-level directory -- and have a root agent synthesize the results. This is the same bootstrapping pattern described above for hierarchical CLAUDE.md, applied to initial orientation rather than ongoing documentation.
+
+The map is a disposable artifact. Once you've turned its insights into proper `CLAUDE.md` content, delete it. Its job was to get you oriented fast without burning your first session's context on exploration that produces no durable output.
+
 ## Strategy 3: Use /batch for Wide, Parallel Changes
 
 The `/batch` command is purpose-built for changes that touch many files with the same kind of transformation. It solves the context window problem directly -- each spawned agent gets its own isolated context window, so no single instance needs to hold the entire codebase.
@@ -191,6 +259,25 @@ the existing handler patterns.
 
 This approach trades completeness for focus. Claude gets exactly the context it needs without burning tokens on implementation details it doesn't need to see.
 
+### Delegate exploration to subagents
+
+When you need to understand a large area of the codebase before making a change, spawn a subagent to do the reading. The subagent gets its own isolated context window, does the exploration, and returns a summary. Your main session receives only the summary -- not the thousands of tokens the subagent consumed reading files.
+
+```text
+Use a subagent to read all files in pkg/auth/ and summarize:
+- The public API surface (exported types and functions)
+- How token validation works end-to-end
+- What test patterns are used
+
+Then come back and tell me what you found.
+```
+
+The subagent might read 15 files and consume 30,000 tokens doing it. Your main session receives a 500-token summary. That's a ~97% reduction in context cost for the same information.
+
+This matters most when you need to understand cross-cutting concerns -- tracing how a request flows through multiple packages, mapping dependency relationships, or auditing usage patterns across the codebase. These tasks require reading many files, but the main session only needs the conclusions.
+
+You can also run multiple exploration subagents in parallel -- one per module or concern -- and collect the summaries before deciding on an approach. This is the research phase of the read-plan-implement pattern from Strategy 1, scaled up with delegation.
+
 ## Strategy 6: Chain Smaller Steps for Large Refactors
 
 Rather than asking Claude to refactor an entire module in one shot, chain smaller requests where each step stays within context limits:
@@ -248,6 +335,9 @@ For very long sessions, consider `/clear` and starting fresh. If you've committe
 | Multiple independent tasks                       | Manual worktrees (`claude --worktree`)            |
 | Large refactor with ordered dependencies         | Chained smaller steps with commits                |
 | Recurring patterns across sessions               | Skills and CLAUDE.md                              |
+| Monorepo or multi-service codebase               | Hierarchical CLAUDE.md with per-module context    |
+| Need to understand unfamiliar code before acting | Subagent exploration, then act on the summary     |
+| First session on a new or unfamiliar codebase    | Codebase mapping, then convert to CLAUDE.md       |
 | Context getting heavy mid-session                | `/compact` at logical breakpoints                 |
 
 ## Further Reading
@@ -256,4 +346,5 @@ For very long sessions, consider `/clear` and starting fresh. If you've committe
 - [Workflow Patterns]({{< relref "/guides/workflow-patterns" >}}) -- chaining, parallelization, and routing patterns
 - [Effective Prompting]({{< relref "/guides/effective-prompting" >}}) -- prompting techniques that reduce context waste
 - [Memory Organization]({{< relref "/guides/memory-organization" >}}) -- CLAUDE.md, memory files, and skills
+- [CLAUDE.md Architecture]({{< relref "/enterprise-rollout/03-phase-1-platform-engineering/claude-md-architecture" >}}) -- enterprise patterns for hierarchical CLAUDE.md design
 - [Agent Teams]({{< relref "/extending/agent-teams" >}}) -- for changes that need inter-agent coordination

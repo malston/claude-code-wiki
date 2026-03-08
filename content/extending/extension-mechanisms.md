@@ -712,7 +712,7 @@ Token budget consumed by:
 
 1. **Conversation history** (largest consumer)
 2. **Instruction memory** (CLAUDE.md hierarchy loaded at startup)
-3. **Auto memory** (MEMORY.md loaded at startup, ~200 lines)
+3. **Auto memory** (MEMORY.md loaded at startup, first 200 lines)
 4. **File references** (`@path/to/file` inclusions)
 5. **Tool results** (bounded at 25K per MCP call)
 
@@ -759,11 +759,11 @@ Both load into context at conversation start. Both persist across conversations.
 
 ### Auto Memory
 
-Claude stores auto memory at `~/.claude/projects/<project-path>/memory/`:
+Claude stores auto memory at `~/.claude/projects/<project-path>/memory/` (where `<project-path>` is the absolute path with slashes replaced by dashes):
 
 ```sh
 ~/.claude/projects/<project-path>/memory/
-  MEMORY.md          # Index file, loaded automatically (~200 lines max)
+  MEMORY.md          # Index file, loaded automatically (first 200 lines)
   debugging.md       # Topic-specific notes, linked from MEMORY.md
   patterns.md        # Additional topic files as needed
 ```
@@ -774,13 +774,13 @@ Auto memory is per-project and per-user. It does not appear in version control a
 
 ### Memory Isolation Boundaries
 
-| Layer            | Scope             | Shared With        | Author |
-| ---------------- | ----------------- | ------------------ | ------ |
-| Enterprise       | Organization-wide | All users          | Admins |
-| Project          | Team              | Repo collaborators | Team   |
-| User             | Personal          | No one             | User   |
-| Local            | Machine-specific  | No one             | User   |
-| Auto (MEMORY.md) | Per-project       | No one             | Claude |
+| Layer            | Scope              | Shared With        | Author |
+| ---------------- | ------------------ | ------------------ | ------ |
+| Enterprise       | Organization-wide  | All users          | Admins |
+| Project          | Team               | Repo collaborators | Team   |
+| User             | Personal           | No one             | User   |
+| Local            | Machine-specific   | No one             | User   |
+| Auto (MEMORY.md) | Per-user + project | No one             | Claude |
 
 ### What Memory Stores
 
@@ -805,7 +805,7 @@ Auto memory is per-project and per-user. It does not appear in version control a
 ### Memory Impact on Context
 
 - All discovered CLAUDE.md files loaded at startup
-- MEMORY.md for the active project loaded at startup (first ~200 lines)
+- MEMORY.md for the active project loaded at startup (first 200 lines)
 - Both consume tokens from the main context window
 - Prompt caching reduces repeated tokenization cost
 

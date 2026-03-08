@@ -61,7 +61,9 @@ Claude Code extends capabilities through three distinct mechanisms with differen
     - [Subagent Context Distribution](#subagent-context-distribution)
     - [MCP Context Impact](#mcp-context-impact)
   - [Memory System Architecture](#memory-system-architecture)
-    - [Hierarchical Memory (Not Episodic)](#hierarchical-memory-not-episodic)
+    - [Two Kinds of Memory](#two-kinds-of-memory)
+    - [Instruction Memory Hierarchy](#instruction-memory-hierarchy)
+    - [Auto Memory](#auto-memory)
     - [Memory Isolation Boundaries](#memory-isolation-boundaries)
     - [What Memory Stores](#what-memory-stores)
     - [Memory Impact on Context](#memory-impact-on-context)
@@ -709,9 +711,10 @@ MCP Server (stateless)
 Token budget consumed by:
 
 1. **Conversation history** (largest consumer)
-2. **Memory system** (CLAUDE.md hierarchy loaded at startup)
-3. **File references** (`@path/to/file` inclusions)
-4. **Tool results** (bounded at 25K per MCP call)
+2. **Instruction memory** (CLAUDE.md hierarchy loaded at startup)
+3. **Auto memory** (MEMORY.md loaded at startup, first 200 lines)
+4. **File references** (`@path/to/file` inclusions)
+5. **Tool results** (bounded at 25K per MCP call)
 
 ### Subagent Context Distribution
 
@@ -733,9 +736,16 @@ Minimal overhead:
 
 ## Memory System Architecture
 
-### Hierarchical Memory (Not Episodic)
+### Two Kinds of Memory
 
-Claude Code uses procedural/organizational memory, not conversation history:
+Claude Code maintains two categories of persistent memory:
+
+1. **Instruction memory** -- CLAUDE.md files authored by humans (or managed policy). These contain rules, standards, and configuration.
+2. **Auto memory** -- MEMORY.md files authored by Claude itself. These contain patterns, debugging insights, architecture decisions, and user preferences that Claude observes across sessions.
+
+Both load into context at conversation start. Both persist across conversations. They differ in authorship and intent.
+
+### Instruction Memory Hierarchy
 
 ```sh
 1. Enterprise Policy (highest precedence)
@@ -747,16 +757,34 @@ Claude Code uses procedural/organizational memory, not conversation history:
 4. Project Local Memory (.claude/CLAUDE.local.md)
 ```
 
+### Auto Memory
+
+Claude stores auto memory at `~/.claude/projects/<project-path>/memory/` (where `<project-path>` is the absolute path with slashes replaced by dashes):
+
+```sh
+~/.claude/projects/<project-path>/memory/
+  MEMORY.md          # Index file, loaded automatically (first 200 lines)
+  debugging.md       # Topic-specific notes, linked from MEMORY.md
+  patterns.md        # Additional topic files as needed
+```
+
+`MEMORY.md` loads into every conversation for that project. Lines beyond 200 are truncated, so Claude keeps it concise and links to separate topic files for detail.
+
+Auto memory is per-project and per-user. It does not appear in version control and is not shared with collaborators.
+
 ### Memory Isolation Boundaries
 
-| Layer      | Scope             | Shared With        |
-| ---------- | ----------------- | ------------------ |
-| Enterprise | Organization-wide | All users          |
-| Project    | Team              | Repo collaborators |
-| User       | Personal          | No one             |
-| Local      | Machine-specific  | No one             |
+| Layer            | Scope              | Shared With        | Author |
+| ---------------- | ------------------ | ------------------ | ------ |
+| Enterprise       | Organization-wide  | All users          | Admins |
+| Project          | Team               | Repo collaborators | Team   |
+| User             | Personal           | No one             | User   |
+| Local            | Machine-specific   | No one             | User   |
+| Auto (MEMORY.md) | Per-user + project | No one             | Claude |
 
 ### What Memory Stores
+
+**Instruction memory** (CLAUDE.md files):
 
 - Coding standards and conventions
 - Architecture patterns
@@ -764,12 +792,21 @@ Claude Code uses procedural/organizational memory, not conversation history:
 - Tool configurations
 - Technical constraints
 
-**Not stored**: Conversation history (use episodic-memory plugin for that)
+**Auto memory** (MEMORY.md files):
+
+- Patterns confirmed across multiple sessions
+- Solutions to recurring problems
+- User workflow preferences observed over time
+- Key file paths and project structure
+- Debugging insights and failed approaches
+
+**Not stored in either**: Conversation history (use an episodic-memory plugin for that)
 
 ### Memory Impact on Context
 
 - All discovered CLAUDE.md files loaded at startup
-- Consume tokens but essential for context
+- MEMORY.md for the active project loaded at startup (first 200 lines)
+- Both consume tokens from the main context window
 - Prompt caching reduces repeated tokenization cost
 
 ## Data Flow Comparison

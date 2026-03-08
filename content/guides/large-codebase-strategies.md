@@ -52,7 +52,7 @@ Each step keeps context focused rather than pulling in everything at once. The p
 
 ## Strategy 2: Invest in CLAUDE.md
 
-Run `claude init` so Claude scans your codebase and generates a `CLAUDE.md` file with architecture notes, conventions, and file layout. This gives Claude a compact map of the project without loading every file into context.
+Run `/init` inside a Claude Code session so Claude scans your codebase and generates a `CLAUDE.md` file with architecture notes, conventions, and file layout. This gives Claude a compact map of the project without loading every file into context.
 
 Go further and manually add the things Claude would otherwise need to discover by reading source files:
 
@@ -114,7 +114,7 @@ The `/batch` command is purpose-built for changes that touch many files with the
 - Dependency migrations across many packages
 - API contract changes and all their callers
 - Consistent pattern enforcement (error handling, logging, naming)
-- Replacing a library across the codebase (e.g., lodash → native)
+- Replacing a library across the codebase (e.g., lodash to native)
 - Adding type annotations, docstrings, or test scaffolding at scale
 
 ### When not to use /batch
@@ -208,14 +208,14 @@ This is the chaining workflow pattern applied to context management: break the w
 
 ### Memory
 
-When you discover something important mid-session, use `/update-memory` to persist it to your `CLAUDE.md`:
+When you discover something important mid-session, ask Claude to add it to your `CLAUDE.md`:
 
 ```text
-/update-memory the config parser has a hidden dependency on the logger package --
-  always initialize logger before config in main.go
+Add to CLAUDE.md: the config parser has a hidden dependency on the logger package --
+always initialize logger before config in main.go
 ```
 
-This saves the insight across sessions without you needing to re-explain it or re-read files to rediscover it.
+This persists the insight across sessions without you needing to re-explain it or re-read files to rediscover it. You can also use `/memory` to view and manage your memory files directly.
 
 ### Custom skills
 
@@ -229,7 +229,7 @@ Skills get auto-injected into context when relevant, which is far more token-eff
 
 ## Strategy 8: Monitor Context and Compact Proactively
 
-Don't wait for auto-compaction to kick in at 90%+ context usage. Use `/compact` proactively at logical breakpoints:
+Don't wait for auto-compaction to kick in at ~75-92% context usage. Use `/compact` proactively at logical breakpoints:
 
 - After completing a subtask but before starting the next one
 - After a large file read that you no longer need in full detail
@@ -245,7 +245,7 @@ For very long sessions, consider `/clear` and starting fresh. If you've committe
 | ------------------------------------------------ | ------------------------------------------------- |
 | Narrow and deep (one module, complex logic)      | Single session, tight scoping, three-step pattern |
 | Wide and uniform (same change across many files) | `/batch`                                          |
-| Multiple independent tasks                       | Manual worktrees (`claude -w`)                    |
+| Multiple independent tasks                       | Manual worktrees (`claude --worktree`)            |
 | Large refactor with ordered dependencies         | Chained smaller steps with commits                |
 | Recurring patterns across sessions               | Skills and CLAUDE.md                              |
 | Context getting heavy mid-session                | `/compact` at logical breakpoints                 |

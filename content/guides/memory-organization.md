@@ -70,6 +70,7 @@ The rest of this guide covers how to apply these operations through Claude Code'
     - [Every Line Has a Price](#every-line-has-a-price)
     - [Measuring Your Memory Footprint](#measuring-your-memory-footprint)
     - [How Memory Interacts with Compaction](#how-memory-interacts-with-compaction)
+    - [Model-Specific Instruction Preferences](#model-specific-instruction-preferences)
   - [Common Mistakes](#common-mistakes)
     - [Putting Everything in User CLAUDE.md](#putting-everything-in-user-claudemd)
     - [Generic Instructions That Add No Value](#generic-instructions-that-add-no-value)
@@ -266,7 +267,9 @@ For new projects, the `/init` command generates a starter CLAUDE.md based on the
 > /init
 ```
 
-This analyzes your project structure and creates a reasonable starting point. Review and edit it -- the generated file is a starting point, not a finished product.
+This analyzes your project structure and creates a reasonable starting point -- but much of what `/init` generates is generic content (build commands Claude could discover, language conventions Claude already follows). The [benchmark findings on generic instructions](#generic-instructions-that-add-no-value) suggest this kind of content falls into the category that reduces quality rather than improving it. The study tested standardized coding tasks rather than `/init` output directly, but the mechanism applies: instructions that restate what the model already knows create adherence penalty without adding signal.
+
+After running `/init`, review every line and delete anything you can't justify with: "would removing this cause Claude to make a mistake in this specific repo?" What survives that filter is your actual project memory. Everything else is paying a context tax for nothing.
 
 ## Project Local Memory
 
@@ -559,6 +562,16 @@ What compaction does not touch:
   System prompt (CLAUDE.md, rules, MEMORY.md) → unchanged
 ```
 
+### Model-Specific Instruction Preferences
+
+The [CLAUDE.md benchmark](https://techloom.it/blog/claudemd-benchmark-results.html) found meaningfully different instruction preferences across models:
+
+- **Sonnet** performs best with no instructions. Every instruction profile underperformed the empty baseline. Adding instructions was pure noise for generic coding tasks.
+- **Haiku** benefits from readable, structured instructions. Markdown formatting (headers, bullet lists) serves as parsing landmarks that help the model navigate the context. Compressed or dense instruction blocks measurably hurt Haiku's performance.
+- **Opus** responds to lightweight quality nudges (+0.82 points from a micro-quality profile) and gets significant lift (+5.8 points) from workflow checklists on instruction-following tasks.
+
+If your team uses model routing -- a fast model for simple tasks, a capable model for complex ones -- a one-size-fits-all CLAUDE.md is suboptimal. Consider whether your instructions are pulling their weight across all models you deploy to, or whether model-specific instruction sets (via environment-based CLAUDE.md selection or conditional rules) would serve you better.
+
 ## Common Mistakes
 
 ### Putting Everything in User CLAUDE.md
@@ -574,6 +587,12 @@ Good: User CLAUDE.md has personal preferences (~50-80 lines)
 Your user CLAUDE.md loads in every project. Go conventions shouldn't load when you're working in a JavaScript project.
 
 ### Generic Instructions That Add No Value
+
+This isn't just a token-waste problem -- generic instructions actively reduce output quality. A [benchmark study of CLAUDE.md effectiveness](https://techloom.it/blog/claudemd-benchmark-results.html) (1,188 runs across Haiku 4.5, Sonnet 4.6, and Opus 4.6) found a strong inverse correlation (r = -0.95) between generic instruction token count and composite quality scores. The empty profile -- no CLAUDE.md at all -- scored highest overall (92.15). Even 74 tokens (four bullet points like "write clean code" and "handle edge cases") reduced quality versus the empty baseline.
+
+The mechanism is an **adherence penalty**: generic instructions don't make Claude try harder at things it already does well. Instead, they create an explicit scorecard that can only subtract points. When you write "handle errors properly," you haven't taught Claude anything -- you've given the evaluator (internal or external) a criterion to penalize against when error handling falls short of perfect. The instructions function as a ceiling the model can fail to reach, with no upside when it meets expectations it would have met anyway.
+
+**Caveat:** this finding held for standardized, single-file coding tasks. The study explicitly notes that its scope does not cover project-specific architectural context, multi-file operations, or workflow rules. The value of CLAUDE.md is in encoding knowledge Claude doesn't already have -- your architecture, your deployment constraints, your domain conventions. That kind of content wasn't tested and isn't subject to the same penalty.
 
 ```text
 Bad:  "Write clean, maintainable code"
@@ -631,25 +650,29 @@ The rules directory exists for this case. Use it when CLAUDE.md exceeds ~100 lin
 
 2. **Be specific, not generic** -- "Use 2-space indentation" beats "format code properly." Every line should tell Claude something it can't infer on its own.
 
-3. **Use the rules directory for large projects** -- When CLAUDE.md exceeds ~100 lines or when different rules apply to different file types.
+3. **Prefer positive directives over prohibitions** -- The CLAUDE.md benchmark found positive framing outperformed negative framing by 0.66 points. "Use slog for logging" outperforms "don't use fmt.Println." Negative instructions appear to prime the model toward the failure mode rather than away from it. When you must prohibit something, pair it with the preferred alternative.
 
-4. **Use path-specific rules sparingly** -- Only add `paths` frontmatter when rules genuinely apply to specific file types. Most rules are universal within a project.
+4. **Understand that instructions raise the floor, not the ceiling** -- Instructions prevent bad outlier runs more than they improve average quality. The benchmark found a workflow checklist raised Opus's worst-case score from 61.4 to 83.5 on instruction-following tasks, while barely moving the average. If you need consistent output in production pipelines or automated workflows, a small targeted instruction set has measurable value even when average quality stays flat.
 
-5. **Keep MEMORY.md as an index** -- Concise summaries within 200 lines, detailed notes in topic files that load on demand.
+5. **Use the rules directory for large projects** -- When CLAUDE.md exceeds ~100 lines or when different rules apply to different file types.
 
-6. **Use CLAUDE.local.md for personal environment details** -- Ports, URLs, test credentials, local overrides. It's gitignored automatically.
+6. **Use path-specific rules sparingly** -- Only add `paths` frontmatter when rules genuinely apply to specific file types. Most rules are universal within a project.
 
-7. **Use imports for shared content** -- Rather than duplicating content across files, import with `@path/to/file` syntax.
+7. **Keep MEMORY.md as an index** -- Concise summaries within 200 lines, detailed notes in topic files that load on demand.
 
-8. **Review periodically** -- Projects evolve. Rules that were relevant 3 months ago may not be relevant now. Remove stale content to free context window space.
+8. **Use CLAUDE.local.md for personal environment details** -- Ports, URLs, test credentials, local overrides. It's gitignored automatically.
 
-9. **Don't duplicate what's in the codebase** -- If your coding standards are in a `CONTRIBUTING.md` or style guide, import it rather than rewriting it in CLAUDE.md.
+9. **Use imports for shared content** -- Rather than duplicating content across files, import with `@path/to/file` syntax.
 
-10. **Prefer fewer, focused files over many small ones** -- Each file adds discovery overhead. Group related rules together unless they have different path scopes.
+10. **Review periodically** -- Projects evolve. Rules that were relevant 3 months ago may not be relevant now. Remove stale content to free context window space.
 
-11. **Use clear section headers as retrieval anchors** -- Well-structured content with distinct headers, bullet lists, and tables is easier for models to navigate and retrieve from than long paragraphs in CLAUDE.md files.
+11. **Don't duplicate what's in the codebase** -- If your coding standards are in a `CONTRIBUTING.md` or style guide, import it rather than rewriting it in CLAUDE.md.
 
-12. **Put durable instructions in files, not conversation** -- Instructions mentioned in chat may be lost or diluted during [auto-compaction](#how-memory-interacts-with-compaction). If an instruction needs to persist across a long session, it belongs in a memory file.
+12. **Prefer fewer, focused files over many small ones** -- Each file adds discovery overhead. Group related rules together unless they have different path scopes.
+
+13. **Use clear section headers as retrieval anchors** -- Well-structured content with distinct headers, bullet lists, and tables is easier for models to navigate and retrieve from than long paragraphs in CLAUDE.md files.
+
+14. **Put durable instructions in files, not conversation** -- Instructions mentioned in chat may be lost or diluted during [auto-compaction](#how-memory-interacts-with-compaction). If an instruction needs to persist across a long session, it belongs in a memory file.
 
 ## References
 
@@ -660,3 +683,4 @@ The rules directory exists for this case. Use it when CLAUDE.md exceeds ~100 lin
 - [Effective Prompting Article]({{< relref "effective-prompting" >}}) -- CLAUDE.md as persistent prompting
 - [Chroma Research: Context Rot](https://research.trychroma.com/context-rot) -- Research on how irrelevant context degrades LLM accuracy
 - [LangChain: Context Engineering for Agents](https://blog.langchain.com/context-engineering-for-agents/) -- The write/select/compress/isolate framework
+- [CLAUDE.md Benchmark Results](https://techloom.it/blog/claudemd-benchmark-results.html) -- 1,188-run study on instruction effectiveness across models

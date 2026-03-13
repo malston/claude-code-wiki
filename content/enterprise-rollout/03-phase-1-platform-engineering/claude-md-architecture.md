@@ -33,9 +33,15 @@ Deployed via MDM alongside managed-settings.json. Every Claude Code session sees
 - Architecture descriptions (project-specific)
 - Style guides (use linters, not LLM instructions)
 
-### Anti-Pattern
+### Anti-Pattern: Generic Coding Standards
 
 Treating the org CLAUDE.md as a coding standards document. A 200-line org CLAUDE.md means 200 lines consumed in every session for every developer, most of which is irrelevant to the current task.
+
+This is worse than a space problem. A [benchmark study of CLAUDE.md effectiveness](https://techloom.it/blog/claudemd-benchmark-results.html) (1,188 runs across three Claude models) found a strong inverse correlation (r = -0.95) between generic instruction token count and quality scores. The mechanism: generic instructions create an **adherence penalty** -- they don't make Claude try harder at things it already does, but they create a scorecard that can only subtract points. Even 74 tokens of universal coding advice ("write clean code", "handle edge cases") reduced output quality versus no instructions at all.
+
+At enterprise scale, this multiplies. A generic CLAUDE.md committed to hundreds of repos means every developer in every session pays the adherence penalty on every message. The examples in the "What Belongs Here" list above are chosen to avoid this trap -- they encode org-specific constraints (secrets policy, review requirements, AI interaction norms) that Claude cannot infer from the codebase alone.
+
+**Caveat:** the benchmark tested standardized, single-file coding tasks. Project-specific architectural context, domain conventions, and workflow rules were not tested and operate differently -- that content encodes knowledge Claude doesn't already have, which is the entire point of Layers 1-3 below.
 
 ## Layer 1: Project CLAUDE.md + Rules Directory (Loaded Per-Repo)
 

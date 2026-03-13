@@ -564,7 +564,7 @@ What compaction does not touch:
 
 ### Model-Specific Instruction Preferences
 
-A [CLAUDE.md benchmark](https://techloom.it/blog/claudemd-benchmark-results.html) found that different models respond differently to the same instructions. Some models performed best with no instructions at all, while others benefited from structured formatting or lightweight workflow checklists. The differences were meaningful. As with the other benchmark findings referenced in this article, these results come from standardized single-file coding tasks and may not transfer to project-specific or multi-file workflows.
+A [CLAUDE.md benchmark](https://techloom.it/blog/claudemd-benchmark-results.html) found that different models respond differently to the same instructions. Some models performed best with no instructions at all, while others benefited from structured formatting or lightweight workflow checklists. The same instruction set that helped one model hurt another. As with the other benchmark findings referenced in this article, these results come from standardized single-file coding tasks and may not transfer to project-specific or multi-file workflows.
 
 If your team uses model routing -- a fast model for simple tasks, a capable model for complex ones -- a one-size-fits-all CLAUDE.md may not serve all models equally. Consider whether your instructions are pulling their weight across the models you deploy to, or whether model-specific instruction sets (via environment-based CLAUDE.md selection or conditional rules) would serve you better.
 
@@ -648,7 +648,7 @@ The rules directory exists for this case. Use it when CLAUDE.md exceeds ~100 lin
 
 3. **Prefer positive directives over prohibitions** -- "Use slog for logging" outperforms "don't use fmt.Println." Negative instructions [prime the model toward the failure mode](https://techloom.it/blog/claudemd-benchmark-results.html) being described rather than away from it. When you must prohibit something, pair it with the preferred alternative.
 
-4. **Understand that instructions raise the floor, not the ceiling** -- Instructions prevent bad outlier runs more than they improve average quality. A [benchmark study](https://techloom.it/blog/claudemd-benchmark-results.html) found that workflow checklists dramatically improved worst-case scores on instruction-following tasks while barely moving the average. If you need consistent output in production pipelines or automated workflows, a small targeted instruction set has measurable value even when average quality stays flat.
+4. **Understand that instructions raise the floor, not the ceiling** -- Instructions prevent bad outlier runs more than they improve average quality. A [benchmark study](https://techloom.it/blog/claudemd-benchmark-results.html) found that workflow checklists eliminated the worst outlier runs on instruction-following tasks while barely moving the average. If you need consistent output in production pipelines or automated workflows, a small targeted instruction set has measurable value even when average quality stays flat.
 
 5. **Use the rules directory for large projects** -- When CLAUDE.md exceeds ~100 lines or when different rules apply to different file types.
 

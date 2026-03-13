@@ -564,13 +564,9 @@ What compaction does not touch:
 
 ### Model-Specific Instruction Preferences
 
-The [CLAUDE.md benchmark](https://techloom.it/blog/claudemd-benchmark-results.html) found meaningfully different instruction preferences across models:
+A [CLAUDE.md benchmark](https://techloom.it/blog/claudemd-benchmark-results.html) found that different models respond differently to the same instructions. Some models performed best with no instructions at all, while others benefited from structured formatting or lightweight workflow checklists. The differences were meaningful -- not just noise.
 
-- **Sonnet** performs best with no instructions. Every instruction profile underperformed the empty baseline. Adding instructions was pure noise for generic coding tasks.
-- **Haiku** benefits from readable, structured instructions. Markdown formatting (headers, bullet lists) serves as parsing landmarks that help the model navigate the context. Compressed or dense instruction blocks measurably hurt Haiku's performance.
-- **Opus** responds to lightweight quality nudges (+0.82 points from a micro-quality profile) and gets significant lift (+5.8 points) from workflow checklists on instruction-following tasks.
-
-If your team uses model routing -- a fast model for simple tasks, a capable model for complex ones -- a one-size-fits-all CLAUDE.md is suboptimal. Consider whether your instructions are pulling their weight across all models you deploy to, or whether model-specific instruction sets (via environment-based CLAUDE.md selection or conditional rules) would serve you better.
+If your team uses model routing -- a fast model for simple tasks, a capable model for complex ones -- a one-size-fits-all CLAUDE.md may not serve all models equally. Consider whether your instructions are pulling their weight across the models you deploy to, or whether model-specific instruction sets (via environment-based CLAUDE.md selection or conditional rules) would serve you better.
 
 ## Common Mistakes
 
@@ -588,7 +584,7 @@ Your user CLAUDE.md loads in every project. Go conventions shouldn't load when y
 
 ### Generic Instructions That Add No Value
 
-This isn't just a token-waste problem -- generic instructions actively reduce output quality. A [benchmark study of CLAUDE.md effectiveness](https://techloom.it/blog/claudemd-benchmark-results.html) (1,188 runs across Haiku 4.5, Sonnet 4.6, and Opus 4.6) found a strong inverse correlation (r = -0.95) between generic instruction token count and composite quality scores. The empty profile -- no CLAUDE.md at all -- scored highest overall (92.15). Even 74 tokens (four bullet points like "write clean code" and "handle edge cases") reduced quality versus the empty baseline.
+This isn't just a token-waste problem -- generic instructions actively reduce output quality. A [benchmark study of CLAUDE.md effectiveness](https://techloom.it/blog/claudemd-benchmark-results.html) found that adding generic coding instructions consistently reduced quality scores compared to an empty CLAUDE.md. The more generic tokens, the worse the results -- even a handful of bullet points like "write clean code" and "handle edge cases" made things worse.
 
 The mechanism is an **adherence penalty**: generic instructions don't make Claude try harder at things it already does well. Instead, they create an explicit scorecard that can only subtract points. When you write "handle errors properly," you haven't taught Claude anything -- you've given the evaluator (internal or external) a criterion to penalize against when error handling falls short of perfect. The instructions function as a ceiling the model can fail to reach, with no upside when it meets expectations it would have met anyway.
 
@@ -650,9 +646,9 @@ The rules directory exists for this case. Use it when CLAUDE.md exceeds ~100 lin
 
 2. **Be specific, not generic** -- "Use 2-space indentation" beats "format code properly." Every line should tell Claude something it can't infer on its own.
 
-3. **Prefer positive directives over prohibitions** -- The CLAUDE.md benchmark found positive framing outperformed negative framing by 0.66 points. "Use slog for logging" outperforms "don't use fmt.Println." Negative instructions appear to prime the model toward the failure mode rather than away from it. When you must prohibit something, pair it with the preferred alternative.
+3. **Prefer positive directives over prohibitions** -- "Use slog for logging" outperforms "don't use fmt.Println." Negative instructions [prime the model toward the failure mode](https://techloom.it/blog/claudemd-benchmark-results.html) being described rather than away from it. When you must prohibit something, pair it with the preferred alternative.
 
-4. **Understand that instructions raise the floor, not the ceiling** -- Instructions prevent bad outlier runs more than they improve average quality. The benchmark found a workflow checklist raised Opus's worst-case score from 61.4 to 83.5 on instruction-following tasks, while barely moving the average. If you need consistent output in production pipelines or automated workflows, a small targeted instruction set has measurable value even when average quality stays flat.
+4. **Understand that instructions raise the floor, not the ceiling** -- Instructions prevent bad outlier runs more than they improve average quality. A [benchmark study](https://techloom.it/blog/claudemd-benchmark-results.html) found that workflow checklists dramatically improved worst-case scores on instruction-following tasks while barely moving the average. If you need consistent output in production pipelines or automated workflows, a small targeted instruction set has measurable value even when average quality stays flat.
 
 5. **Use the rules directory for large projects** -- When CLAUDE.md exceeds ~100 lines or when different rules apply to different file types.
 
@@ -683,4 +679,4 @@ The rules directory exists for this case. Use it when CLAUDE.md exceeds ~100 lin
 - [Effective Prompting Article]({{< relref "effective-prompting" >}}) -- CLAUDE.md as persistent prompting
 - [Chroma Research: Context Rot](https://research.trychroma.com/context-rot) -- Research on how irrelevant context degrades LLM accuracy
 - [LangChain: Context Engineering for Agents](https://blog.langchain.com/context-engineering-for-agents/) -- The write/select/compress/isolate framework
-- [CLAUDE.md Benchmark Results](https://techloom.it/blog/claudemd-benchmark-results.html) -- 1,188-run study on instruction effectiveness across models
+- [CLAUDE.md Benchmark Results](https://techloom.it/blog/claudemd-benchmark-results.html) -- Benchmark study on instruction effectiveness across models

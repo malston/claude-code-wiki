@@ -564,7 +564,7 @@ What compaction does not touch:
 
 ### Model-Specific Instruction Preferences
 
-A [CLAUDE.md benchmark](https://techloom.it/blog/claudemd-benchmark-results.html) found that different models respond differently to the same instructions. Some models performed best with no instructions at all, while others benefited from structured formatting or lightweight workflow checklists. The differences were meaningful -- not just noise.
+A [CLAUDE.md benchmark](https://techloom.it/blog/claudemd-benchmark-results.html) found that different models respond differently to the same instructions. Some models performed best with no instructions at all, while others benefited from structured formatting or lightweight workflow checklists. The differences were meaningful.
 
 If your team uses model routing -- a fast model for simple tasks, a capable model for complex ones -- a one-size-fits-all CLAUDE.md may not serve all models equally. Consider whether your instructions are pulling their weight across the models you deploy to, or whether model-specific instruction sets (via environment-based CLAUDE.md selection or conditional rules) would serve you better.
 
@@ -584,7 +584,7 @@ Your user CLAUDE.md loads in every project. Go conventions shouldn't load when y
 
 ### Generic Instructions That Add No Value
 
-This isn't just a token-waste problem -- generic instructions actively reduce output quality. A [benchmark study of CLAUDE.md effectiveness](https://techloom.it/blog/claudemd-benchmark-results.html) found that adding generic coding instructions consistently reduced quality scores compared to an empty CLAUDE.md. The more generic tokens, the worse the results -- even a handful of bullet points like "write clean code" and "handle edge cases" made things worse.
+Generic instructions actively reduce output quality. A [benchmark study of CLAUDE.md effectiveness](https://techloom.it/blog/claudemd-benchmark-results.html) found that adding generic coding instructions consistently reduced quality scores compared to an empty CLAUDE.md. The more generic tokens, the worse the results -- even a handful of bullet points like "write clean code" and "handle edge cases" made things worse.
 
 The mechanism is an **adherence penalty**: generic instructions don't make Claude try harder at things it already does well. Instead, they create an explicit scorecard that can only subtract points. When you write "handle errors properly," you haven't taught Claude anything -- you've given the evaluator (internal or external) a criterion to penalize against when error handling falls short of perfect. The instructions function as a ceiling the model can fail to reach, with no upside when it meets expectations it would have met anyway.
 

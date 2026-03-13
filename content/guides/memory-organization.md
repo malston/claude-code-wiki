@@ -564,7 +564,7 @@ What compaction does not touch:
 
 ### Model-Specific Instruction Preferences
 
-A [CLAUDE.md benchmark](https://techloom.it/blog/claudemd-benchmark-results.html) found that different models respond differently to the same instructions. Some models performed best with no instructions at all, while others benefited from structured formatting or lightweight workflow checklists. The differences were meaningful.
+A [CLAUDE.md benchmark](https://techloom.it/blog/claudemd-benchmark-results.html) found that different models respond differently to the same instructions. Some models performed best with no instructions at all, while others benefited from structured formatting or lightweight workflow checklists. The differences were meaningful. As with the other benchmark findings referenced in this article, these results come from standardized single-file coding tasks and may not transfer to project-specific or multi-file workflows.
 
 If your team uses model routing -- a fast model for simple tasks, a capable model for complex ones -- a one-size-fits-all CLAUDE.md may not serve all models equally. Consider whether your instructions are pulling their weight across the models you deploy to, or whether model-specific instruction sets (via environment-based CLAUDE.md selection or conditional rules) would serve you better.
 

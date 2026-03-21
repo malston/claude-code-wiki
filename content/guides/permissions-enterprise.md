@@ -623,7 +623,7 @@ See the [Custom Hooks Cookbook]({{< relref "/extending/hooks-cookbook" >}}) for 
 
 6. **Scope permissions appropriately.** Personal preferences go in `~/.claude/settings.json`. Team rules go in `.claude/settings.json`. Sensitive local overrides go in `.claude/settings.local.json` (gitignored).
 
-7. **Use managed settings for enterprise.** Deploy `managed-settings.json` via MDM or configuration management. Set `allowManagedPermissionRulesOnly` to prevent teams from weakening rules.
+7. **Use managed settings for enterprise.** Deploy `managed-settings.json` via Mobile Device Management (MDM) or configuration management. Set `allowManagedPermissionRulesOnly` to prevent teams from weakening rules.
 
 8. **Pre-approve CI/CD tools.** In headless mode, use `--allowedTools` to explicitly list what Claude can use. Don't rely on `--dangerously-skip-permissions` in production CI.
 

@@ -7,7 +7,7 @@ weight: 3
 
 ## managed-settings.json (Enterprise Baseline)
 
-Deploy to all developer machines via MDM.
+Deploy to all developer machines via Mobile Device Management (MDM).
 
 ```json
 {

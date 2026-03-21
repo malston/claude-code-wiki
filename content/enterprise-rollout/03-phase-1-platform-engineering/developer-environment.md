@@ -131,14 +131,14 @@ Claude Code releases frequently (weekly or more). You don't need to track every 
 
 ## Platform Team Ownership Summary
 
-| Component             | Owner         | Distribution            |
-| --------------------- | ------------- | ----------------------- |
-| managed-settings.json | Platform team | MDM / config management |
-| Managed CLAUDE.md     | Platform team | MDM / config management |
-| Org-wide skills       | Platform team | Plugin or shared repo   |
-| .mcp.json template    | Platform team | Repo template           |
-| Standard hooks        | Platform team | Repo template           |
-| Devcontainer config   | Platform team | Repo template           |
-| Project CLAUDE.md     | Team leads    | In each repo            |
-| .claude/rules/        | Team leads    | In each repo            |
-| Team skills           | Team leads    | In each repo            |
+| Component             | Owner         | Distribution                                       |
+| --------------------- | ------------- | -------------------------------------------------- |
+| managed-settings.json | Platform team | Mobile Device Management (MDM) / config management |
+| Managed CLAUDE.md     | Platform team | MDM / config management                            |
+| Org-wide skills       | Platform team | Plugin or shared repo                              |
+| .mcp.json template    | Platform team | Repo template                                      |
+| Standard hooks        | Platform team | Repo template                                      |
+| Devcontainer config   | Platform team | Repo template                                      |
+| Project CLAUDE.md     | Team leads    | In each repo                                       |
+| .claude/rules/        | Team leads    | In each repo                                       |
+| Team skills           | Team leads    | In each repo                                       |

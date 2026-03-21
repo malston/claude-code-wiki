@@ -47,7 +47,7 @@ weight: 1
 - Design context budget worksheet for each major codebase
 - Design agent_docs/ directory structure template
 - Draft initial 5–8 org-wide skills
-- Configure MDM deployment for managed settings
+- Configure Mobile Device Management (MDM) deployment for managed settings
 
 **Change Management Workstream**
 

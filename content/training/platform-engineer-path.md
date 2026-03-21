@@ -47,7 +47,7 @@ Every API call follows this path. The LLM gateway and managed settings are your 
 managed settings > CLI flags > local settings > project settings > user settings
 ```
 
-Managed settings deployed via MDM cannot be overridden by anything below them. This is how you enforce organizational policy.
+Managed settings deployed via Mobile Device Management (MDM) cannot be overridden by anything below them. This is how you enforce organizational policy.
 
 **Context window has its own hierarchy:**
 

@@ -40,7 +40,7 @@ The gateway logs request metadata with more granularity than CloudTrail.
 - Team/project attribution (from request headers or SSO claims)
 - Request status (success, error, rate-limited)
 
-**What it should NOT record (if ZDR is active):**
+**What it should NOT record (if Zero Data Retention (ZDR) is active):**
 
 - Prompt content
 - Response content
@@ -48,7 +48,7 @@ The gateway logs request metadata with more granularity than CloudTrail.
 
 **Configuration:**
 
-- Send structured logs to your SIEM or log aggregation platform
+- Send structured logs to your Security Information and Event Management (SIEM) platform or log aggregation tool
 - Retention period aligned with your data retention policy (typically 90 days for metadata)
 - Access restricted to security and compliance teams
 
@@ -125,7 +125,7 @@ For clients evaluating both deployment paths: the Compliance API is a simpler au
 - Data subject deletion: S3 lifecycle policies on invocation logs, CloudWatch log retention settings, `cleanupPeriodDays` for local session transcripts
 - Gateway metadata retention aligned with GDPR data minimization
 - No prompt content logging unless invocation logging is explicitly enabled
-- Anthropic has no access to Bedrock requests, simplifying the data processor relationship (your DPA is with AWS, not Anthropic)
+- Anthropic has no access to Bedrock requests, simplifying the data processor relationship (your Data Processing Agreement (DPA) is with AWS, not Anthropic)
 
 ### SOX (Financial Services)
 

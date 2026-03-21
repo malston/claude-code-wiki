@@ -155,7 +155,7 @@ The hook script receives the tool input as JSON on stdin and can exit with code 
 - Inspect full file paths and resolve symlinks before allowing access
 - Check file content patterns (e.g., block writes containing API key formats)
 - Enforce multi-condition logic (allow `rm` only for files matching a specific pattern)
-- Log detailed audit events to your SIEM for specific tool calls
+- Log detailed audit events to your Security Information and Event Management (SIEM) platform for specific tool calls
 - Call external APIs for dynamic policy decisions
 
 ### Deployment

@@ -84,7 +84,13 @@ Bedrock offers opt-in model invocation logging that captures full prompt and res
 - Set S3 bucket with immutable retention policy for audit trail
 - Restrict access to compliance/security teams via IAM
 
-**Note:** Anthropic offers a separate Compliance API for Claude for Enterprise (direct API) customers, but it does **not** apply to Bedrock. When using Bedrock, Anthropic has no access to your requests -- AWS handles all inference in isolation. Your audit tooling is entirely AWS-native.
+**Anthropic Direct vs. Bedrock Audit Paths**
+
+Anthropic offers a Compliance API for Claude for Enterprise (direct API) customers. It provides programmatic access to usage data, activity logs, conversation histories, and selective deletion, with filtering by user and time range. Compliance teams can integrate this into existing monitoring workflows through a single API integration point.
+
+This API does **not** apply to Bedrock. When using Bedrock, Anthropic has no access to your requests -- AWS handles all inference in isolation. The three-layer AWS-native stack described on this page (CloudTrail + Gateway + Invocation Logging) provides equivalent audit capabilities through AWS tooling.
+
+For clients evaluating both deployment paths: the Compliance API is a simpler audit integration (one API, one vendor) but requires the Anthropic Enterprise plan and direct API access. The Bedrock path offers deeper integration with existing AWS security infrastructure (IAM, CloudWatch, S3 lifecycle policies) at the cost of building and maintaining the three-layer stack yourself.
 
 ## Compliance Mapping
 
@@ -126,3 +132,9 @@ Bedrock offers opt-in model invocation logging that captures full prompt and res
 - CloudTrail immutable logs for audit trail
 - Gateway enforces segregation of duties (model access by role)
 - Managed settings prevent bypass of controls
+
+### ISO/IEC 42001:2023
+
+Anthropic holds ISO/IEC 42001:2023 certification (effective January 2025, audited by Schellman Compliance LLC). ISO 42001 is the first international standard for AI management systems -- more specifically relevant for enterprises evaluating AI tooling than the general-purpose ISO 27001 infosec certification. Anthropic also maintains ISO 27001:2022 and SOC 2 Type I & II certifications.
+
+_Last validated against Claude Code docs: 2026-03-20_

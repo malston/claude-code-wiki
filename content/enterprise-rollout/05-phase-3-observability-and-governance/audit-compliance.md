@@ -84,7 +84,7 @@ Bedrock offers opt-in model invocation logging that captures full prompt and res
 - Set S3 bucket with immutable retention policy for audit trail
 - Restrict access to compliance/security teams via IAM
 
-### Anthropic Direct vs. Bedrock Audit Paths
+## Anthropic Direct vs. Bedrock Audit Paths
 
 Anthropic offers a Compliance API for Claude for Enterprise (direct API) customers. It provides programmatic access to usage data, activity logs, conversation histories, and selective deletion, with filtering by user and time range. Compliance teams can integrate this into existing monitoring workflows through a single API integration point.
 

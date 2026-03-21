@@ -17,8 +17,8 @@ The scenario comes from a real consulting engagement: a 1M-line Spring/Hibernate
 codebase, risk-averse stakeholders, and a team that hasn't had the bandwidth or mandate
 to address the underlying debt.
 
-The insight is that Agent Teams are useful here not because they write code faster,
-but because they produce **structured findings** that change the conversation.
+Agent Teams are useful here because they produce **structured findings** that
+change the conversation from "trust our recommendation" to "review our evidence."
 
 ## Why Agent Teams Fit This Problem
 
@@ -42,7 +42,7 @@ production code until the client team trusts the findings.
 **Pattern:** Fan-out / fan-in on analysis tasks. No file writes.
 
 ```text
-Analyze this legacy Java monolith. Do NOT modify any files.
+Analyze this legacy Java monolith. Teammates must NOT modify repository files.
 Do NOT use Write, Edit, or Bash tools that create or change files.
 
 Spawn 4 read-only teammates:
@@ -63,14 +63,15 @@ Spawn 4 read-only teammates:
   (unit, integration, none). Flag untested critical paths -- especially
   anything touching payment, auth, or data persistence.
 
-When all four finish, synthesize findings into ANALYSIS.md. Do not recommend
-any changes yet. Just describe what exists.
+When all four finish, the lead synthesizes their findings into ANALYSIS.md.
+Do not recommend any changes yet. Just describe what exists.
 ```
 
 **Why this works:** The output is a document, not code. You can show this to
-a skeptical client team without triggering defensiveness -- it's observation, not
-judgment. "Here's what the agents found in 2 hours" is a different conversation
-than "here's our 6-month modernization plan."
+a skeptical client team without triggering defensiveness because it enumerates
+facts and measurements without making recommendations. "Here's what the agents
+found in 2 hours" is a different conversation than "here's our 6-month
+modernization plan."
 
 ### Key Details
 
@@ -117,8 +118,8 @@ effort estimate, risk level, partial-completion outcome, and prerequisites.
 
 **Why this works:** The output explicitly contains a risk column and a
 "what happens if we abandon it" column. This is the document that gets shown
-to the managers who are 2 years from retirement. You are not advocating for
-anything -- you are surfacing tradeoffs that were invisible before.
+to the managers who are 2 years from retirement. It enumerates options and
+tradeoffs -- including partial-completion outcomes -- that were invisible before.
 
 The competing-advocates structure also produces a more honest document than
 a single planner would. The strangler-fig advocate will downplay migration
@@ -147,7 +148,7 @@ Spawn 3 teammates:
 
 - context-loader: Read all files relevant to this bug. Identify the full
   call chain, the affected Hibernate mappings, and any related tests.
-  Do NOT modify files. Write your findings to /tmp/bug-{id}-context.md.
+  Do NOT modify repository files. You may write findings only to /tmp/bug-{id}-context.md.
 
 - implementer: Wait for context-loader to finish. Implement the fix using
   patterns consistent with the existing codebase. Use Spring 2.x idioms,
@@ -199,8 +200,8 @@ TEAMMATE=$(echo "$INPUT" | jq -r '.teammate_name')
 # Only enforce on analysis teammates
 if [[ "$TEAMMATE" == *"-analyst"* ]] || [[ "$TEAMMATE" == *"-auditor"* ]] || \
    [[ "$TEAMMATE" == *"-mapper"* ]] || [[ "$TEAMMATE" == *"-scout"* ]]; then
-  # Check unstaged, staged, and committed changes against the working tree baseline
-  CHANGED=$(git diff --name-only; git diff --cached --name-only)
+  # Check for any working tree changes (staged, unstaged, or untracked)
+  CHANGED=$(git status --porcelain)
   if [ -n "$CHANGED" ]; then
     echo "Analysis teammate '$TEAMMATE' modified files. Revert changes before completing task." >&2
     echo "Modified: $CHANGED" >&2

@@ -43,6 +43,7 @@ production code until the client team trusts the findings.
 
 ```text
 Analyze this legacy Java monolith. Do NOT modify any files.
+Do NOT use Write, Edit, or Bash tools that create or change files.
 
 Spawn 4 read-only teammates:
 
@@ -125,8 +126,8 @@ complexity; the risk-assessor will surface it.
 
 ### Key Details
 
-- Use `Shift+Tab` delegate mode so the lead doesn't start implementing
-  migration code
+- Use `Shift+Tab` delegate mode (or instruct the lead explicitly in the prompt
+  when running headless) so the lead doesn't start implementing migration code
 - Set task dependencies so the `risk-assessor` cannot start until both
   advocates have submitted their proposals
 - If the client team wants to add their own perspective, they can message
@@ -184,20 +185,22 @@ prevent branch conflicts.
 
 ## Hooks for Quality Gates
 
-Two hooks enforce standards across all three phases without manual checking.
+Two `TaskCompleted` hook scripts enforce standards across all three phases
+without manual checking. Bind both to the `TaskCompleted` event in
+`.claude/settings.json`.
 
 ### Block Task Completion if Files Were Modified (Phase 1)
 
 ```bash
 #!/usr/bin/env bash
-set -Eeuo pipefail
 INPUT=$(cat)
 TEAMMATE=$(echo "$INPUT" | jq -r '.teammate_name')
 
 # Only enforce on analysis teammates
 if [[ "$TEAMMATE" == *"-analyst"* ]] || [[ "$TEAMMATE" == *"-auditor"* ]] || \
    [[ "$TEAMMATE" == *"-mapper"* ]] || [[ "$TEAMMATE" == *"-scout"* ]]; then
-  CHANGED=$(git diff --name-only HEAD)
+  # Check unstaged, staged, and committed changes against the working tree baseline
+  CHANGED=$(git diff --name-only; git diff --cached --name-only)
   if [ -n "$CHANGED" ]; then
     echo "Analysis teammate '$TEAMMATE' modified files. Revert changes before completing task." >&2
     echo "Modified: $CHANGED" >&2
@@ -212,14 +215,15 @@ exit 0
 
 ```bash
 #!/usr/bin/env bash
-set -Eeuo pipefail
 INPUT=$(cat)
 TASK=$(echo "$INPUT" | jq -r '.task_subject')
 TEAMMATE=$(echo "$INPUT" | jq -r '.teammate_name')
 
 if [[ "$TEAMMATE" == "implementer" ]]; then
-  if ! mvn test -q 2>&1; then
+  TEST_OUTPUT=$(mvn test -q 2>&1)
+  if [ $? -ne 0 ]; then
     echo "Cannot complete '$TASK': tests are failing." >&2
+    echo "$TEST_OUTPUT" >&2
     echo "Fix failing tests before marking this task complete." >&2
     exit 2
   fi

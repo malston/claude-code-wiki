@@ -1,11 +1,17 @@
+---
+title: "Real-World Example: Legacy Java Modernization"
+linkTitle: "Legacy Java Modernization"
+weight: 12
+---
+
 # Real-World Example: Legacy Java Modernization
 
 ## Overview
 
 This example shows Agent Teams applied to a common enterprise problem: a legacy Java
-monolith with decade-old dependencies that no one wants to touch. The goal is not a
-big-bang rewrite — it's to give a resistant team the confidence and tooling to act
-incrementally.
+monolith with decade-old dependencies that no one wants to touch. The goal is to give
+a resistant team the confidence and tooling to act incrementally, rather than forcing
+a big-bang rewrite.
 
 The scenario comes from a real consulting engagement: a 1M-line Spring/Hibernate
 codebase, risk-averse stakeholders, and a team that hasn't had the bandwidth or mandate
@@ -20,7 +26,7 @@ A single Claude Code session on a 1M-line codebase will hit context limits befor
 it understands the full picture. More importantly, sequential investigation suffers
 from anchoring: once you find one problem, you stop looking for others.
 
-Agent Teams let you parallelize *analysis*, not just implementation:
+Agent Teams let you parallelize _analysis_ across multiple teammates:
 
 - Multiple teammates explore different dimensions simultaneously
 - Teammates challenge each other's findings through direct messaging
@@ -53,7 +59,7 @@ Spawn 4 read-only teammates:
   packages with no clear bounded context.
 
 - test-coverage-scout: Inventory existing tests. Classify by type
-  (unit, integration, none). Flag untested critical paths — especially
+  (unit, integration, none). Flag untested critical paths -- especially
   anything touching payment, auth, or data persistence.
 
 When all four finish, synthesize findings into ANALYSIS.md. Do not recommend
@@ -61,16 +67,16 @@ any changes yet. Just describe what exists.
 ```
 
 **Why this works:** The output is a document, not code. You can show this to
-a skeptical client team without triggering defensiveness — it's observation, not
+a skeptical client team without triggering defensiveness -- it's observation, not
 judgment. "Here's what the agents found in 2 hours" is a different conversation
 than "here's our 6-month modernization plan."
 
-### Key details
+### Key Details
 
 - Enforce read-only by instructing teammates explicitly and using the
   `TaskCompleted` hook to reject any task that modified files
 - Give each teammate a distinct package scope if the codebase is large enough
-  to segment — this prevents teammates from duplicating work
+  to segment -- this prevents teammates from duplicating work
 - The `coupling-mapper` and `dead-code-analyst` findings often contradict each
   other; let them message back and forth to resolve discrepancies before the
   fan-in
@@ -79,7 +85,7 @@ than "here's our 6-month modernization plan."
 
 **Goal:** Surface options with honest tradeoffs, not a single recommended plan.
 
-**Pattern:** Competing hypotheses — teammates argue positions, then challenge
+**Pattern:** Competing hypotheses -- teammates argue positions, then challenge
 each other through direct messaging.
 
 ```text
@@ -111,13 +117,13 @@ effort estimate, risk level, partial-completion outcome, and prerequisites.
 **Why this works:** The output explicitly contains a risk column and a
 "what happens if we abandon it" column. This is the document that gets shown
 to the managers who are 2 years from retirement. You are not advocating for
-anything — you are surfacing tradeoffs that were invisible before.
+anything -- you are surfacing tradeoffs that were invisible before.
 
 The competing-advocates structure also produces a more honest document than
 a single planner would. The strangler-fig advocate will downplay migration
 complexity; the risk-assessor will surface it.
 
-### Key details
+### Key Details
 
 - Use `Shift+Tab` delegate mode so the lead doesn't start implementing
   migration code
@@ -133,7 +139,7 @@ complexity; the risk-assessor will surface it.
 
 **Pattern:** Research + implementation with a reviewer gate.
 
-```
+```text
 Given ANALYSIS.md and this bug report: [BUG_DESCRIPTION]
 
 Spawn 3 teammates:
@@ -144,7 +150,7 @@ Spawn 3 teammates:
 
 - implementer: Wait for context-loader to finish. Implement the fix using
   patterns consistent with the existing codebase. Use Spring 2.x idioms,
-  not modern Spring. Match the surrounding code style exactly — do not
+  not modern Spring. Match the surrounding code style exactly -- do not
   modernize while fixing.
 
 - reviewer: Wait for implementer to finish. Review the fix for unintended
@@ -154,18 +160,18 @@ Spawn 3 teammates:
 ```
 
 **Why this works:** The `implementer` is explicitly told to use old idioms.
-This is what builds trust with the team that owns the codebase — they are not
+This is what builds trust with the team that owns the codebase -- they are not
 discovering a sneaked-in refactor when they review the PR. The `reviewer`
 enforcing style consistency enforces this automatically.
 
 The `context-loader` phase produces a document that can be attached to the PR,
 giving the client team visibility into what the agents actually read and why.
 
-### Scaling across the backlog
+### Scaling Across the Backlog
 
 For multiple bugs in parallel, use the shared task list to queue them:
 
-```
+```text
 Create tasks for bugs 101, 102, 103, 104, 105.
 Spawn 3 bug-fix teams (context-loader, implementer, reviewer).
 Each team self-claims the next available bug when they finish.
@@ -180,17 +186,18 @@ prevent branch conflicts.
 
 Two hooks enforce standards across all three phases without manual checking.
 
-### Block task completion if files were modified (Phase 1)
+### Block Task Completion if Files Were Modified (Phase 1)
 
 ```bash
 #!/usr/bin/env bash
+set -Eeuo pipefail
 INPUT=$(cat)
 TEAMMATE=$(echo "$INPUT" | jq -r '.teammate_name')
 
 # Only enforce on analysis teammates
 if [[ "$TEAMMATE" == *"-analyst"* ]] || [[ "$TEAMMATE" == *"-auditor"* ]] || \
    [[ "$TEAMMATE" == *"-mapper"* ]] || [[ "$TEAMMATE" == *"-scout"* ]]; then
-  CHANGED=$(git diff --name-only)
+  CHANGED=$(git diff --name-only HEAD)
   if [ -n "$CHANGED" ]; then
     echo "Analysis teammate '$TEAMMATE' modified files. Revert changes before completing task." >&2
     echo "Modified: $CHANGED" >&2
@@ -201,10 +208,11 @@ fi
 exit 0
 ```
 
-### Block task completion if tests fail (Phase 3)
+### Block Task Completion if Tests Fail (Phase 3)
 
 ```bash
 #!/usr/bin/env bash
+set -Eeuo pipefail
 INPUT=$(cat)
 TASK=$(echo "$INPUT" | jq -r '.task_subject')
 TEAMMATE=$(echo "$INPUT" | jq -r '.teammate_name')
@@ -224,12 +232,12 @@ exit 0
 
 **The lead starts modernizing while implementing.** Even with delegate mode on,
 the lead may suggest modern patterns in its coordination messages. Include this
-in your lead prompt: *"Do not suggest modernization. Match existing idioms exactly.
-Flag deviations from existing patterns as errors, not improvements."*
+in your lead prompt: _"Do not suggest modernization. Match existing idioms exactly.
+Flag deviations from existing patterns as errors, not improvements."_
 
 **Teammates produce inconsistent findings.** The `coupling-mapper` may flag a
 class as a god class while the `dead-code-analyst` flags the same class as
-mostly unused. This is not a problem — have them message each other to reconcile.
+mostly unused. This is not a problem -- have them message each other to reconcile.
 The disagreement is itself a useful finding.
 
 **The task list gets out of sync.** Teammates sometimes fail to mark tasks
@@ -244,8 +252,8 @@ file ownership will outperform ten teammates with overlapping scope.
 
 After all three phases, you have:
 
-- `ANALYSIS.md` — an inventory of what exists, with no recommendations
-- `MIGRATION_OPTIONS.md` — a comparison of approaches with explicit tradeoffs
+- `ANALYSIS.md` -- an inventory of what exists, with no recommendations
+- `MIGRATION_OPTIONS.md` -- a comparison of approaches with explicit tradeoffs
 - A PR per bug fix, with attached context docs and reviewer notes
 
 This is a consulting deliverable. The client team can make informed decisions
@@ -254,8 +262,8 @@ visible, reviewable, and attached to specific artifacts.
 
 ## References
 
-- [The Task System](../agent-teams/#the-task-system) — task states, dependencies, self-claiming
-- [Competing Hypotheses Pattern](../agent-teams/#competing-hypotheses-debugging) — adversarial investigation
-- [Hooks for Teams](../agent-teams/#hooks-for-teams) — `TeammateIdle`, `TaskCompleted`
-- [Fan-Out / Fan-In Pattern](../agent-teams/#fan-out--fan-in) — parallel analysis, synthesized results
-- [Anthropic C Compiler Case Study](https://www.anthropic.com/engineering/building-c-compiler) — large-scale agent coordination patterns
+- [The Task System]({{< relref "extending/agent-teams" >}}#the-task-system) -- task states, dependencies, self-claiming
+- [Competing Hypotheses Pattern]({{< relref "extending/agent-teams" >}}#competing-hypotheses-debugging) -- adversarial investigation
+- [Hooks for Teams]({{< relref "extending/agent-teams" >}}#hooks-for-teams) -- `TeammateIdle`, `TaskCompleted`
+- [Fan-Out / Fan-In Pattern]({{< relref "extending/agent-teams" >}}#fan-out--fan-in) -- parallel analysis, synthesized results
+- [Anthropic C Compiler Case Study](https://www.anthropic.com/engineering/building-c-compiler) -- large-scale agent coordination patterns

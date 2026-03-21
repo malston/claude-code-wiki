@@ -170,7 +170,7 @@ The security implication: a subagent spawned during parallel worktree execution 
 
 Recommendations for the 500-developer rollout:
 
-- Verify deny rules cover the subagent execution path, not just the parent session. Subagents can use any tool the parent can use.
+- Verify deny rules cover the subagent execution path. Subagents can use any tool the parent can use, so rules that only account for the parent session leave gaps.
 - If hook-based enforcement is critical, set `allowManagedHooksOnly: true` to prevent project-level hooks from overriding managed security hooks in subagent contexts.
 - Plugin-provided subagents cannot define `hooks`, `mcpServers`, or `permissionMode` -- a security restriction that limits the blast radius of third-party agent code.
 - Subagents cannot spawn other subagents, which prevents infinite nesting and unbounded tool surface expansion.

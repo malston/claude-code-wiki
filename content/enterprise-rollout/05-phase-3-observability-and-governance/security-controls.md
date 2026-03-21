@@ -43,6 +43,8 @@ The enterprise baseline denies access to:
 
 These cannot be overridden by project or user settings.
 
+**Caveat: pattern matching boundaries.** Deny rules handle compound commands correctly -- Claude Code is aware of shell operators like `&&`, so each subcommand in `safe-cmd && evil-cmd` must be permitted separately; a permission for `Bash(safe-cmd:*)` does not also permit `evil-cmd`. However, argument-constraining patterns are fragile: option reordering, variable expansion, and extra whitespace can all bypass a pattern like `Bash(curl:http://example.com/*)`. More critically, Read and Edit deny rules apply only to Claude's built-in file tools, not to Bash subprocesses -- a `Read(./.env)` deny rule does not prevent `cat .env` in a shell command. [Sandboxing](#sandboxing) adds OS-level enforcement for the processes it constrains, but it does not automatically block reads of sensitive files inside the working directory. For complex conditions that pattern matching cannot express, use [PreToolUse hooks](#hooks-as-security-controls) as the programmable enforcement layer.
+
 ### Project-Level Deny Rules
 
 Teams can add their own deny rules on top of the enterprise baseline via `.claude/settings.json`:
@@ -160,6 +162,19 @@ The hook script receives the tool input as JSON on stdin and can exit with code 
 
 Deploy managed hooks via `managed-settings.json` with `allowManagedHooksOnly: true` if you want to prevent project-level hooks from overriding your security hooks.
 
+## Subagent Permission Inheritance
+
+Claude Code subagents inherit all tools, MCP connections, and permissions from the parent session by default. Managed deny rules propagate through the settings precedence hierarchy (managed > CLI > local > project > user) and cannot be overridden at any other level, so subagents that inherit the parent's permission context inherit managed restrictions as well.
+
+The security implication: a subagent spawned during parallel worktree execution has the same tool surface as the parent unless explicitly restricted via `tools` or `disallowedTools` in the subagent definition. Background subagents provide a built-in containment mechanism -- they auto-deny anything not pre-approved at launch.
+
+Recommendations for the 500-developer rollout:
+
+- Verify deny rules cover the subagent execution path. Subagents can use any tool the parent can use, so rules that only account for the parent session leave gaps.
+- If hook-based enforcement is critical, set `allowManagedHooksOnly: true` to prevent project-level hooks from overriding managed security hooks in subagent contexts.
+- Plugin-provided subagents cannot define `hooks`, `mcpServers`, or `permissionMode` -- a security restriction that limits the blast radius of third-party agent code.
+- Subagents cannot spawn other subagents, which prevents infinite nesting and unbounded tool surface expansion.
+
 ## Network Security
 
 ### Zero Egress from Claude Code
@@ -193,3 +208,5 @@ Gateway logs and CloudTrail provide the audit trail. Investigate:
 - Requests to unexpected models
 - Access outside normal business hours
 - Repeated deny rule triggers from the same user
+
+_Last validated against Claude Code docs: 2026-03-20_

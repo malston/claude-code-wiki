@@ -99,6 +99,14 @@ Deploy via:
 
 This should feel identical to how you'd push any other enterprise configuration file.
 
+## Server-Managed Settings (Anthropic Direct)
+
+Anthropic also offers server-managed settings via the Claude.ai admin console (public beta) for Teams and Enterprise plan customers using Anthropic's API directly. No MDM infrastructure required -- administrators configure settings in a web UI, and Claude Code clients fetch them at startup and poll hourly.
+
+This binder uses endpoint-managed delivery (the `managed-settings.json` file described above) because server-managed settings are **not available** when routing through Bedrock, Vertex, Foundry, or any custom API endpoint. The Bedrock scenario means Anthropic's admin console is not the control plane -- AWS is.
+
+For clients evaluating Anthropic direct deployment (no cloud provider intermediary), server-managed settings are a simpler path to initial controls before MDM is ready. They support the same settings as `managed-settings.json`, including deny rules, hooks, and `disableBypassPermissionsMode`. See the [Claude Code docs on server-managed settings](https://code.claude.com/docs/en/server-managed-settings) for configuration details.
+
 ## Validation
 
 After deployment, developers can verify managed settings are active:
@@ -109,3 +117,5 @@ After deployment, developers can verify managed settings are active:
 ```
 
 Managed settings that restrict an action will show a notification to the developer explaining the policy.
+
+_Last validated against Claude Code docs: 2026-03-20_

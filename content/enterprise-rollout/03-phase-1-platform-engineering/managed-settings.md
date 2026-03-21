@@ -101,7 +101,7 @@ This should feel identical to how you'd push any other enterprise configuration 
 
 ## Server-Managed Settings (Anthropic Direct)
 
-Anthropic also offers server-managed settings via the Claude.ai admin console (public beta) for Teams and Enterprise plan customers using Anthropic's API directly. Settings are delivered from Anthropic's servers at authentication time -- no MDM infrastructure required. Administrators configure settings in a web UI, and Claude Code clients fetch them at startup and poll hourly.
+Anthropic also offers server-managed settings via the Claude.ai admin console (public beta) for Teams and Enterprise plan customers using Anthropic's API directly. No MDM infrastructure required -- administrators configure settings in a web UI, and Claude Code clients fetch them at startup and poll hourly.
 
 This binder uses endpoint-managed delivery (the `managed-settings.json` file described above) because server-managed settings are **not available** when routing through Bedrock, Vertex, Foundry, or any custom API endpoint. The Bedrock scenario means Anthropic's admin console is not the control plane -- AWS is.
 

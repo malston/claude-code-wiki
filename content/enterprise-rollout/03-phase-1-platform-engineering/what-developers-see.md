@@ -9,13 +9,7 @@ This is the page a team lead hands to developers on day one of rollout.
 
 ## When a Deny Rule Fires
 
-Claude Code shows a notification explaining which policy blocked the action. The developer can:
-
-- Rephrase the request to avoid the blocked operation
-- Perform the blocked operation manually outside Claude Code
-- Request a policy exception through the platform team
-
-Deny rules are not silent failures. The developer sees what was blocked and why.
+Claude Code shows a notification explaining which policy blocked the action and why. Deny rules are not silent failures -- the developer always sees what was blocked. For the full incident response workflow (rephrase, manual workaround, or policy exception), see [Security Controls]({{< relref "../05-phase-3-observability-and-governance/security-controls.md#if-a-deny-rule-is-triggered" >}}).
 
 ## Checking Effective Permissions
 
@@ -31,7 +25,7 @@ This is by design. The platform team sets policy; developers work within it.
 
 ## The Mental Model Shift
 
-Claude Code is an agent that proposes actions and asks permission, not an autocomplete engine that suggests the next line. Developers review proposed shell commands and file changes before approving them. This review-then-approve workflow is different from Copilot-style inline suggestions.
+Claude Code proposes shell commands and file changes, then waits for developer approval before executing. This review-then-approve workflow differs from inline autocomplete suggestions -- developers evaluate complete proposed actions rather than accepting line-by-line completions.
 
 Budget training time for this shift during cohort onboarding. Developers who are already CLI-native and comfortable with code review adapt fastest. Developers coming from IDE-centric autocomplete workflows need more ramp time.
 

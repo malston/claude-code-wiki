@@ -43,7 +43,7 @@ The enterprise baseline denies access to:
 
 These cannot be overridden by project or user settings.
 
-**Caveat: pattern matching boundaries.** Deny rules handle compound commands correctly -- Claude Code is shell-aware and splits on `&&`, `||`, and `;`, so `Bash(safe-cmd *)` won't match `safe-cmd && evil-cmd`. However, argument-constraining patterns are fragile: option reordering, variable expansion, and extra whitespace can all bypass a pattern like `Bash(curl http://example.com/ *)`. More critically, Read and Edit deny rules apply only to Claude's built-in file tools, not to Bash subprocesses -- a `Read(./.env)` deny rule does not prevent `cat .env` in a shell command. Sandboxing (see above) provides OS-level enforcement that closes this gap. For complex conditions that pattern matching cannot express, use [PreToolUse hooks](#hooks-as-security-controls) as the programmable enforcement layer.
+**Caveat: pattern matching boundaries.** Deny rules handle compound commands correctly -- Claude Code is shell-aware and splits on `&&`, `||`, and `;`, so `Bash(safe-cmd *)` won't match `safe-cmd && evil-cmd`. However, argument-constraining patterns are fragile: option reordering, variable expansion, and extra whitespace can all bypass a pattern like `Bash(curl http://example.com/ *)`. More critically, Read and Edit deny rules apply only to Claude's built-in file tools, not to Bash subprocesses -- a `Read(./.env)` deny rule does not prevent `cat .env` in a shell command. [Sandboxing](#sandboxing) provides OS-level enforcement that closes this gap. For complex conditions that pattern matching cannot express, use [PreToolUse hooks](#hooks-as-security-controls) as the programmable enforcement layer.
 
 ### Project-Level Deny Rules
 
@@ -164,7 +164,7 @@ Deploy managed hooks via `managed-settings.json` with `allowManagedHooksOnly: tr
 
 ## Subagent Permission Inheritance
 
-Claude Code subagents inherit all tools, MCP connections, and permissions from the parent session by default. This includes managed deny rules -- subagents inherit the parent's permission context, and managed settings occupy the highest precedence level in the settings hierarchy (deny > ask > allow, managed > everything else). <!-- VERIFY: Managed deny propagation to subagents is inferred from the settings precedence model, not explicitly documented in the subagent docs. -->
+Claude Code subagents inherit all tools, MCP connections, and permissions from the parent session by default. Managed deny rules propagate through the settings precedence hierarchy -- managed settings are the highest precedence level and cannot be overridden at any other level, so subagents that inherit the parent's permission context inherit managed restrictions as well.
 
 The security implication: a subagent spawned during parallel worktree execution has the same tool surface as the parent unless explicitly restricted via `tools` or `disallowedTools` in the subagent definition. Background subagents provide a built-in containment mechanism -- they auto-deny anything not pre-approved at launch.
 

@@ -99,7 +99,7 @@ Don't light up 500 developers at once. Each cohort discovers different classes o
 ### Prerequisites (Must Be True Before Launching)
 
 - Gateway proven at 100-developer scale
-- Managed-settings.json deployed to all developer machines via MDM
+- Managed-settings.json deployed to all developer machines via Mobile Device Management (MDM)
 - Internal documentation written by Cohort 1 champions
 - Onboarding guide tested with Cohort 2 (developers who weren't hand-picked)
 - Cost projections validated and approved by finance

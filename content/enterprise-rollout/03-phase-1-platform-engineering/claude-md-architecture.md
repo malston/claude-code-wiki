@@ -16,7 +16,7 @@ Unlike human developers who can skim past irrelevant instructions, Claude treats
 
 ## Layer 0: Managed CLAUDE.md (Always Loaded, Org-Wide)
 
-Deployed via MDM alongside managed-settings.json. Every Claude Code session sees this file, regardless of project, team, or developer.
+Deployed via Mobile Device Management (MDM) alongside managed-settings.json. Every Claude Code session sees this file, regardless of project, team, or developer.
 
 **Budget: 30–50 lines maximum.** This is the most expensive context because it loads into every single session across 500 developers.
 

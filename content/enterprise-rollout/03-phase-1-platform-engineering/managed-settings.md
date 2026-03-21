@@ -8,7 +8,7 @@ weight: 1
 
 ## Overview
 
-The `managed-settings.json` file is the enterprise-level configuration that sits at the top of Claude Code's settings hierarchy and **cannot be overridden by any developer or project-level setting.** It's deployed to every developer machine via MDM or configuration management tooling.
+The `managed-settings.json` file is the enterprise-level configuration that sits at the top of Claude Code's settings hierarchy and **cannot be overridden by any developer or project-level setting.** It's deployed to every developer machine via Mobile Device Management (MDM) or configuration management tooling.
 
 ## Baseline Enterprise Configuration
 

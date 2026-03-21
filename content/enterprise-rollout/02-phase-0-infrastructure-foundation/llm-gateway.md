@@ -47,7 +47,7 @@ export ANTHROPIC_BEDROCK_BASE_URL='https://llm-gateway.internal.corp.com/bedrock
 export CLAUDE_CODE_SKIP_BEDROCK_AUTH=1  # Gateway handles AWS auth
 ```
 
-These are baked into the managed-settings.json and deployed via MDM -- developers don't configure them manually.
+These are baked into the managed-settings.json and deployed via Mobile Device Management (MDM) -- developers don't configure them manually.
 
 ## Product Options
 

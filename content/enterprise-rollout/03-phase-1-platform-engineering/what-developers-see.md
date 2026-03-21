@@ -9,7 +9,7 @@ This is the page a team lead hands to developers on day one of rollout.
 
 ## When a Deny Rule Fires
 
-Claude Code shows a notification explaining which policy blocked the action and why. Deny rules are not silent failures -- the developer always sees what was blocked. For the full incident response workflow (rephrase, manual workaround, or policy exception), see [Security Controls]({{< relref "../05-phase-3-observability-and-governance/security-controls.md#if-a-deny-rule-is-triggered" >}}).
+Claude Code shows a notification explaining which policy blocked the action and why. The developer always sees what was blocked. For the full incident response workflow (rephrase, manual workaround, or policy exception), see [Security Controls]({{< relref "enterprise-rollout/05-phase-3-observability-and-governance/security-controls#if-a-deny-rule-is-triggered" >}}).
 
 ## Checking Effective Permissions
 

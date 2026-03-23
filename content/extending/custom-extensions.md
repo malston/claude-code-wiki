@@ -893,39 +893,39 @@ Or toggle plugins in `settings.json`:
 
 ## Managing Extensions with claudeup
 
-`claudeup local` is a tool for managing local extensions (personal skills, agents, hooks, rules, and output styles).
+`claudeup ext` is a tool for managing local extensions (personal skills, agents, hooks, rules, and output styles).
 
 ### claudeup Commands
 
 ```bash
 # List all items and their enabled status
-claudeup local list
+claudeup ext list
 
 # Enable specific items
-claudeup local enable skills golang bash
-claudeup local enable agents code-reviewer
+claudeup ext enable skills golang bash
+claudeup ext enable agents code-reviewer
 
 # Disable specific items
-claudeup local disable skills vercel-react-best-practices
+claudeup ext disable skills vercel-react-best-practices
 
 # Wildcards
-claudeup local enable skills gsd-*
+claudeup ext enable skills gsd-*
 
 # Install from external path
-claudeup local install skills /path/to/my-skill
+claudeup ext install skills /path/to/my-skill
 
 # View item contents
-claudeup local view skills golang
+claudeup ext view skills golang
 ```
 
 **Categories:** agents, commands, skills, hooks, rules, output-styles
 
 ### Directory Layout
 
-Items live in the library directory. Enablement works via symlinks:
+Items live in the ~/.claudeup/ext directory. Enablement works via symlinks:
 
 ```sh
-~/.claude/.library/          # All available items
+~/.claudeup/ext/          # All available items
   skills/
     golang/SKILL.md
     bash/SKILL.md
@@ -936,14 +936,14 @@ Items live in the library directory. Enablement works via symlinks:
     ...
 
 ~/.claude/skills/            # Symlinks to enabled items
-  golang -> ../.library/skills/golang/
-  bash -> ../.library/skills/bash/
+  golang -> ~/.claudeup/ext/skills/golang/
+  bash -> ~/.claudeup/ext/skills/bash/
 
 ~/.claude/agents/            # Symlinks to enabled agents
-  code-reviewer.md -> ../.library/agents/code-reviewer.md
+  code-reviewer.md -> ~/.claudeup/ext/agents/code-reviewer.md
 ```
 
-`claudeup local enable skills golang` creates the symlink. `claudeup local disable skills golang` removes it. The `.library/` directory is the source of truth; `~/.claude/skills/` and `~/.claude/agents/` are the active set.
+`claudeup ext enable skills golang` creates the symlink. `claudeup ext disable skills golang` removes it. The `.claudeup/ext/` directory is the source of truth; `~/.claude/skills/` and `~/.claude/agents/` are the active set.
 
 ## Scope and Priority
 

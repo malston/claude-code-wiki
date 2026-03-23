@@ -127,7 +127,7 @@ Each `true` entry is an enabled plugin contributing skills, subagents, or both t
 Use `claudeup` to see what's enabled:
 
 ```bash
-claudeup local list
+claudeup ext list
 ```
 
 Items marked with `*` are enabled. Items marked with `x` are disabled. Focus on the `skills:` section.
@@ -289,19 +289,19 @@ The dollar savings from catalog reduction are modest with [prompt caching]({{< r
 
 ```bash
 # List all items and status (* = enabled, x = disabled)
-claudeup local list
+claudeup ext list
 
 # Disable specific skills
-claudeup local disable skills vercel-react-best-practices web-design-guidelines
+claudeup ext disable skills vercel-react-best-practices web-design-guidelines
 
 # Enable specific skills
-claudeup local enable skills golang bash
+claudeup ext enable skills golang bash
 
 # Wildcards work
-claudeup local enable skills gsd-*
+claudeup ext enable skills gsd-*
 
 # View a skill's contents
-claudeup local view skills golang
+claudeup ext view skills golang
 ```
 
 ### Plugin Management

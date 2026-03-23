@@ -366,13 +366,13 @@ Skill packs are typically installed through `claudeup` for local management:
 
 ```bash
 # List available extensions
-claudeup local list
+claudeup ext list
 
 # Enable a skill pack
-claudeup local enable skills my-skill-pack
+claudeup ext enable skills my-skill-pack
 
 # Disable when not needed
-claudeup local disable skills my-skill-pack
+claudeup ext disable skills my-skill-pack
 ```
 
 Refer to each plugin's documentation for specific installation instructions. The exact command and arguments vary by plugin.

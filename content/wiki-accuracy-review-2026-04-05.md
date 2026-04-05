@@ -65,17 +65,17 @@ Cross-referenced all wiki content against the Claude Code source snapshot (~5 da
 
 ### Guides (9 critical errors)
 
-| Page                           | Issue            | Wiki Says             | Source Says                                                             |
-| ------------------------------ | ---------------- | --------------------- | ----------------------------------------------------------------------- |
-| `large-codebase-strategies.md` | `/batch` command | Described in detail   | **Does not exist** in source                                            |
-| `model-selection.md`           | Default model    | Sonnet 4.5            | **Sonnet 4.6** for 1P users (`utils/model/model.ts:127`)                |
-| `model-selection.md`           | Opus default for | "Max, Teams, and Pro" | Max and Team Premium only; Pro gets Sonnet (`utils/model/model.ts:197`) |
-| `model-selection.md`           | Effort levels    | 3 (low, medium, high) | 4: low, medium, high, **max** (`utils/effort.ts:13-18`)                 |
-| `model-selection.md`           | `best` alias     | Not mentioned         | Exists in source (`utils/model/aliases.ts`)                             |
-| `model-selection.md`           | `default` alias  | Listed as valid       | Not in `MODEL_ALIASES` array                                            |
-| `permissions-enterprise.md`    | `delegate` mode  | Listed as valid       | Does not exist                                                          |
-| `memory-organization.md`       | MEMORY.md limits | 200-line cap only     | Also 25KB byte limit (`memdir/memdir.ts:38`)                            |
-| `permissions-enterprise.md`    | Settings cascade | Invents "CLI" scope   | Called `flagSettings` internally                                        |
+| Page                           | Issue            | Wiki Says             | Source Says                                                                                                    |
+| ------------------------------ | ---------------- | --------------------- | -------------------------------------------------------------------------------------------------------------- |
+| `large-codebase-strategies.md` | `/batch` command | Described in detail   | **Correction:** `/batch` exists as a plugin skill, not a core command. Original removal was wrong -- restored. |
+| `model-selection.md`           | Default model    | Sonnet 4.5            | **Sonnet 4.6** for 1P users (`utils/model/model.ts:127`)                                                       |
+| `model-selection.md`           | Opus default for | "Max, Teams, and Pro" | Max and Team Premium only; Pro gets Sonnet (`utils/model/model.ts:197`)                                        |
+| `model-selection.md`           | Effort levels    | 3 (low, medium, high) | 4: low, medium, high, **max** (`utils/effort.ts:13-18`)                                                        |
+| `model-selection.md`           | `best` alias     | Not mentioned         | Exists in source (`utils/model/aliases.ts`)                                                                    |
+| `model-selection.md`           | `default` alias  | Listed as valid       | Not in `MODEL_ALIASES` array                                                                                   |
+| `permissions-enterprise.md`    | `delegate` mode  | Listed as valid       | Does not exist                                                                                                 |
+| `memory-organization.md`       | MEMORY.md limits | 200-line cap only     | Also 25KB byte limit (`memdir/memdir.ts:38`)                                                                   |
+| `permissions-enterprise.md`    | Settings cascade | Invents "CLI" scope   | Called `flagSettings` internally                                                                               |
 
 ## Part 3: Severity Summary
 

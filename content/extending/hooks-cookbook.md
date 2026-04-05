@@ -1367,7 +1367,7 @@ Send a desktop notification when a turn ends due to an API error instead of comp
         "hooks": [
           {
             "type": "command",
-            "command": "jq -r '\"Claude Code: \" + .error + \" — \" + (.error_details // \"no details\")' | xargs -I{} osascript -e 'display notification \"{}\" with title \"API Error\"'"
+            "command": "jq -r '\"Claude Code: \" + .error + \" -- \" + (.error_details // \"no details\")' | xargs -I{} osascript -e 'display notification \"{}\" with title \"API Error\"'"
           }
         ]
       }

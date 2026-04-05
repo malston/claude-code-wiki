@@ -130,7 +130,7 @@ All discovered CLAUDE.md files from every scope are loaded into the system promp
 
 ```text
 Precedence (highest to lowest):
-1. Project local        (.claude/CLAUDE.local.md, .claude/rules/*.md)
+1. Project local        (CLAUDE.local.md, .claude/rules/*.md)
 2. Project CLAUDE.md    (repo root CLAUDE.md, .claude/CLAUDE.md)
 3. User CLAUDE.md       (~/.claude/CLAUDE.md)
 4. Managed policy       (/etc/claude-code/CLAUDE.md)

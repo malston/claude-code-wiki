@@ -71,7 +71,6 @@ Permission modes set the overall behavior for how Claude handles tool approval:
 | `default`           | Prompts for permission on first use of each tool          |
 | `acceptEdits`       | Auto-accepts file edit/write operations for the session   |
 | `plan`              | Read-only: Claude can analyze but not modify or execute   |
-| `delegate`          | Coordination-only for agent team leads (no coding tools)  |
 | `dontAsk`           | Auto-denies unless pre-approved via rules                 |
 | `bypassPermissions` | Skips all permission prompts (isolated environments only) |
 
@@ -663,3 +662,5 @@ See the [Custom Hooks Cookbook]({{< relref "/extending/hooks-cookbook" >}}) for 
 - [CLI Reference](https://code.claude.com/docs/en/cli-reference) -- permission flags, provider flags
 - [Example Settings](https://github.com/anthropics/claude-code/tree/main/examples/settings) -- starter configurations (lax, strict, sandbox)
 - [Custom Hooks Cookbook]({{< relref "/extending/hooks-cookbook" >}}) -- security hook recipes
+- [Enterprise Rollout: Security Controls]({{< relref "/enterprise-rollout/05-phase-3-observability-and-governance/security-controls" >}}) -- enterprise security architecture
+- [Enterprise Rollout: Managed Settings]({{< relref "/enterprise-rollout/03-phase-1-platform-engineering/managed-settings" >}}) -- managed settings deployment patterns

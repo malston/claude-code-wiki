@@ -693,7 +693,7 @@ MCP Server (stateless)
 ### Output Limits
 
 - Default max: 25,000 tokens per server response
-- Warning at 10,000 tokens
+- Overridable via `MAX_MCP_OUTPUT_TOKENS` environment variable
 - Truncation enforced automatically
 
 ### When to Use MCP Tools
@@ -714,7 +714,7 @@ Token budget consumed by:
 2. **Instruction memory** (CLAUDE.md hierarchy loaded at startup)
 3. **Auto memory** (MEMORY.md loaded at startup, first 200 lines)
 4. **File references** (`@path/to/file` inclusions)
-5. **Tool results** (bounded at 25K per MCP call)
+5. **Tool results** (bounded at 25K tokens per MCP call)
 
 ### Subagent Context Distribution
 
@@ -731,7 +731,7 @@ Each subagent gets independent context:
 Minimal overhead:
 
 - Tool input: Few tokens
-- Tool output: Bounded at 25K max
+- Tool output: Bounded at 25K tokens max
 - No accumulation across calls
 
 ## Memory System Architecture

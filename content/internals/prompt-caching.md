@@ -52,6 +52,7 @@ Prompt caching allows the API to reuse previously processed prompt prefixes, red
     - [Cost Optimization vs Context Optimization](#cost-optimization-vs-context-optimization)
     - [When to Worry About Caching](#when-to-worry-about-caching)
     - [When Not to Worry](#when-not-to-worry)
+  - [Cache Break Detection](#cache-break-detection)
   - [References](#references)
 
 ## How Prompt Caching Works
@@ -315,6 +316,15 @@ You generally don't need to think about prompt caching in Claude Code -- it's ha
 - **System prompt size (for cost)** -- With caching, the cost difference between a 10K and 30K system prompt is ~$2 per 200-message session. Not worth agonizing over.
 - **Conversation length** -- Previous turns get cached incrementally. Long conversations are efficiently handled.
 - **Cache management** -- Claude Code handles breakpoint placement and cache strategy automatically. There's nothing to configure.
+
+## Cache Break Detection
+
+Claude Code includes an internal diagnostic system (`promptCacheBreakDetection.ts`) that monitors cache effectiveness across API calls. It works in two phases:
+
+1. **Pre-call (`recordPromptState`):** Before each API call, the system hashes the system prompt, tool schemas, model, beta headers, cache control settings, effort value, and other parameters that affect the server-side cache key. It compares these against the previous call's state and records any differences as "pending changes."
+2. **Post-call (`checkResponseForCacheBreak`):** After receiving the API response, it compares `cache_read_input_tokens` against the previous call. A cache break is flagged when cache reads drop more than 5% **and** the absolute drop exceeds 2,000 tokens. The pending changes from phase 1 are used to explain the cause -- system prompt mutation, tool schema change, model switch, beta header flip, TTL expiry (5-min or 1-hour), or server-side eviction.
+
+Detected breaks are logged as `tengu_prompt_cache_break` analytics events with detailed attribution (which tools changed, character deltas, time gap). Compaction and cached microcompact deletions reset the baseline to avoid false positives. The system only tracks long-lived sources (main REPL thread, SDK, custom/default/builtin agents) -- short-lived forked agents are excluded since they lack a meaningful comparison baseline.
 
 ## References
 

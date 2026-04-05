@@ -163,7 +163,7 @@ The map is a disposable artifact. Once you've turned its insights into proper `C
 
 ## Strategy 3: Use /batch for Wide, Parallel Changes
 
-The `/batch` command is purpose-built for changes that touch many files with the same kind of transformation. It solves the context window problem directly -- each spawned agent gets its own isolated context window, so no single instance needs to hold the entire codebase.
+The `/batch` skill is purpose-built for changes that touch many files with the same kind of transformation. It solves the context window problem directly -- each spawned agent gets its own isolated context window, so no single instance needs to hold the entire codebase.
 
 ### How /batch works
 
@@ -208,11 +208,6 @@ one unit. Update corresponding test files.
 Review the plan carefully before approving. If the proposed units aren't truly independent -- say two agents both need to modify the same interface file -- push back and ask for re-decomposition. Overlapping units cause merge conflicts.
 
 Your `CLAUDE.md` and custom skills are inherited by each spawned agent, so a well-maintained project context improves every parallel worker.
-
-### Requirements
-
-- Git repository (worktree isolation is mandatory)
-- Claude Code v2.1.63 or higher
 
 ## Strategy 4: Use Git Worktrees for Manual Parallelism
 
@@ -316,7 +311,7 @@ Skills get auto-injected into context when relevant, which is far more token-eff
 
 ## Strategy 8: Monitor Context and Compact Proactively
 
-Don't wait for auto-compaction to kick in at ~75-92% context usage. Use `/compact` proactively at logical breakpoints:
+Don't wait for auto-compaction to kick in (~83.5% of context window for a 200K window). Use `/compact` proactively at logical breakpoints:
 
 - After completing a subtask but before starting the next one
 - After a large file read that you no longer need in full detail

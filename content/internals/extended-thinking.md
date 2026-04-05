@@ -10,14 +10,14 @@ weight: 5
 
 Extended thinking gives Claude additional tokens to reason before responding. On Opus 4.6 and Sonnet 4.6, thinking is adaptive: Claude decides how much to think based on task complexity. Thinking tokens are billed as output tokens ($25/MTok on Opus 4.6), making thinking depth the second-biggest cost lever after model selection. On Opus 4.6, effort levels (low/medium/high/max) control how much Claude thinks; Sonnet 4.6 supports low/medium/high effort.
 
-| Aspect                         | Details                                                |
-| ------------------------------ | ------------------------------------------------------ |
-| **Default state**              | Enabled by default in Claude Code                      |
-| **Opus 4.6 / Sonnet 4.6 mode** | Adaptive (dynamic depth based on complexity)           |
-| **Other models**               | Manual (fixed budget via `budget_tokens`)              |
-| **Default budget**             | 31,999 tokens (configurable via `MAX_THINKING_TOKENS`) |
-| **Billing**                    | Thinking tokens billed as output tokens                |
-| **Visibility**                 | Summarized view; `Ctrl+O` for verbose thinking text    |
+| Aspect                         | Details                                                                   |
+| ------------------------------ | ------------------------------------------------------------------------- |
+| **Default state**              | Enabled by default in Claude Code                                         |
+| **Opus 4.6 / Sonnet 4.6 mode** | Adaptive (dynamic depth based on complexity)                              |
+| **Other models**               | Manual (fixed budget via `budget_tokens`)                                 |
+| **Default budget**             | Model-dependent: 127,999 (Opus/Sonnet 4.6), 63,999 (Sonnet 4.5/Haiku 4.5) |
+| **Billing**                    | Thinking tokens billed as output tokens                                   |
+| **Visibility**                 | Summarized view; `Ctrl+O` for verbose thinking text                       |
 
 ## Table of Contents
 
@@ -135,14 +135,24 @@ Interleaved thinking is useful for multi-step tasks where each tool result chang
 
 ### Available Levels
 
-| Level      | Thinking Behavior                     | Speed   | Cost    | Availability  |
-| ---------- | ------------------------------------- | ------- | ------- | ------------- |
-| **max**    | No depth limit, absolute maximum      | Slowest | Highest | Opus 4.6 only |
-| **high**   | Almost always thinks deeply (default) | Slow    | High    | All models    |
-| **medium** | May skip thinking for simple queries  | Medium  | Medium  | All models    |
-| **low**    | Minimizes or skips thinking           | Fast    | Low     | All models    |
+| Level      | Thinking Behavior                    | Speed   | Cost    | Availability  |
+| ---------- | ------------------------------------ | ------- | ------- | ------------- |
+| **max**    | No depth limit, absolute maximum     | Slowest | Highest | Opus 4.6 only |
+| **high**   | Almost always thinks deeply          | Slow    | High    | All models    |
+| **medium** | May skip thinking for simple queries | Medium  | Medium  | All models    |
+| **low**    | Minimizes or skips thinking          | Fast    | Low     | All models    |
 
 `max` is exclusive to Opus 4.6 and errors on other models.
+
+**Default effort by subscription tier:**
+
+| Subscription      | Default Model | Default Effort |
+| ----------------- | ------------- | -------------- |
+| Max, Team Premium | Opus 4.6      | medium         |
+| Pro               | Sonnet 4.6    | medium         |
+| Free / 3P         | Sonnet 4.5    | (not set)      |
+
+The default is `medium` for Pro/Max/Team subscribers on Opus 4.6, not `high`. The API treats an unset effort as `high`, but Claude Code explicitly sets `medium` for these tiers.
 
 Effort is a **behavioral signal, not a strict token budget**. At lower effort, Claude still thinks on genuinely difficult problems -- it just thinks less than it would at higher effort for the same problem.
 
@@ -180,12 +190,12 @@ Three methods, in order of priority:
 
 Controls the thinking token budget for manual-mode models:
 
-| Setting          | Value         |
-| ---------------- | ------------- |
-| Default          | 31,999 tokens |
-| Maximum          | 63,999 tokens |
-| Minimum          | 1,024 tokens  |
-| Disable thinking | Set to `0`    |
+| Setting          | Value                                                                     |
+| ---------------- | ------------------------------------------------------------------------- |
+| Default          | Model-dependent: 127,999 (Opus/Sonnet 4.6), 63,999 (Sonnet 4.5/Haiku 4.5) |
+| Maximum          | 127,999 tokens (Opus/Sonnet 4.6), 63,999 tokens (older models)            |
+| Minimum          | 1,024 tokens                                                              |
+| Disable thinking | Set to `0`                                                                |
 
 ```bash
 # Temporary (session only)
@@ -304,7 +314,7 @@ Actual costs vary based on task complexity, response length, and tool call volum
 | Model          | Thinking Mode   | Effort Levels          | Interleaved | Max Output |
 | -------------- | --------------- | ---------------------- | ----------- | ---------- |
 | **Opus 4.6**   | Adaptive        | low, medium, high, max | Automatic   | 128K       |
-| **Sonnet 4.6** | Adaptive        | low, medium, high      | Automatic   | 64K        |
+| **Sonnet 4.6** | Adaptive        | low, medium, high      | Automatic   | 128K       |
 | **Opus 4.5**   | Manual (budget) | low, medium, high      | Beta header | 128K       |
 | **Sonnet 4.5** | Manual (budget) | low, medium, high      | Beta header | 64K        |
 | **Haiku 4.5**  | Manual (budget) | low, medium, high      | Beta header | 64K        |
@@ -346,7 +356,7 @@ Changing thinking parameters invalidates prompt cache for messages, though syste
 
 2. **Disabling thinking globally.** On complex tasks, thinking tokens are where quality improvements come from. Disable it per-task if needed, not globally.
 
-3. **Using "ultrathink" or "think hard" in prompts.** These phrases are interpreted as regular text, not as thinking budget controls. The old "ultrathink" keyword hack has been deprecated.
+3. **Assuming "ultrathink" is deprecated.** The `ultrathink` keyword is an active feature -- typing it in your prompt triggers `high` effort via keyword detection, with rainbow highlighting in the input box. It works as a convenient shortcut for requesting deeper reasoning without changing settings.
 
 4. **Max effort on routine tasks.** `max` effort on simple file edits wastes tokens and adds latency. Reserve `max` for tasks that require many dependent reasoning steps.
 
@@ -364,3 +374,4 @@ Changing thinking parameters invalidates prompt cache for messages, though syste
 - [Cost Management (Claude Code)](https://code.claude.com/docs/en/costs) -- pricing, typical costs
 - [Pricing](https://platform.claude.com/docs/en/about-claude/pricing) -- token pricing per model
 - [Model Selection Article]({{< relref "/guides/model-selection" >}}) -- model comparison and cost strategies
+- [Context Management Article]({{< relref "/internals/context-management" >}}) -- thinking tokens and context window interaction

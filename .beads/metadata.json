@@ -1,0 +1,7 @@
+{
+  "database": "dolt",
+  "backend": "dolt",
+  "dolt_mode": "embedded",
+  "dolt_database": "claude_code_wiki",
+  "project_id": "5f8d21d7-d27e-47e2-bb06-85ecc0738053"
+}

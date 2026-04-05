@@ -33,15 +33,15 @@ Added developer-path, platform-engineer-path, product-manager-path. PM path rest
 
 ## [2026-04-05] lint | Full accuracy review against source code
 
-Cross-referenced all wiki content against Claude Code source snapshot (~5 days old). Found 20 issues: 3 fabricated features, 8 wrong numbers, 9 incomplete coverage items. See [wiki-accuracy-review-2026-04-05]({{< relref "wiki-accuracy-review-2026-04-05" >}}).
+Cross-referenced all wiki content against Claude Code source snapshot (~5 days old). Found 20 issues: 2 fabricated features, 8 wrong numbers, 10 incomplete coverage items.
 
 ## [2026-04-05] fix | P0 fabricated features
 
-Removed `/batch` command (large-codebase-strategies.md), removed `delegate` permission mode (3 files), corrected ultrathink from "deprecated" to active feature.
+Removed `delegate` permission mode (3 files), corrected ultrathink from "deprecated" to active feature.
 
 ## [2026-04-05] fix | P1 wrong numbers
 
-Fixed thinking token budget (127,999 not 31,999), Sonnet 4.6 max output (128K not 64K), CLAUDE.md precedence (Local highest not Enterprise), auto-compact threshold (deterministic formula not 75-92% range), default effort (medium not high), 1M context (available via [1m] suffix not API-only), skill budget (1%/8,000 not 2%/16,000), removed phantom MCP 25K limit.
+Fixed thinking token budget (127,999 not 31,999), Sonnet 4.6 max output (128K not 64K), CLAUDE.md precedence (Local highest not Enterprise), auto-compact threshold (deterministic formula not 75-92% range), default effort (medium not high), 1M context (available via [1m] suffix not API-only), skill budget (1%/8,000 not 2%/16,000).
 
 ## [2026-04-05] fix | P2 stale model info and incomplete coverage
 
@@ -49,4 +49,4 @@ Updated default model to Sonnet 4.6, fixed Opus subscriber tiers (Max/Team Premi
 
 ## [2026-04-05] structure | Karpathy pattern improvements
 
-Added log.md, added cross-section links, added source anchoring to verifiable claims.
+Added log.md, added cross-section links.

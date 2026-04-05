@@ -136,8 +136,6 @@ Precedence (highest to lowest):
 4. Managed policy       (/etc/claude-code/CLAUDE.md)
 ```
 
-(source: `utils/claudemd.ts:1-26`)
-
 Files are loaded in reverse priority order (managed first, local last). The last-loaded content takes precedence where instructions conflict.
 
 These contain your coding standards, preferences, team conventions, and workflow rules. Everything in these files is literally part of the instructions Claude reads before responding.

@@ -10,14 +10,14 @@ weight: 5
 
 Extended thinking gives Claude additional tokens to reason before responding. On Opus 4.6 and Sonnet 4.6, thinking is adaptive: Claude decides how much to think based on task complexity. Thinking tokens are billed as output tokens ($25/MTok on Opus 4.6), making thinking depth the second-biggest cost lever after model selection. On Opus 4.6, effort levels (low/medium/high/max) control how much Claude thinks; Sonnet 4.6 supports low/medium/high effort.
 
-| Aspect                         | Details                                                                                                        |
-| ------------------------------ | -------------------------------------------------------------------------------------------------------------- |
-| **Default state**              | Enabled by default in Claude Code                                                                              |
-| **Opus 4.6 / Sonnet 4.6 mode** | Adaptive (dynamic depth based on complexity)                                                                   |
-| **Other models**               | Manual (fixed budget via `budget_tokens`)                                                                      |
-| **Default budget**             | Model-dependent: 127,999 (Opus/Sonnet 4.6), 63,999 (Sonnet 4.5/Haiku 4.5) (source: `utils/context.ts:167-221`) |
-| **Billing**                    | Thinking tokens billed as output tokens                                                                        |
-| **Visibility**                 | Summarized view; `Ctrl+O` for verbose thinking text                                                            |
+| Aspect                         | Details                                                                   |
+| ------------------------------ | ------------------------------------------------------------------------- |
+| **Default state**              | Enabled by default in Claude Code                                         |
+| **Opus 4.6 / Sonnet 4.6 mode** | Adaptive (dynamic depth based on complexity)                              |
+| **Other models**               | Manual (fixed budget via `budget_tokens`)                                 |
+| **Default budget**             | Model-dependent: 127,999 (Opus/Sonnet 4.6), 63,999 (Sonnet 4.5/Haiku 4.5) |
+| **Billing**                    | Thinking tokens billed as output tokens                                   |
+| **Visibility**                 | Summarized view; `Ctrl+O` for verbose thinking text                       |
 
 ## Table of Contents
 
@@ -152,7 +152,7 @@ Interleaved thinking is useful for multi-step tasks where each tool result chang
 | Pro               | Sonnet 4.6    | medium         |
 | Free / 3P         | Sonnet 4.5    | (not set)      |
 
-The default is `medium` for Pro/Max/Team subscribers on Opus 4.6, not `high` (source: `utils/effort.ts:279-329`). The API treats an unset effort as `high`, but Claude Code explicitly sets `medium` for these tiers.
+The default is `medium` for Pro/Max/Team subscribers on Opus 4.6, not `high`. The API treats an unset effort as `high`, but Claude Code explicitly sets `medium` for these tiers.
 
 Effort is a **behavioral signal, not a strict token budget**. At lower effort, Claude still thinks on genuinely difficult problems -- it just thinks less than it would at higher effort for the same problem.
 
@@ -190,12 +190,12 @@ Three methods, in order of priority:
 
 Controls the thinking token budget for manual-mode models:
 
-| Setting          | Value                                                                                                          |
-| ---------------- | -------------------------------------------------------------------------------------------------------------- |
-| Default          | Model-dependent: 127,999 (Opus/Sonnet 4.6), 63,999 (Sonnet 4.5/Haiku 4.5) (source: `utils/context.ts:167-221`) |
-| Maximum          | 127,999 tokens (Opus/Sonnet 4.6), 63,999 tokens (older models)                                                 |
-| Minimum          | 1,024 tokens                                                                                                   |
-| Disable thinking | Set to `0`                                                                                                     |
+| Setting          | Value                                                                     |
+| ---------------- | ------------------------------------------------------------------------- |
+| Default          | Model-dependent: 127,999 (Opus/Sonnet 4.6), 63,999 (Sonnet 4.5/Haiku 4.5) |
+| Maximum          | 127,999 tokens (Opus/Sonnet 4.6), 63,999 tokens (older models)            |
+| Minimum          | 1,024 tokens                                                              |
+| Disable thinking | Set to `0`                                                                |
 
 ```bash
 # Temporary (session only)

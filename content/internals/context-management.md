@@ -188,7 +188,7 @@ Before invoking the traditional LLM-based summarizer, auto-compact first tries *
 
 ### Auto-Compact in Claude Code
 
-Claude Code handles compaction automatically. You don't need to configure anything. Auto-compact triggers when input tokens exceed `(contextWindow - 20,000) - 13,000` (source: `services/compact/autoCompact.ts:30-76`). For a 200K window, that's 167,000 tokens (~83.5% of the window). The 20,000-token reserve ensures room for the compaction summary output.
+Claude Code handles compaction automatically. You don't need to configure anything. Auto-compact triggers when input tokens exceed `(contextWindow - 20,000) - 13,000`. For a 200K window, that's 167,000 tokens (~83.5% of the window). The 20,000-token reserve ensures room for the compaction summary output.
 
 **Context collapse suppression:** When the experimental **context collapse** system is active, proactive auto-compact is suppressed. Context collapse is a separate context management strategy that operates at different thresholds (90% commit, 95% blocking) and owns the headroom problem when enabled. Letting auto-compact fire at ~93% would race collapse and destroy the granular context it was about to save. Reactive compaction (the fallback that catches API `prompt_too_long` errors) and manual `/compact` remain available. The feature is gated behind `CONTEXT_COLLAPSE` and a remote flag, with an env override via `CLAUDE_CONTEXT_COLLAPSE`.
 

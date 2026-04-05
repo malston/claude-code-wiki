@@ -231,7 +231,7 @@ The three permission decisions: `allow` (skip permission prompt), `deny` (block 
 
 ### Complete Event Table
 
-27 hook events are defined in the source (source: `entrypoints/sdk/coreTypes.ts:25-53`).
+27 hook events are defined:
 
 ```text
 Session lifecycle:

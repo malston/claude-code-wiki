@@ -478,7 +478,7 @@ Claude reads all skill descriptions at session start. The description text is in
 
 - Each skill description costs ~25-100 tokens per message
 - Full skill content loads only on invocation (variable cost)
-- Character budget for skill content: 1% of context window (fallback: 8,000 characters) (source: `tools/SkillTool/prompt.ts:20-41`)
+- Character budget for skill content: 1% of context window (fallback: 8,000 characters)
 - Override with: `SLASH_COMMAND_TOOL_CHAR_BUDGET` environment variable
 
 To minimize token overhead: write concise descriptions, disable model invocation for rarely-used skills, and keep skill content focused.

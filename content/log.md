@@ -7,8 +7,6 @@ weight: 100
 
 Chronological record of wiki ingests, lint passes, and structural changes. Each entry starts with a parseable prefix for scripting: `## [YYYY-MM-DD] action | description`.
 
----
-
 ## [2026-02-09] ingest | Enterprise rollout infrastructure docs
 
 Added infrastructure foundation content: Bedrock, gateway, developer environment, cohort strategy, cost tracking, security controls.

@@ -1,14 +1,12 @@
 ---
 title: Wiki Accuracy Review -- 2026-04-05
 weight: 99
-modified: 2026-04-05T10:46:58-06:00
+modified: 2026-04-05T11:29:03-06:00
 ---
 
 # Wiki Accuracy Review -- 2026-04-05
 
 Cross-referenced all wiki content against the Claude Code source snapshot (~5 days old as of review date). Evaluated structural quality against Karpathy's [LLM Wiki pattern](https://gist.github.com/karpathy/442a6bf555914893e9891c11519de94f).
-
----
 
 ## Part 1: Structural Assessment (Karpathy Lens)
 
@@ -27,8 +25,6 @@ Cross-referenced all wiki content against the Claude Code source snapshot (~5 da
 - **Weak cross-section linking** -- pages link within their section via Hugo relref, but little cross-pollination (permissions guide does not link to enterprise permissions; model selection does not link to extended thinking internals).
 - **Dated enterprise section** -- "February 2026" with a disclaimer to check docs, but no mechanism to flag which claims have drifted.
 - **No raw sources layer** -- wiki references source code but doesn't maintain curated immutable sources (release notes, changelogs, official docs snapshots) to anchor verification.
-
----
 
 ## Part 2: Accuracy Findings by Section
 
@@ -81,8 +77,6 @@ Cross-referenced all wiki content against the Claude Code source snapshot (~5 da
 | `memory-organization.md`       | MEMORY.md limits | 200-line cap only     | Also 25KB byte limit (`memdir/memdir.ts:38`)                            |
 | `permissions-enterprise.md`    | Settings cascade | Invents "CLI" scope   | Called `flagSettings` internally                                        |
 
----
-
 ## Part 3: Severity Summary
 
 ### Fabricated features (highest severity)
@@ -113,8 +107,6 @@ Cross-referenced all wiki content against the Claude Code source snapshot (~5 da
 15. HTTP hooks undocumented
 16. Session memory compaction, context collapse, cache break detection undocumented
 17. MEMORY.md byte limit undocumented
-
----
 
 ## Part 4: Recommendations
 

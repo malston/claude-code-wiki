@@ -54,6 +54,7 @@ Claude Code extends capabilities through three distinct mechanisms with differen
   - [MCP Servers](#mcp-servers)
     - [What They Are](#what-they-are-2)
     - [Key Characteristics](#key-characteristics-2)
+    - [Output Limits](#output-limits)
     - [When to Use MCP Tools](#when-to-use-mcp-tools)
   - [Context Window Implications](#context-window-implications)
     - [Main Instance](#main-instance)
@@ -689,6 +690,12 @@ MCP Server (stateless)
     └─ No memory retained
 ```
 
+### Output Limits
+
+- Default max: 25,000 tokens per server response
+- Overridable via `MAX_MCP_OUTPUT_TOKENS` environment variable
+- Truncation enforced automatically
+
 ### When to Use MCP Tools
 
 - External data retrieval
@@ -707,7 +714,7 @@ Token budget consumed by:
 2. **Instruction memory** (CLAUDE.md hierarchy loaded at startup)
 3. **Auto memory** (MEMORY.md loaded at startup, first 200 lines)
 4. **File references** (`@path/to/file` inclusions)
-5. **Tool results** (variable size per tool call)
+5. **Tool results** (bounded at 25K tokens per MCP call)
 
 ### Subagent Context Distribution
 
@@ -724,7 +731,7 @@ Each subagent gets independent context:
 Minimal overhead:
 
 - Tool input: Few tokens
-- Tool output: Variable size
+- Tool output: Bounded at 25K tokens max
 - No accumulation across calls
 
 ## Memory System Architecture
@@ -836,6 +843,8 @@ Tool call prepared (input bounded)
 Pre-tool hook (optional validation)
     │
 MCP Server processes (stateless)
+    │
+Output limited (25K max)
     │
 Post-tool hook (optional logging)
     │

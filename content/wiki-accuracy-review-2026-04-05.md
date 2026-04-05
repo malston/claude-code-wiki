@@ -1,7 +1,7 @@
 ---
 title: Wiki Accuracy Review -- 2026-04-05
 weight: 99
-modified: 2026-04-05T11:29:03-06:00
+modified: 2026-04-05T11:55:57-06:00
 ---
 
 # Wiki Accuracy Review -- 2026-04-05
@@ -51,7 +51,7 @@ Cross-referenced all wiki content against the Claude Code source snapshot (~5 da
 | Page                      | Issue                      | Wiki Says                     | Source Says                                                                                                                                                                                                                                                                        |
 | ------------------------- | -------------------------- | ----------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `extension-mechanisms.md` | Skill budget               | 2% / 16,000 chars             | 1% / 8,000 chars (`tools/SkillTool/prompt.ts:21-23`)                                                                                                                                                                                                                               |
-| `extension-mechanisms.md` | MCP output limit           | 25,000 tokens                 | No such limit found; confused with FileReadTool's limit                                                                                                                                                                                                                            |
+| `extension-mechanisms.md` | MCP output limit           | 25,000 tokens                 | **Correction:** Limit exists at `utils/mcpValidation.ts:16` (`DEFAULT_MAX_MCP_OUTPUT_TOKENS = 25000`). Original removal was wrong -- restored.                                                                                                                                     |
 | `custom-extensions.md`    | `delegate` permission mode | Listed as valid               | Does not exist (`types/permissions.ts:16-22`)                                                                                                                                                                                                                                      |
 | `hooks-cookbook.md`       | Hook events                | 14 events                     | 27 events in source (`coreTypes.ts:25-53`) -- 13 undocumented: `StopFailure`, `PostCompact`, `PermissionDenied`, `Setup`, `TaskCreated`, `Elicitation`, `ElicitationResult`, `ConfigChange`, `WorktreeCreate`, `WorktreeRemove`, `InstructionsLoaded`, `CwdChanged`, `FileChanged` |
 | `custom-extensions.md`    | Agent file structure       | Subdirectory with `CLAUDE.md` | Single `.md` files with YAML frontmatter (`loadAgentsDir.ts`)                                                                                                                                                                                                                      |

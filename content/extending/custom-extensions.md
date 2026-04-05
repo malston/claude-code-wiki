@@ -141,6 +141,11 @@ Your system prompt goes here in the Markdown body.
 | `mcpServers`      | No       | None      | Named MCP servers available to this subagent        |
 | `hooks`           | No       | None      | Lifecycle hooks scoped to this subagent             |
 | `memory`          | No       | None      | `user`, `project`, or `local` for persistent memory |
+| `isolation`       | No       | None      | `worktree` or `remote` for execution isolation      |
+| `effort`          | No       | `inherit` | Effort level (`low`, `medium`, `high`)              |
+| `background`      | No       | `false`   | Run subagent in background                          |
+| `omitClaudeMd`    | No       | `false`   | Skip loading CLAUDE.md into subagent context        |
+| `initialPrompt`   | No       | None      | Initial prompt sent to subagent on start            |
 
 ### System Prompt Body
 
@@ -220,14 +225,13 @@ Use `model: sonnet` or `model: haiku` to reduce costs on subagents that don't ne
 
 ### Permission Modes
 
-| Mode                | Behavior                                 |
-| ------------------- | ---------------------------------------- |
-| `default`           | Standard permission checking             |
-| `acceptEdits`       | Auto-accept file edit/write operations   |
-| `dontAsk`           | Auto-deny all permission prompts         |
-| `delegate`          | Coordination-only (for agent team leads) |
-| `bypassPermissions` | Skip all permission checks               |
-| `plan`              | Read-only exploration mode               |
+| Mode                | Behavior                               |
+| ------------------- | -------------------------------------- |
+| `default`           | Standard permission checking           |
+| `acceptEdits`       | Auto-accept file edit/write operations |
+| `dontAsk`           | Auto-deny all permission prompts       |
+| `bypassPermissions` | Skip all permission checks             |
+| `plan`              | Read-only exploration mode             |
 
 `plan` is useful for research-only subagents. `acceptEdits` is useful for formatting or code generation subagents where you want automated file writes.
 
@@ -474,7 +478,7 @@ Claude reads all skill descriptions at session start. The description text is in
 
 - Each skill description costs ~25-100 tokens per message
 - Full skill content loads only on invocation (variable cost)
-- Character budget for skill content: 2% of context window (fallback: 16,000 characters)
+- Character budget for skill content: 1% of context window (fallback: 8,000 characters) (source: `tools/SkillTool/prompt.ts:20-41`)
 - Override with: `SLASH_COMMAND_TOOL_CHAR_BUDGET` environment variable
 
 To minimize token overhead: write concise descriptions, disable model invocation for rarely-used skills, and keep skill content focused.
@@ -998,7 +1002,7 @@ You can restrict which skills and subagents are available:
 
 7. **Use `disable-model-invocation: true` for rarely-used skills.** This removes them from the per-message catalog, saving tokens.
 
-8. **Keep skill content under the character budget.** Default is 2% of context window (~4,000 characters for 200K context). Skills that exceed this get truncated.
+8. **Keep skill content under the character budget.** Default is 1% of context window (~2,000 characters for 200K context). Skills that exceed this get truncated.
 
 9. **Scope extensions appropriately.** Personal preferences (formatting, notifications) go in `~/.claude/`. Team conventions (code review checklists, API standards) go in `.claude/` and get committed.
 

@@ -13,7 +13,7 @@ Claude Code offers three model tiers -- Opus, Sonnet, and Haiku -- each with dif
 | Model          | Strengths                       | Input/MTok | Output/MTok | Cache Read | Speed    |
 | -------------- | ------------------------------- | ---------- | ----------- | ---------- | -------- |
 | **Opus 4.6**   | Complex reasoning, architecture | $5         | $25         | $0.50      | Moderate |
-| **Sonnet 4.5** | Daily coding, balanced          | $3         | $15         | $0.30      | Fast     |
+| **Sonnet 4.6** | Daily coding, balanced          | $3         | $15         | $0.30      | Fast     |
 | **Haiku 4.5**  | Quick tasks, simple operations  | $1         | $5          | $0.10      | Fastest  |
 
 ## Table of Contents
@@ -23,7 +23,7 @@ Claude Code offers three model tiers -- Opus, Sonnet, and Haiku -- each with dif
   - [Table of Contents](#table-of-contents)
   - [The Model Lineup](#the-model-lineup)
     - [Opus 4.6](#opus-46)
-    - [Sonnet 4.5](#sonnet-45)
+    - [Sonnet 4.6](#sonnet-46)
     - [Haiku 4.5](#haiku-45)
     - [Legacy Models](#legacy-models)
   - [When to Use Each Model](#when-to-use-each-model)
@@ -74,12 +74,12 @@ The most capable model. Best for tasks requiring deep reasoning, complex archite
 | Context window     | 200K (standard), 1M (beta) |
 | Max output         | 128K tokens                |
 | Extended thinking  | Yes (adaptive)             |
-| Effort levels      | Low, medium, high          |
+| Effort levels      | Low, medium, high, max     |
 | Knowledge cutoff   | May 2025                   |
 
-Opus 4.6 is the default for Max, Teams, and Pro subscribers. It supports adaptive thinking -- dynamically allocating reasoning depth based on task complexity.
+Opus 4.6 is the default for Max and Team Premium subscribers. Pro subscribers default to Sonnet. It supports adaptive thinking -- dynamically allocating reasoning depth based on task complexity.
 
-### Sonnet 4.5
+### Sonnet 4.6
 
 The workhorse model. Handles most coding tasks effectively at lower cost and faster speed than Opus.
 
@@ -134,7 +134,7 @@ Is the task complex reasoning, architecture, or multi-step planning?
   NO  ──▼
 
 Is it standard coding work (features, bugs, refactoring, tests)?
-  YES ──▶ Sonnet 4.5
+  YES ──▶ Sonnet 4.6
   NO  ──▼
 
 Is it a simple lookup, quick fix, or subagent task?
@@ -168,11 +168,11 @@ Claude Code provides convenience aliases that always point to the latest version
 
 | Alias        | Resolves To         | Use Case                              |
 | ------------ | ------------------- | ------------------------------------- |
-| `default`    | Account-dependent   | Let Claude Code choose                |
 | `opus`       | Opus 4.6            | Complex reasoning                     |
-| `sonnet`     | Sonnet 4.5          | Daily coding                          |
+| `sonnet`     | Sonnet 4.6          | Daily coding                          |
+| `best`       | Opus 4.6            | Alias for the most capable model      |
 | `haiku`      | Haiku 4.5           | Fast simple tasks                     |
-| `sonnet[1m]` | Sonnet 4.5 + 1M ctx | Long sessions                         |
+| `sonnet[1m]` | Sonnet 4.6 + 1M ctx | Long sessions                         |
 | `opusplan`   | Opus + Sonnet       | Plan with Opus, implement with Sonnet |
 
 To pin a specific version (e.g., for reproducibility), use the full model name:
@@ -216,10 +216,11 @@ This gives you Opus-quality planning at Sonnet-level execution cost. Particularl
 
 ### Effort Levels
 
-Opus 4.6 supports adaptive thinking with three effort levels that control how deeply it reasons:
+Opus 4.6 supports adaptive thinking with four effort levels that control how deeply it reasons:
 
 | Level      | Behavior                                | When to Use                     |
 | ---------- | --------------------------------------- | ------------------------------- |
+| **Max**    | Maximum reasoning depth (Opus 4.6 only) | Hardest problems, research      |
 | **High**   | Deep reasoning, full thinking (default) | Architecture, complex bugs      |
 | **Medium** | Moderate reasoning                      | Standard features, clear tasks  |
 | **Low**    | Fast, minimal thinking                  | Simple fixes, well-defined work |
@@ -295,7 +296,7 @@ The system prompt (12,000-20,000 tokens) is re-sent every message but heavily ca
 
 Prompt caching dramatically reduces the cost of re-sending the system prompt and stable conversation prefix:
 
-| Operation      | Multiplier | Opus 4.6   | Sonnet 4.5 | Haiku 4.5  |
+| Operation      | Multiplier | Opus 4.6   | Sonnet 4.6 | Haiku 4.5  |
 | -------------- | ---------- | ---------- | ---------- | ---------- |
 | Cache write    | 1.25x base | $6.25/MTok | $3.75/MTok | $1.25/MTok |
 | **Cache read** | **0.1x**   | **$0.50**  | **$0.30**  | **$0.10**  |
@@ -334,10 +335,10 @@ From Anthropic's data:
 
 - **Average:** ~$6/developer/day
 - **90th percentile:** <$12/developer/day
-- **Monthly average:** ~$100-200/developer (Sonnet 4.5)
+- **Monthly average:** ~$100-200/developer (Sonnet 4.6)
 - **Background usage:** <$0.04/session (summarization, status checks)
 
-These numbers assume Sonnet 4.5. Opus sessions cost roughly 1.7x more for the same work due to higher input/output pricing.
+These numbers assume Sonnet 4.6. Opus sessions cost roughly 1.7x more for the same work due to higher input/output pricing.
 
 ## Cost Reduction Strategies
 
@@ -594,3 +595,4 @@ Prompt caching is always net positive for Claude Code usage patterns. Don't disa
 - [Prompt Caching Article]({{< relref "/internals/prompt-caching" >}}) -- Wiki deep dive on caching economics
 - [Context Management Article]({{< relref "/internals/context-management" >}}) -- Wiki guide to managing context window
 - [Token Optimization Article]({{< relref "/internals/token-optimization" >}}) -- Wiki guide to reducing per-message overhead
+- [Extended Thinking Article]({{< relref "/internals/extended-thinking" >}}) -- Thinking budgets, effort levels, adaptive thinking details

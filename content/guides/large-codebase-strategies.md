@@ -161,23 +161,26 @@ For large codebases, delegate the exploration to parallel subagents -- one per t
 
 The map is a disposable artifact. Once you've turned its insights into proper `CLAUDE.md` content, delete it. Its job was to get you oriented fast without burning your first session's context on exploration that produces no durable output.
 
-## Strategy 3: Use /batch for Wide, Parallel Changes
+## Strategy 3: Use Parallel Subagents for Wide Changes
 
-The `/batch` command is purpose-built for changes that touch many files with the same kind of transformation. It solves the context window problem directly -- each spawned agent gets its own isolated context window, so no single instance needs to hold the entire codebase.
+For changes that touch many files with the same kind of transformation, spawn parallel subagents -- each with its own isolated context window. This prevents any single instance from needing to hold the entire codebase.
 
-### How /batch works
+### The pattern
+
+1. **Research and plan.** Use a subagent to explore affected files, patterns, and call sites. Decompose the work into independent units.
+
+2. **Spawn workers.** Launch one subagent per unit with worktree isolation (`isolation: worktree` in the agent definition). Each agent's prompt should be self-contained: overall goal, its specific task, and codebase conventions.
+
+3. **Collect results.** Each subagent implements its unit, runs tests, and commits. Merge from worktrees when all units complete.
 
 ```text
-/batch migrate all handlers in src/api/ from Express to Hono
+Use parallel subagents to migrate all handlers in src/api/ from the old
+middleware.Auth() pattern to the AuthMiddleware.Wrap() pattern.
+Each handler file is one unit. Use worktree isolation for each agent.
+Update corresponding test files.
 ```
 
-1. **Research and Plan.** The orchestrator enters plan mode, launches explore agents to find all affected files, patterns, and call sites. It decomposes the work into 5--30 independent units.
-
-2. **Spawn Workers.** After you approve the plan, one background agent launches per unit -- all in parallel. Each agent gets its own git worktree for full isolation. Each agent's prompt is self-contained: overall goal, its specific task, and codebase conventions from research.
-
-3. **Track Progress.** The orchestrator renders a status table and updates it as agents complete. Each worker implements its unit, runs tests, and opens a pull request.
-
-### When to use /batch
+### When to use parallel subagents
 
 - Dependency migrations across many packages
 - API contract changes and all their callers
@@ -185,34 +188,19 @@ The `/batch` command is purpose-built for changes that touch many files with the
 - Replacing a library across the codebase (e.g., lodash to native)
 - Adding type annotations, docstrings, or test scaffolding at scale
 
-### When not to use /batch
+### When not to use them
 
 - Changes with dependencies between units (use Agent Teams instead)
 - Surgical changes in one area of the codebase (use a single focused session)
 - Exploratory work where the approach isn't clear yet
 
-### Getting good results from /batch
+### Getting good results
 
-Write specific instructions. The quality of the decomposition depends on how well you describe the change:
+Write specific instructions. The quality of the decomposition depends on how well you describe the change. Vague prompts produce poor task boundaries; specific prompts with clear unit definitions produce independent, mergeable work.
 
-```text
-# Too vague -- poor decomposition
-/batch clean up the handlers
-
-# Specific -- good decomposition
-/batch migrate all handlers in src/api/ from the old middleware.Auth()
-pattern to the AuthMiddleware.Wrap() pattern. Each handler file is
-one unit. Update corresponding test files.
-```
-
-Review the plan carefully before approving. If the proposed units aren't truly independent -- say two agents both need to modify the same interface file -- push back and ask for re-decomposition. Overlapping units cause merge conflicts.
+Ensure the proposed units are truly independent -- if two agents both need to modify the same interface file, that's a conflict waiting to happen. Overlapping units cause merge conflicts.
 
 Your `CLAUDE.md` and custom skills are inherited by each spawned agent, so a well-maintained project context improves every parallel worker.
-
-### Requirements
-
-- Git repository (worktree isolation is mandatory)
-- Claude Code v2.1.63 or higher
 
 ## Strategy 4: Use Git Worktrees for Manual Parallelism
 
@@ -316,7 +304,7 @@ Skills get auto-injected into context when relevant, which is far more token-eff
 
 ## Strategy 8: Monitor Context and Compact Proactively
 
-Don't wait for auto-compaction to kick in at ~75-92% context usage. Use `/compact` proactively at logical breakpoints:
+Don't wait for auto-compaction to kick in (~83.5% of context window for a 200K window). Use `/compact` proactively at logical breakpoints:
 
 - After completing a subtask but before starting the next one
 - After a large file read that you no longer need in full detail
@@ -331,7 +319,7 @@ For very long sessions, consider `/clear` and starting fresh. If you've committe
 | Change type                                      | Strategy                                          |
 | ------------------------------------------------ | ------------------------------------------------- |
 | Narrow and deep (one module, complex logic)      | Single session, tight scoping, three-step pattern |
-| Wide and uniform (same change across many files) | `/batch`                                          |
+| Wide and uniform (same change across many files) | Parallel subagents with worktree isolation        |
 | Multiple independent tasks                       | Manual worktrees (`claude --worktree`)            |
 | Large refactor with ordered dependencies         | Chained smaller steps with commits                |
 | Recurring patterns across sessions               | Skills and CLAUDE.md                              |

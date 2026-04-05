@@ -18,7 +18,7 @@ Claude Code's memory system is a hierarchy of markdown files loaded into the sys
 | **User memory**     | `~/.claude/CLAUDE.md`                  | All your projects  | Every message                                   | Just you              |
 | **User rules**      | `~/.claude/rules/*.md`                 | All your projects  | Every message                                   | Just you              |
 | **Project local**   | `./CLAUDE.local.md`                    | You + this project | Every message                                   | Just you (gitignored) |
-| **Auto memory**     | `~/.claude/projects/<project>/memory/` | You + this project | First 200 lines of MEMORY.md                    | Just you              |
+| **Auto memory**     | `~/.claude/projects/<project>/memory/` | You + this project | First 200 lines / 25KB of MEMORY.md             | Just you              |
 | **Child CLAUDE.md** | Subdirectories of working dir          | Context-dependent  | On demand (when Claude reads files in that dir) | Team (via git)        |
 
 ### Memory as Context Engineering
@@ -31,7 +31,7 @@ The memory hierarchy maps to four operations identified in [LangChain's context 
 | ------------ | ----------------------------------------- | ---------------------------------------------------------------------- |
 | **Write**    | Save information outside the window       | Auto memory, MEMORY.md topic files, CLAUDE.local.md                    |
 | **Select**   | Pull relevant information into the window | Path-specific rules, `@imports`, on-demand child CLAUDE.md             |
-| **Compress** | Retain only essential tokens              | The 200-line limit, keeping files concise, periodic review             |
+| **Compress** | Retain only essential tokens              | The 200-line / 25KB limit, keeping files concise, periodic review      |
 | **Isolate**  | Split context across separate scopes      | User vs project vs local scope, rules directory, topic file separation |
 
 The rest of this guide covers how to apply these operations through Claude Code's memory system.
@@ -61,7 +61,7 @@ The rest of this guide covers how to apply these operations through Claude Code'
     - [Sharing Rules Across Projects](#sharing-rules-across-projects)
   - [Auto Memory](#auto-memory)
     - [What Claude Remembers](#what-claude-remembers)
-    - [The 200-Line Limit](#the-200-line-limit)
+    - [The 200-Line / 25KB Limit](#the-200-line--25kb-limit)
     - [Topic Files](#topic-files)
     - [Reviewing Auto Memory for Accuracy](#reviewing-auto-memory-for-accuracy)
     - [Managing Auto Memory](#managing-auto-memory)
@@ -99,7 +99,7 @@ Files loaded (bottom to top):
 Plus:
   /home/user/projects/my-app/.claude/rules/*.md  (project rules)
   ~/.claude/rules/*.md                           (user rules)
-  ~/.claude/projects/<project>/memory/MEMORY.md  (auto memory, first 200 lines)
+  ~/.claude/projects/<project>/memory/MEMORY.md  (auto memory, first 200 lines / 25KB)
 ```
 
 Child directories (below your working directory) are different -- their CLAUDE.md files load on demand only when Claude reads files in those directories, not at startup.
@@ -413,9 +413,9 @@ You can also tell Claude to remember specific things:
 "save to memory that the API tests require a local Redis instance"
 ```
 
-### The 200-Line Limit
+### The 200-Line / 25KB Limit
 
-Only the first 200 lines of `MEMORY.md` are loaded into the system prompt. Everything beyond line 200 is invisible at session start. This is a hard constraint -- MEMORY.md must be concise.
+Only the first 200 lines of `MEMORY.md` are loaded into the system prompt, subject to a 25KB byte cap (whichever limit is hit first). Everything beyond is invisible at session start. These are hard constraints -- MEMORY.md must be concise.
 
 ```sh
 ~/.claude/projects/<project>/memory/
@@ -425,11 +425,11 @@ Only the first 200 lines of `MEMORY.md` are loaded into the system prompt. Every
 └── patterns.md         # Codebase patterns
 ```
 
-MEMORY.md should act as an index -- concise summaries with links to detailed topic files. Topic files are loaded on demand when Claude needs the information, not at startup.
+MEMORY.md should act as an index -- concise summaries with links to detailed topic files. Topic files are loaded on demand when Claude needs the information, not at startup. The 25KB byte limit means table-heavy or code-heavy index files can hit the cap before reaching 200 lines.
 
 ### Topic Files
 
-Topic files let you store detailed notes without hitting the 200-line limit:
+Topic files let you store detailed notes without hitting the 200-line / 25KB limit:
 
 ```markdown
 # MEMORY.md (concise index)
@@ -654,7 +654,7 @@ The rules directory exists for this case. Use it when CLAUDE.md exceeds ~100 lin
 
 6. **Use path-specific rules sparingly** -- Only add `paths` frontmatter when rules genuinely apply to specific file types. Most rules are universal within a project.
 
-7. **Keep MEMORY.md as an index** -- Concise summaries within 200 lines, detailed notes in topic files that load on demand.
+7. **Keep MEMORY.md as an index** -- Concise summaries within 200 lines / 25KB, detailed notes in topic files that load on demand.
 
 8. **Use CLAUDE.local.md for personal environment details** -- Ports, URLs, test credentials, local overrides. It's gitignored automatically.
 

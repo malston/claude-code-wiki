@@ -18,7 +18,7 @@ The context window is Claude's working memory -- everything the model can refere
 | Claude Sonnet 4   | 200K tokens     | --              | --                               |
 | Claude Haiku 4.5  | 200K tokens     | --              | --                               |
 
-The 1M token context window is currently available in beta on the API only. Standard claude.ai and Claude Code users access the 200K window unless the beta header is explicitly enabled.
+The 1M token context window is available in Claude Code by appending `[1m]` to the model name (e.g., `opus[1m]`, `sonnet[1m]`) in the model picker or via the `--model` flag.
 
 **Key insight:** [Prompt caching]({{< relref "prompt-caching" >}}) reduces the _cost_ of repeated content, but every token still occupies context window _space_. You can afford a 20,000-token system prompt financially, but those 20,000 tokens are unavailable for conversation content regardless.
 
@@ -34,6 +34,7 @@ The 1M token context window is currently available in beta on the API only. Stan
   - [Context Awareness](#context-awareness)
   - [When Context Runs Out: Compaction](#when-context-runs-out-compaction)
     - [How Compaction Works](#how-compaction-works)
+    - [Session Memory Compaction](#session-memory-compaction)
     - [Auto-Compact in Claude Code](#auto-compact-in-claude-code)
     - [Manual Compaction](#manual-compaction)
     - [What Compaction Preserves and Loses](#what-compaction-preserves-and-loses)
@@ -181,9 +182,15 @@ After compaction:
 └──────────────────────────────────────────────────┘
 ```
 
+### Session Memory Compaction
+
+Before invoking the traditional LLM-based summarizer, auto-compact first tries **session memory compaction** (`trySessionMemoryCompaction`). Session memory is a structured document that a background extractor maintains throughout the conversation -- it tracks decisions, file paths, task state, and similar context. If session memory exists and is non-empty, the system uses it directly as the compaction summary instead of making an expensive API call to generate one. It keeps recent messages (at least 10K tokens / 5 text-block messages, up to 40K tokens) verbatim after the summary boundary. If session memory is unavailable or the post-compact size would still exceed the auto-compact threshold, the system falls back to traditional compaction. The feature is gated behind two remote flags (`tengu_session_memory` and `tengu_sm_compact`) and can be forced on/off via `ENABLE_CLAUDE_CODE_SM_COMPACT` / `DISABLE_CLAUDE_CODE_SM_COMPACT` environment variables.
+
 ### Auto-Compact in Claude Code
 
-Claude Code handles compaction automatically. You don't need to configure anything. When the context usage reaches roughly 75-92% (depending on internal heuristics), auto-compact triggers and summarizes the conversation.
+Claude Code handles compaction automatically. You don't need to configure anything. Auto-compact triggers when input tokens exceed `(contextWindow - 20,000) - 13,000` (source: `services/compact/autoCompact.ts:30-76`). For a 200K window, that's 167,000 tokens (~83.5% of the window). The 20,000-token reserve ensures room for the compaction summary output.
+
+**Context collapse suppression:** When the experimental **context collapse** system is active, proactive auto-compact is suppressed. Context collapse is a separate context management strategy that operates at different thresholds (90% commit, 95% blocking) and owns the headroom problem when enabled. Letting auto-compact fire at ~93% would race collapse and destroy the granular context it was about to save. Reactive compaction (the fallback that catches API `prompt_too_long` errors) and manual `/compact` remain available. The feature is gated behind `CONTEXT_COLLAPSE` and a remote flag, with an env override via `CLAUDE_CONTEXT_COLLAPSE`.
 
 You'll see a message like:
 
@@ -277,7 +284,7 @@ Context accumulates faster in unfocused sessions:
 
 For sessions that will be particularly long or context-heavy, the 1M token context window provides 5x the standard capacity. This is available in beta for Opus 4.6 and Sonnet 4.6, accessible via the API with the beta header enabled.
 
-**Trade-off:** Tokens above 200K are billed at 2x input and 1.5x output pricing. For very long sessions, the extra cost may be worth avoiding compaction and its associated information loss. Note that the 1M window is API-only for now -- standard claude.ai and Claude Code users remain on the 200K window.
+**Trade-off:** Tokens above 200K are billed at 2x input and 1.5x output pricing. For very long sessions, the extra cost may be worth avoiding compaction and its associated information loss. Select the 1M window in Claude Code by choosing `opus[1m]` or `sonnet[1m]` from the model picker.
 
 ## How Context Flows in Claude Code
 

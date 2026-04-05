@@ -130,11 +130,15 @@ All discovered CLAUDE.md files from every scope are loaded into the system promp
 
 ```text
 Precedence (highest to lowest):
-1. Enterprise policy    (organization-wide)
-2. Project CLAUDE.md    (repo root, version controlled)
+1. Project local        (.claude/CLAUDE.local.md, .claude/rules/*.md)
+2. Project CLAUDE.md    (repo root CLAUDE.md, .claude/CLAUDE.md)
 3. User CLAUDE.md       (~/.claude/CLAUDE.md)
-4. Project local        (.claude/CLAUDE.local.md)
+4. Managed policy       (/etc/claude-code/CLAUDE.md)
 ```
+
+(source: `utils/claudemd.ts:1-26`)
+
+Files are loaded in reverse priority order (managed first, local last). The last-loaded content takes precedence where instructions conflict.
 
 These contain your coding standards, preferences, team conventions, and workflow rules. Everything in these files is literally part of the instructions Claude reads before responding.
 

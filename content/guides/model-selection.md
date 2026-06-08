@@ -10,11 +10,13 @@ weight: 5
 
 Claude Code offers three model tiers -- Opus, Sonnet, and Haiku -- each with different capability, speed, and cost profiles. The right model depends on the task: Opus for complex reasoning, Sonnet for daily coding, Haiku for fast simple tasks. Beyond model choice, Claude Code provides several cost control mechanisms: prompt caching, auto-compaction, budget caps, effort levels, and subagent model selection. This article covers how to choose models, configure them, and manage costs effectively.
 
-| Model          | Strengths                       | Input/MTok | Output/MTok | Cache Read | Speed    |
-| -------------- | ------------------------------- | ---------- | ----------- | ---------- | -------- |
-| **Opus 4.6**   | Complex reasoning, architecture | $5         | $25         | $0.50      | Moderate |
-| **Sonnet 4.6** | Daily coding, balanced          | $3         | $15         | $0.30      | Fast     |
-| **Haiku 4.5**  | Quick tasks, simple operations  | $1         | $5          | $0.10      | Fastest  |
+| Model          | Strengths                                    | Input/MTok | Output/MTok | Cache Read | Speed    |
+| -------------- | -------------------------------------------- | ---------- | ----------- | ---------- | -------- |
+| **Opus 4.8**   | Long-horizon agentic work, complex reasoning | $5         | $25         | $0.50      | Moderate |
+| **Sonnet 4.6** | Daily coding, balanced                       | $3         | $15         | $0.30      | Fast     |
+| **Haiku 4.5**  | Quick tasks, simple operations               | $1         | $5          | $0.10      | Fastest  |
+
+Opus 4.8, 4.7, and 4.6 share the same per-token pricing. Opus 4.8 is the current default for the `opus` alias.
 
 ## Table of Contents
 
@@ -22,7 +24,8 @@ Claude Code offers three model tiers -- Opus, Sonnet, and Haiku -- each with dif
   - [Executive Summary](#executive-summary)
   - [Table of Contents](#table-of-contents)
   - [The Model Lineup](#the-model-lineup)
-    - [Opus 4.6](#opus-46)
+    - [Opus 4.8](#opus-48)
+    - [Opus 4.7 and 4.6](#opus-47-and-46)
     - [Sonnet 4.6](#sonnet-46)
     - [Haiku 4.5](#haiku-45)
     - [Legacy Models](#legacy-models)
@@ -34,7 +37,9 @@ Claude Code offers three model tiers -- Opus, Sonnet, and Haiku -- each with dif
     - [Switching Models](#switching-models)
     - [The opusplan Strategy](#the-opusplan-strategy)
     - [Effort Levels](#effort-levels)
+    - [Fallback Models](#fallback-models)
     - [Extended Context](#extended-context)
+    - [Fast Mode](#fast-mode)
     - [Subagent Model Selection](#subagent-model-selection)
   - [Understanding Costs](#understanding-costs)
     - [How Costs Accumulate](#how-costs-accumulate)
@@ -62,38 +67,51 @@ Claude Code offers three model tiers -- Opus, Sonnet, and Haiku -- each with dif
 
 ## The Model Lineup
 
-### Opus 4.6
+### Opus 4.8
 
-The most capable model. Best for tasks requiring deep reasoning, complex architecture decisions, multi-step planning, and extended thinking.
+The most capable model. Best for long-horizon agentic work, complex architecture decisions, multi-step planning, and extended thinking.
 
-| Attribute          | Value                      |
-| ------------------ | -------------------------- |
-| Input pricing      | $5/MTok                    |
-| Output pricing     | $25/MTok                   |
-| Cache read pricing | $0.50/MTok                 |
-| Context window     | 200K (standard), 1M (beta) |
-| Max output         | 128K tokens                |
-| Extended thinking  | Yes (adaptive)             |
-| Effort levels      | Low, medium, high, max     |
-| Knowledge cutoff   | May 2025                   |
+| Attribute          | Value                         |
+| ------------------ | ----------------------------- |
+| Input pricing      | $5/MTok                       |
+| Output pricing     | $25/MTok                      |
+| Cache read pricing | $0.50/MTok                    |
+| Context window     | 1M (standard pricing)         |
+| Max output         | 128K tokens                   |
+| Extended thinking  | Yes (adaptive only)           |
+| Effort levels      | Low, medium, high, xhigh, max |
+| Default effort     | High                          |
 
-Opus 4.6 is the default for Max and Team Premium subscribers. Pro subscribers default to Sonnet. It supports adaptive thinking -- dynamically allocating reasoning depth based on task complexity.
+Opus 4.8 is the default for Max and Team Premium subscribers and what the `opus` alias resolves to. Pro subscribers default to Sonnet. It supports adaptive thinking -- dynamically allocating reasoning depth based on task complexity -- and defaults to `high` effort, with `/effort xhigh` available for harder agentic work. Opus 4.8 uses a leaner system prompt than earlier models by default, which trims the fixed per-message token overhead (see the [System Prompt article]({{< relref "/internals/system-prompt" >}})).
+
+Opus 4.7 and 4.8 use a different tokenizer than Opus 4.6 and earlier. Per-token pricing is identical, but the same text can tokenize to as much as 35% more tokens, so compare total cost rather than assuming the price tag tells the whole story.
+
+### Opus 4.7 and 4.6
+
+Prior-generation Opus models, both still active and priced identically to Opus 4.8 ($5/$25/$0.50 per MTok, 1M context at standard pricing, 128K max output).
+
+| Model    | Thinking      | Effort levels                 | Notes                                                 |
+| -------- | ------------- | ----------------------------- | ----------------------------------------------------- |
+| Opus 4.7 | Adaptive only | Low, medium, high, xhigh, max | Same request surface as 4.8                           |
+| Opus 4.6 | Adaptive      | Low, medium, high, max        | `budget_tokens` deprecated but functional; no `xhigh` |
+
+On Opus 4.7 and 4.8, `budget_tokens` and sampling parameters are removed -- use adaptive thinking and effort. On Opus 4.6, manual `budget_tokens` still works but is deprecated in favor of adaptive thinking.
 
 ### Sonnet 4.6
 
 The workhorse model. Handles most coding tasks effectively at lower cost and faster speed than Opus.
 
-| Attribute          | Value                      |
-| ------------------ | -------------------------- |
-| Input pricing      | $3/MTok                    |
-| Output pricing     | $15/MTok                   |
-| Cache read pricing | $0.30/MTok                 |
-| Context window     | 200K (standard), 1M (beta) |
-| Max output         | 64K tokens                 |
-| Extended thinking  | Yes                        |
-| Knowledge cutoff   | January 2025               |
+| Attribute          | Value                 |
+| ------------------ | --------------------- |
+| Input pricing      | $3/MTok               |
+| Output pricing     | $15/MTok              |
+| Cache read pricing | $0.30/MTok            |
+| Context window     | 1M (standard pricing) |
+| Max output         | 64K tokens            |
+| Extended thinking  | Yes (adaptive)        |
+| Effort levels      | Low, medium, high     |
 
-Anthropic's official recommendation for uncertain model choice. Good at code generation, bug fixing, test writing, and refactoring.
+Anthropic's official recommendation for uncertain model choice. Good at code generation, bug fixing, test writing, and refactoring. Supports adaptive thinking and effort levels (low, medium, high -- no `max` or `xhigh`).
 
 ### Haiku 4.5
 
@@ -106,10 +124,10 @@ The speed-optimized model. Best for simple tasks where response time matters mor
 | Cache read pricing | $0.10/MTok    |
 | Context window     | 200K          |
 | Max output         | 64K tokens    |
-| Extended thinking  | Yes           |
-| Knowledge cutoff   | February 2025 |
+| Extended thinking  | Manual budget |
+| Effort levels      | Not supported |
 
-5x cheaper than Opus on input, 5x cheaper on output. Good for subagent tasks, simple lookups, and quick operations that don't need deep reasoning.
+5x cheaper than Opus on input, 5x cheaper on output. Good for subagent tasks, simple lookups, and quick operations that don't need deep reasoning. Haiku 4.5 does not support the effort parameter; control its thinking with `MAX_THINKING_TOKENS` instead.
 
 ### Legacy Models
 
@@ -122,7 +140,7 @@ Still available but migration recommended:
 | Sonnet 4 | $3         | $15         | Same pricing as 4.5               |
 | Opus 4   | $15        | $75         | 3x more expensive than 4.6        |
 
-Opus 4.6 is strictly better and cheaper than Opus 4.1 and Opus 4. There's no reason to stay on the older models.
+Opus 4.8 is strictly better and cheaper than Opus 4.1 and Opus 4. There's no reason to stay on the older models.
 
 ## When to Use Each Model
 
@@ -130,7 +148,7 @@ Opus 4.6 is strictly better and cheaper than Opus 4.1 and Opus 4. There's no rea
 
 ```text
 Is the task complex reasoning, architecture, or multi-step planning?
-  YES ──▶ Opus 4.6
+  YES ──▶ Opus 4.8
   NO  ──▼
 
 Is it standard coding work (features, bugs, refactoring, tests)?
@@ -168,9 +186,9 @@ Claude Code provides convenience aliases that always point to the latest version
 
 | Alias        | Resolves To         | Use Case                              |
 | ------------ | ------------------- | ------------------------------------- |
-| `opus`       | Opus 4.6            | Complex reasoning                     |
+| `opus`       | Opus 4.8            | Complex reasoning                     |
 | `sonnet`     | Sonnet 4.6          | Daily coding                          |
-| `best`       | Opus 4.6            | Alias for the most capable model      |
+| `best`       | Opus 4.8            | Alias for the most capable model      |
 | `haiku`      | Haiku 4.5           | Fast simple tasks                     |
 | `sonnet[1m]` | Sonnet 4.6 + 1M ctx | Long sessions                         |
 | `opusplan`   | Opus + Sonnet       | Plan with Opus, implement with Sonnet |
@@ -178,7 +196,7 @@ Claude Code provides convenience aliases that always point to the latest version
 To pin a specific version (e.g., for reproducibility), use the full model name:
 
 ```bash
-claude --model claude-sonnet-4-5-20250929
+claude --model claude-opus-4-8
 ```
 
 ### Switching Models
@@ -216,39 +234,74 @@ This gives you Opus-quality planning at Sonnet-level execution cost. Particularl
 
 ### Effort Levels
 
-Opus 4.6 supports adaptive thinking with four effort levels that control how deeply it reasons:
+Effort controls how deeply a model reasons and how much it spends per turn. It applies to Opus 4.5, 4.6, 4.7, and 4.8 and to Sonnet 4.6. Sonnet 4.5 and Haiku 4.5 do not support the effort parameter.
 
-| Level      | Behavior                                | When to Use                     |
-| ---------- | --------------------------------------- | ------------------------------- |
-| **Max**    | Maximum reasoning depth (Opus 4.6 only) | Hardest problems, research      |
-| **High**   | Deep reasoning, full thinking (default) | Architecture, complex bugs      |
-| **Medium** | Moderate reasoning                      | Standard features, clear tasks  |
-| **Low**    | Fast, minimal thinking                  | Simple fixes, well-defined work |
+| Level      | Behavior                                | Availability              | When to Use                     |
+| ---------- | --------------------------------------- | ------------------------- | ------------------------------- |
+| **Max**    | Maximum reasoning depth                 | Opus 4.6, 4.7, 4.8        | Hardest problems, research      |
+| **xhigh**  | Between high and max                    | Opus 4.7, 4.8             | Long-horizon agentic coding     |
+| **High**   | Deep reasoning, full thinking (default) | All effort-capable models | Architecture, complex bugs      |
+| **Medium** | Moderate reasoning                      | All effort-capable models | Standard features, clear tasks  |
+| **Low**    | Fast, minimal thinking                  | All effort-capable models | Simple fixes, well-defined work |
 
-Configure effort:
+`max` is Opus-tier only. `xhigh` exists on Opus 4.7 and 4.8 (other models fall back to `high`). Opus 4.8 defaults to `high`. Pro, Max, and Team subscribers on Opus 4.6 and Sonnet 4.6 also default to `high`.
+
+Set effort four ways:
 
 ```bash
+# The /effort command -- opens an interactive slider (arrow keys),
+# labeled Faster <-> Smarter. Or pass a level directly:
+/effort xhigh
+
+# In the /model menu, adjust the effort slider with arrow keys
+
 # Environment variable
 CLAUDE_CODE_EFFORT_LEVEL=medium claude
 
 # In settings.json
 { "effortLevel": "medium" }
-
-# In /model menu, use left/right arrow keys to adjust
 ```
 
-Lower effort = fewer thinking tokens = lower cost and faster response. A `medium` effort Opus session can cost significantly less than `high` while still outperforming Sonnet on reasoning tasks.
+Lower effort means fewer thinking tokens, fewer tool calls, and terser output -- lower cost and faster response. A `medium` effort Opus session can cost significantly less than `high` while still outperforming Sonnet on reasoning tasks.
+
+### Fallback Models
+
+When the primary model is unavailable (overloaded, not found, or unset), Claude Code can fall back to other models instead of failing. The `fallbackModel` setting takes up to three models, tried in order:
+
+```json
+{
+  "model": "opus",
+  "fallbackModel": ["sonnet", "haiku"]
+}
+```
+
+The `--fallback-model` flag does the same on the command line and applies to interactive sessions as well as headless runs:
+
+```bash
+claude --model opus --fallback-model sonnet
+```
 
 ### Extended Context
 
-The `[1m]` suffix enables 1 million token context windows:
+Opus 4.8, 4.7, and 4.6 and Sonnet 4.6 include the full 1M token context window at standard pricing -- a 900K-token request is billed at the same per-token rate as a 9K-token request. Opus 4.7 and 4.8 run at 1M context natively. For Sonnet, the `[1m]` suffix selects the 1M variant:
 
 ```bash
 /model sonnet[1m]
-/model claude-sonnet-4-5-20250929[1m]
 ```
 
-Extended context costs 2x input pricing above 200K tokens. Use it for sessions that involve reading many large files, not as a default.
+There is no longer a long-context premium on these models. (The earlier 1M beta on Sonnet 4.5 billed input at 2x above 200K tokens; the current models do not.) The 1M window still consumes more context budget and slows each turn as it fills, so reserve it for sessions that genuinely read many large files.
+
+### Fast Mode
+
+Fast mode (research preview) runs Opus with faster output at premium pricing. It is the same Opus model, not a downgrade to a smaller one. Toggle it with `/fast`. It is available on Opus 4.8, 4.7, and 4.6, and the premium applies across the full context window, including requests over 200K input tokens.
+
+| Model    | Fast input/MTok | Fast output/MTok | Multiplier vs standard |
+| -------- | --------------- | ---------------- | ---------------------- |
+| Opus 4.8 | $10             | $50              | 2x (for ~2.5x speed)   |
+| Opus 4.7 | $30             | $150             | 6x                     |
+| Opus 4.6 | $30             | $150             | 6x                     |
+
+Fast mode is the best value on Opus 4.8: 2x the rate for roughly 2.5x the speed. It is not available on Claude Platform on AWS or with the Batch API. Prompt caching multipliers apply on top of fast-mode pricing.
 
 ### Subagent Model Selection
 
@@ -296,19 +349,19 @@ The system prompt (12,000-20,000 tokens) is re-sent every message but heavily ca
 
 Prompt caching dramatically reduces the cost of re-sending the system prompt and stable conversation prefix:
 
-| Operation      | Multiplier | Opus 4.6   | Sonnet 4.6 | Haiku 4.5  |
+| Operation      | Multiplier | Opus 4.8   | Sonnet 4.6 | Haiku 4.5  |
 | -------------- | ---------- | ---------- | ---------- | ---------- |
 | Cache write    | 1.25x base | $6.25/MTok | $3.75/MTok | $1.25/MTok |
 | **Cache read** | **0.1x**   | **$0.50**  | **$0.30**  | **$0.10**  |
 | Uncached input | 1x base    | $5/MTok    | $3/MTok    | $1/MTok    |
 
-Cache reads are 10x cheaper than base input. After the first message in a session, most of the system prompt is cached. Over a 200-message session, a 15,000-token system prompt costs ~$1.60 with caching vs ~$15 without (using Opus 4.6).
+Cache reads are 10x cheaper than base input. After the first message in a session, most of the system prompt is cached. Over a 200-message session, a 15,000-token system prompt costs ~$1.60 with caching vs ~$15 without (using Opus 4.8).
 
 Claude Code manages cache breakpoints automatically -- there's nothing to configure.
 
 ### Extended Thinking Costs
 
-Extended thinking tokens are billed as output tokens. With Opus 4.6 at $25/MTok output:
+Extended thinking tokens are billed as output tokens. With Opus 4.8 at $25/MTok output:
 
 | Thinking budget  | Cost per use (if fully consumed) |
 | ---------------- | -------------------------------- |

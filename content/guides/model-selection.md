@@ -246,19 +246,21 @@ Effort controls how deeply a model reasons and how much it spends per turn. It a
 
 `max` is Opus-tier only. `xhigh` exists on Opus 4.7 and 4.8 (other models fall back to `high`). Opus 4.8 defaults to `high`. Pro, Max, and Team subscribers on Opus 4.6 and Sonnet 4.6 also default to `high`.
 
-Set effort four ways:
+Set effort four ways. The `/effort` command opens an interactive slider (arrow keys, labeled Faster to Smarter), or you can pass a level directly:
+
+```text
+/effort xhigh
+```
+
+In the `/model` menu, adjust the effort slider with the arrow keys. Or set it with an environment variable:
 
 ```bash
-# The /effort command -- opens an interactive slider (arrow keys),
-# labeled Faster <-> Smarter. Or pass a level directly:
-/effort xhigh
-
-# In the /model menu, adjust the effort slider with arrow keys
-
-# Environment variable
 CLAUDE_CODE_EFFORT_LEVEL=medium claude
+```
 
-# In settings.json
+Or in `settings.json`:
+
+```json
 { "effortLevel": "medium" }
 ```
 
@@ -370,17 +372,17 @@ Extended thinking tokens are billed as output tokens. With Opus 4.8 at $25/MTok 
 | 8K tokens        | ~$0.20                           |
 | Disabled         | $0                               |
 
-Control thinking budget:
+Control thinking spend by model type. On Opus 4.8 and other adaptive models, lower the effort level to reduce thinking tokens -- `MAX_THINKING_TOKENS` is ignored on these models except `0`, which disables thinking. On manual-budget models (Sonnet 4.5, Haiku 4.5), cap the budget directly:
 
 ```bash
-# Reduce thinking tokens
+# Manual-budget models: cap thinking tokens
 MAX_THINKING_TOKENS=8000 claude
 
-# Disable thinking entirely
-# (via /config → Extended thinking → Off)
+# Disable thinking entirely (any model)
+MAX_THINKING_TOKENS=0 claude
 ```
 
-Lower effort levels also reduce thinking token consumption.
+On adaptive models, effort is the primary thinking-cost lever. You can also disable thinking from `/config`.
 
 ### Typical Cost Ranges
 
@@ -578,7 +580,7 @@ TPM per user decreases with team size because fewer users are active concurrentl
 
 9. **Disable unused MCP servers.** Each idle server adds tool definitions to every message. Run `/mcp` and disable what you're not using.
 
-10. **Reduce extended thinking for simple tasks.** Set `MAX_THINKING_TOKENS=8000` or disable thinking when deep reasoning isn't needed.
+10. **Lower effort for simple tasks.** On adaptive models (Opus 4.8, Sonnet 4.6), drop to `low` effort when deep reasoning isn't needed. `MAX_THINKING_TOKENS` caps only manual-budget models (Sonnet 4.5, Haiku 4.5); `MAX_THINKING_TOKENS=0` disables thinking on any model.
 
 ## Anti-Patterns
 

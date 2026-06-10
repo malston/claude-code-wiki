@@ -18,6 +18,8 @@ Agent teams let multiple Claude Code instances work together on complex tasks. O
 | **Best for**      | Focused tasks, research           | Parallel work, competing perspectives  |
 | **Cost**          | Lower (one instance + subagents)  | Higher (N separate instances)          |
 
+For a third orchestration model -- a script Claude writes that fans subagents out at scale, with the plan held in code rather than coordinated turn by turn -- see [Dynamic Workflows]({{< relref "dynamic-workflows" >}}).
+
 ## Table of Contents
 
 - [Agent Teams: Multi-Agent Orchestration in Claude Code](#agent-teams-multi-agent-orchestration-in-claude-code)
@@ -550,3 +552,4 @@ Teammates inherit the lead's permission settings at spawn time:
 - [Official CLI Reference](https://code.claude.com/docs/en/cli-reference) -- `--agent`, `--agents`, `--teammate-mode` flags
 - [Custom Extensions Article]({{< relref "custom-extensions" >}}) -- building subagents and skills
 - [Integration Patterns Article]({{< relref "integration-patterns" >}}) -- hooks and headless mode
+- [Dynamic Workflows Article]({{< relref "dynamic-workflows" >}}) -- orchestrating subagents at scale with a script Claude writes

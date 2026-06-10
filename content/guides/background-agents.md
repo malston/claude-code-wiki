@@ -369,4 +369,5 @@ If `claude agents` prints a count followed by your subagents and exits instead o
 - [Run Agents in Parallel (Claude Code Docs)](https://code.claude.com/docs/en/agents) -- compares agent view with subagents, agent teams, and worktrees
 - [Git Worktrees (Claude Code Docs)](https://code.claude.com/docs/en/worktrees) -- worktree isolation and cleanup
 - [Agent Teams Article]({{< relref "/extending/agent-teams" >}}) -- the mesh-coordination model for multi-agent work
+- [Dynamic Workflows Article]({{< relref "/extending/dynamic-workflows" >}}) -- script-driven subagent orchestration, another way to run agents in parallel
 - [Large Codebase Strategies Article]({{< relref "large-codebase-strategies" >}}) -- parallel work with worktrees on big repositories

@@ -10,15 +10,16 @@ weight: 3
 
 Hooks let you run code at specific points in Claude Code's lifecycle -- before a tool runs, after a file is edited, when a session starts, when Claude finishes responding. This cookbook provides copy-paste-ready recipes for the most common use cases: auto-formatting, command safety, test gates, notifications, logging, and context injection. Each recipe includes the hook configuration, the script, and notes on gotchas.
 
-| Category          | Example Recipes                                       | Hook Events Used                               |
-| ----------------- | ----------------------------------------------------- | ---------------------------------------------- |
-| **Code quality**  | Auto-format, lint on save, type check                 | PostToolUse (Edit\|Write)                      |
-| **Safety**        | Block dangerous commands, protect files, branch guard | PreToolUse (Bash, Edit\|Write)                 |
-| **Verification**  | Test gates, build checks, stop-until-passing          | PostToolUse, Stop, TaskCompleted               |
-| **Notifications** | Desktop alerts, Slack, TTS                            | Notification                                   |
-| **Logging**       | Command audit, session tracking, debug wrapper        | PostToolUse, SessionStart                      |
-| **Context**       | Inject reminders, load state, persist env vars        | SessionStart, UserPromptSubmit                 |
-| **Quality gates** | Block stopping until tasks complete, auto code review | Stop, SubagentStop, TaskCompleted, PostToolUse |
+| Category            | Example Recipes                                       | Hook Events Used                               |
+| ------------------- | ----------------------------------------------------- | ---------------------------------------------- |
+| **Code quality**    | Auto-format, lint on save, type check                 | PostToolUse (Edit\|Write)                      |
+| **Safety**          | Block dangerous commands, protect files, branch guard | PreToolUse (Bash, Edit\|Write)                 |
+| **Verification**    | Test gates, build checks, stop-until-passing          | PostToolUse, Stop, TaskCompleted               |
+| **Notifications**   | Desktop alerts, Slack, TTS                            | Notification                                   |
+| **Logging**         | Command audit, session tracking, debug wrapper        | PostToolUse, SessionStart                      |
+| **Context**         | Inject reminders, load state, persist env vars        | SessionStart, UserPromptSubmit                 |
+| **Quality gates**   | Block stopping until tasks complete, auto code review | Stop, SubagentStop, TaskCompleted, PostToolUse |
+| **Display control** | Redact displayed output, replace tool results         | MessageDisplay, PostToolUse                    |
 
 ## Table of Contents
 
@@ -27,7 +28,7 @@ Hooks let you run code at specific points in Claude Code's lifecycle -- before a
   - [Table of Contents](#table-of-contents)
   - [Hook Fundamentals](#hook-fundamentals)
     - [Where Hooks Live](#where-hooks-live)
-    - [The Four Hook Types](#the-four-hook-types)
+    - [Hook Types](#hook-types)
     - [Exit Code Protocol](#exit-code-protocol)
     - [JSON Output Format](#json-output-format)
     - [Environment Variables](#environment-variables)
@@ -124,7 +125,7 @@ Hooks are configured in JSON settings files. Three scopes are available:
 
 Hooks from all scopes merge together. Plugins can also register hooks via `hooks/hooks.json` in their package.
 
-### The Four Hook Types
+### Hook Types
 
 **Command hooks** run a shell command. The script receives JSON on stdin and communicates via exit codes and stdout.
 
@@ -134,6 +135,16 @@ Hooks from all scopes merge together. Plugins can also register hooks via `hooks
   "command": "/path/to/script.sh",
   "timeout": 600,
   "async": false
+}
+```
+
+Add an `args` array to run in **exec form**: `command` is resolved as an executable and spawned directly with `args` as its argument vector, with no shell. Nothing is tokenized, so pipes, `&&`, globs, and quoting do not apply. Claude Code still substitutes its own path placeholders such as `${CLAUDE_PLUGIN_ROOT}` and `${CLAUDE_PROJECT_DIR}`, but there is no shell expansion -- arbitrary `$VAR`, `$(...)`, and backticks are passed literally. Use exec form to avoid shell-quoting bugs. On Windows, `command` must resolve to a real `.exe`; `.cmd`/`.bat` shims still need shell form.
+
+```json
+{
+  "type": "command",
+  "command": "node",
+  "args": ["${CLAUDE_PLUGIN_ROOT}/scripts/format.js", "--fix"]
 }
 ```
 
@@ -178,6 +189,20 @@ Agent hooks are useful when verification requires inspecting files or running co
 
 HTTP hooks use HTTP status codes instead of exit codes: 2xx is success, anything else is a non-blocking error. The response body must be JSON matching the same schema as command hook stdout (e.g., `{"decision": "block", "reason": "..."}` or `{}`). An empty body is treated as `{}`. The default timeout is 10 minutes. Admins can restrict allowed URLs via `allowedHttpHookUrls` in settings, using `*` wildcards (same semantics as `allowedMcpServers`). When sandboxing is enabled, requests route through the sandbox network proxy. An SSRF guard blocks requests to private/link-local IP ranges (but allows loopback).
 
+**MCP tool hooks** call a tool on a configured MCP server directly, with no shell or script.
+
+```json
+{
+  "type": "mcp_tool",
+  "server": "github",
+  "tool": "create_issue",
+  "input": { "title": "Hook fired for ${tool_input.file_path}" },
+  "timeout": 600
+}
+```
+
+String values in `input` support `${path}` substitution from the hook's JSON input (e.g., `${tool_input.file_path}`). The tool's text result is handled like command-hook stdout: parsed as a decision if it is valid JSON, otherwise shown as plain text. MCP tool hooks work on every event once MCP servers connect, except `SessionStart` and `Setup`, which fire before servers finish connecting.
+
 ### Exit Code Protocol
 
 | Exit Code | Meaning            | Behavior                                                       |
@@ -189,7 +214,7 @@ HTTP hooks use HTTP status codes instead of exit codes: 2xx is success, anything
 Not every event supports blocking. The events that respond to exit 2:
 
 - **Can block:** PreToolUse, PermissionRequest, UserPromptSubmit, Stop, SubagentStop, TeammateIdle, TaskCreated, TaskCompleted, Elicitation, ElicitationResult, PreCompact, ConfigChange
-- **Cannot block:** PostToolUse, PostToolUseFailure, Notification, SubagentStart, SessionStart, SessionEnd, PostCompact, InstructionsLoaded, CwdChanged, FileChanged, WorktreeRemove
+- **Cannot block:** PostToolUse, PostToolUseFailure, Notification, SubagentStart, SessionStart, SessionEnd, PostCompact, InstructionsLoaded, CwdChanged, FileChanged, WorktreeRemove, MessageDisplay
 - **Fire-and-forget:** StopFailure (all exit codes ignored)
 - **Special protocol:** Setup (blocking errors ignored), WorktreeCreate (stdout = worktree path), PermissionDenied (can signal retry)
 
@@ -197,12 +222,15 @@ Not every event supports blocking. The events that respond to exit 2:
 
 When a hook exits 0 and prints JSON to stdout, these universal fields are available:
 
-| Field            | Default | Description                                      |
-| ---------------- | ------- | ------------------------------------------------ |
-| `continue`       | `true`  | If `false`, Claude stops the entire session      |
-| `stopReason`     | --      | Message shown to user when `continue` is `false` |
-| `suppressOutput` | `false` | If `true`, hides stdout from verbose mode        |
-| `systemMessage`  | --      | Warning message shown to user                    |
+| Field              | Default | Description                                                                                          |
+| ------------------ | ------- | ---------------------------------------------------------------------------------------------------- |
+| `continue`         | `true`  | If `false`, Claude stops the entire session                                                          |
+| `stopReason`       | --      | Message shown to user when `continue` is `false`                                                     |
+| `suppressOutput`   | `false` | If `true`, hides stdout from verbose mode                                                            |
+| `systemMessage`    | --      | Warning message shown to user                                                                        |
+| `terminalSequence` | --      | Allowlisted terminal escape sequence to emit (notifications, window title, bell); requires v2.1.141+ |
+
+`terminalSequence` replaces writing to `/dev/tty`, which hooks cannot access. Allowlisted sequences include OSC 0/1/2 (window and icon titles), OSC 9 (iTerm2, Windows Terminal, WezTerm notifications), OSC 99 (Kitty), OSC 777 (Ghostty, Warp), and a bare BEL. Clipboard (OSC 52), hyperlink (OSC 8), and cursor/color sequences are rejected.
 
 For PreToolUse specifically, structured decisions go in `hookSpecificOutput`:
 
@@ -218,20 +246,34 @@ For PreToolUse specifically, structured decisions go in `hookSpecificOutput`:
 
 The three permission decisions: `allow` (skip permission prompt), `deny` (block with reason), `ask` (show permission prompt with additional context).
 
+Other events carry their own `hookSpecificOutput` keys. Each key requires the matching `hookEventName`:
+
+| Event              | Key                 | Effect                                                                                                            |
+| ------------------ | ------------------- | ----------------------------------------------------------------------------------------------------------------- |
+| SessionStart       | `additionalContext` | Context string added before the first prompt                                                                      |
+| SessionStart       | `sessionTitle`      | Sets the session title (only on `startup` or `resume`; ignored on clear/compact)                                  |
+| SessionStart       | `reloadSkills`      | `true` re-scans skill directories after hooks run, so skills installed by the hook are available the same session |
+| Stop, SubagentStop | `additionalContext` | Feedback that continues the conversation without the blocking-error label of exit 2                               |
+| PostToolUse        | `updatedToolOutput` | Replaces the tool's result (redact, sanitize, or reformat after a successful call)                                |
+| MessageDisplay     | `displayContent`    | Replaces the assistant text shown on screen. Display-only: the transcript and what Claude sees keep the original  |
+
 ### Environment Variables
 
-| Variable             | Available In | Description                                       |
-| -------------------- | ------------ | ------------------------------------------------- |
-| `CLAUDE_PROJECT_DIR` | All hooks    | Project root directory                            |
-| `CLAUDE_PLUGIN_ROOT` | Plugin hooks | Plugin package root                               |
-| `CLAUDE_CODE_REMOTE` | All hooks    | `"true"` in remote web environments               |
-| `CLAUDE_ENV_FILE`    | SessionStart | Path to file for persisting environment variables |
+| Variable             | Available In       | Description                                                                                                            |
+| -------------------- | ------------------ | ---------------------------------------------------------------------------------------------------------------------- |
+| `CLAUDE_PROJECT_DIR` | All hooks          | Project root directory                                                                                                 |
+| `CLAUDE_PLUGIN_ROOT` | Plugin hooks       | Plugin package root                                                                                                    |
+| `CLAUDE_CODE_REMOTE` | All hooks          | `"true"` in remote web environments                                                                                    |
+| `CLAUDE_ENV_FILE`    | SessionStart       | Path to file for persisting environment variables                                                                      |
+| `CLAUDE_EFFORT`      | Tool-context hooks | Active effort level (`low`/`medium`/`high`/`xhigh`/`max`) when the model supports effort; ultracode reports as `xhigh` |
+
+The same value is available as the `effort.level` JSON input field on tool-context events (PreToolUse, PostToolUse, Stop, SubagentStop). Both reflect the downgraded level when the request exceeds what the model supports.
 
 ## Event Reference
 
 ### Complete Event Table
 
-27 hook events are defined:
+28 hook events are defined:
 
 ```text
 Session lifecycle:
@@ -243,6 +285,8 @@ Conversation flow:                                    │
                            │ (if blocked)           PostToolUseFailure
                            │
                      PermissionRequest ──> (if denied) PermissionDenied
+
+  MessageDisplay (assistant text about to render on screen)
                            │
 Completion events:         │
   Stop (Claude finishes) ──┘
@@ -298,6 +342,7 @@ Other:
 | WorktreeCreate     | Isolated worktree is created                | Special\*\* | (none -- always fires)                                                                                                  |
 | WorktreeRemove     | Worktree is removed                         | No          | (none -- always fires)                                                                                                  |
 | SessionEnd         | Session terminates                          | No          | clear, logout, prompt_input_exit, other                                                                                 |
+| MessageDisplay     | Assistant text is about to render on screen | No          | (none -- always fires)                                                                                                  |
 
 \* PermissionDenied hooks can return `{"hookSpecificOutput":{"hookEventName":"PermissionDenied","retry":true}}` to signal the model may retry the tool call.
 
@@ -336,21 +381,24 @@ When writing PreToolUse or PostToolUse hooks, the `tool_input` field varies by t
 
 Every hook receives a base payload (`session_id`, `transcript_path`, `cwd`, `permission_mode`, `agent_id`, `agent_type`) plus event-specific fields. The table below documents the event-specific fields only.
 
-| Event              | Input Fields                                                                                                                                                                                                                                 | Exit Code Behavior                                                                                                            |
-| ------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------- |
-| Setup              | `trigger` (`init` or `maintenance`)                                                                                                                                                                                                          | 0: stdout shown to Claude. Blocking errors ignored.                                                                           |
-| StopFailure        | `error`, `error_details` (optional), `last_assistant_message` (optional)                                                                                                                                                                     | Fire-and-forget -- all exit codes ignored.                                                                                    |
-| PermissionDenied   | `tool_name`, `tool_input`, `tool_use_id`, `reason`                                                                                                                                                                                           | 0: stdout shown in transcript mode. hookSpecificOutput can signal `retry: true`.                                              |
-| PostCompact        | `trigger` (`manual` or `auto`), `compact_summary`                                                                                                                                                                                            | 0: stdout shown to user. Other: stderr shown to user.                                                                         |
-| TaskCreated        | `task_id`, `task_subject`, `task_description` (optional), `teammate_name` (optional), `team_name` (optional)                                                                                                                                 | 0: silent. 2: stderr shown to model, task creation blocked. Other: stderr to user.                                            |
-| Elicitation        | `mcp_server_name`, `message`, `mode` (`form` or `url`, optional), `url` (optional), `elicitation_id` (optional), `requested_schema` (optional)                                                                                               | 0: use hookSpecificOutput (action: accept/decline/cancel + content). 2: deny. Other: stderr to user.                          |
-| ElicitationResult  | `mcp_server_name`, `elicitation_id` (optional), `mode` (optional), `action` (`accept`/`decline`/`cancel`), `content` (optional)                                                                                                              | 0: use hookSpecificOutput to override action/content. 2: block (action becomes decline). Other: stderr to user.               |
-| ConfigChange       | `source` (`user_settings`, `project_settings`, `local_settings`, `policy_settings`, `skills`), `file_path` (optional)                                                                                                                        | 0: allow change. 2: block change from being applied. Other: stderr to user.                                                   |
-| InstructionsLoaded | `file_path`, `memory_type` (`User`/`Project`/`Local`/`Managed`), `load_reason` (`session_start`/`nested_traversal`/`path_glob_match`/`include`/`compact`), `globs` (optional), `trigger_file_path` (optional), `parent_file_path` (optional) | Observability-only. Does not support blocking.                                                                                |
-| CwdChanged         | `old_cwd`, `new_cwd`                                                                                                                                                                                                                         | 0: success. hookSpecificOutput.watchPaths registers paths with FileChanged watcher. `CLAUDE_ENV_FILE` is set for env exports. |
-| FileChanged        | `file_path`, `event` (`change`/`add`/`unlink`)                                                                                                                                                                                               | 0: success. hookSpecificOutput.watchPaths can update the watch list. `CLAUDE_ENV_FILE` is set for env exports.                |
-| WorktreeCreate     | `name` (suggested worktree slug)                                                                                                                                                                                                             | 0: stdout must contain the absolute path to the created worktree. Other: creation failed.                                     |
-| WorktreeRemove     | `worktree_path` (absolute path)                                                                                                                                                                                                              | 0: removed. Other: stderr to user.                                                                                            |
+| Event                           | Input Fields                                                                                                                                                                                                                                 | Exit Code Behavior                                                                                                            |
+| ------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------- |
+| Setup                           | `trigger` (`init` or `maintenance`)                                                                                                                                                                                                          | 0: stdout shown to Claude. Blocking errors ignored.                                                                           |
+| StopFailure                     | `error`, `error_details` (optional), `last_assistant_message` (optional)                                                                                                                                                                     | Fire-and-forget -- all exit codes ignored.                                                                                    |
+| PermissionDenied                | `tool_name`, `tool_input`, `tool_use_id`, `reason`                                                                                                                                                                                           | 0: stdout shown in transcript mode. hookSpecificOutput can signal `retry: true`.                                              |
+| PostCompact                     | `trigger` (`manual` or `auto`), `compact_summary`                                                                                                                                                                                            | 0: stdout shown to user. Other: stderr shown to user.                                                                         |
+| TaskCreated                     | `task_id`, `task_subject`, `task_description` (optional), `teammate_name` (optional), `team_name` (optional)                                                                                                                                 | 0: silent. 2: stderr shown to model, task creation blocked. Other: stderr to user.                                            |
+| Elicitation                     | `mcp_server_name`, `message`, `mode` (`form` or `url`, optional), `url` (optional), `elicitation_id` (optional), `requested_schema` (optional)                                                                                               | 0: use hookSpecificOutput (action: accept/decline/cancel + content). 2: deny. Other: stderr to user.                          |
+| ElicitationResult               | `mcp_server_name`, `elicitation_id` (optional), `mode` (optional), `action` (`accept`/`decline`/`cancel`), `content` (optional)                                                                                                              | 0: use hookSpecificOutput to override action/content. 2: block (action becomes decline). Other: stderr to user.               |
+| ConfigChange                    | `source` (`user_settings`, `project_settings`, `local_settings`, `policy_settings`, `skills`), `file_path` (optional)                                                                                                                        | 0: allow change. 2: block change from being applied. Other: stderr to user.                                                   |
+| InstructionsLoaded              | `file_path`, `memory_type` (`User`/`Project`/`Local`/`Managed`), `load_reason` (`session_start`/`nested_traversal`/`path_glob_match`/`include`/`compact`), `globs` (optional), `trigger_file_path` (optional), `parent_file_path` (optional) | Observability-only. Does not support blocking.                                                                                |
+| CwdChanged                      | `old_cwd`, `new_cwd`                                                                                                                                                                                                                         | 0: success. hookSpecificOutput.watchPaths registers paths with FileChanged watcher. `CLAUDE_ENV_FILE` is set for env exports. |
+| FileChanged                     | `file_path`, `event` (`change`/`add`/`unlink`)                                                                                                                                                                                               | 0: success. hookSpecificOutput.watchPaths can update the watch list. `CLAUDE_ENV_FILE` is set for env exports.                |
+| WorktreeCreate                  | `name` (suggested worktree slug)                                                                                                                                                                                                             | 0: stdout must contain the absolute path to the created worktree. Other: creation failed.                                     |
+| WorktreeRemove                  | `worktree_path` (absolute path)                                                                                                                                                                                                              | 0: removed. Other: stderr to user.                                                                                            |
+| PostToolUse, PostToolUseFailure | `tool_name`, `tool_input`, `duration_ms` (tool execution time, excluding permission prompts and PreToolUse hooks)                                                                                                                            | 0: silent or `hookSpecificOutput.updatedToolOutput` to replace the result. Cannot block.                                      |
+| Stop, SubagentStop              | `stop_hook_active`, `background_tasks` (running background tasks), `session_crons` (scheduled cron jobs)                                                                                                                                     | 0: allow stop or `hookSpecificOutput.additionalContext` to continue. 2: block the stop with stderr feedback.                  |
+| MessageDisplay                  | Carries the assistant text about to render (input field name not documented)                                                                                                                                                                 | 0: `hookSpecificOutput.displayContent` replaces the on-screen text. Display-only -- cannot block.                             |
 
 ## Recipes: Code Quality
 

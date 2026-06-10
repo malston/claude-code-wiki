@@ -462,7 +462,7 @@ Skill instructions in Markdown here...
 | `agent`                    | No       | --             | Which subagent type for `context: fork`        |
 | `hooks`                    | No       | None           | Lifecycle hooks scoped to this skill           |
 
-`allowed-tools` pre-approves tools so Claude uses them without prompting; it does not restrict the rest. `disallowed-tools` does the opposite -- it removes tools from Claude's pool while the skill is active, for autonomous skills that should never call a tool (such as `AskUserQuestion` in a background loop). The `disallowed-tools` restriction clears on your next message.
+`allowed-tools` pre-approves tools so Claude uses them without prompting; it does not restrict the rest. `disallowed-tools` does the opposite -- it removes tools from Claude's pool while the skill is active, for autonomous skills that should never call a tool (such as `AskUserQuestion` in a background loop). The `disallowed-tools` restriction clears when you send your next user message.
 
 ### Invocation Control
 
@@ -489,7 +489,7 @@ To minimize token overhead: write concise descriptions, disable model invocation
 
 ### Reloading and Overriding Skills
 
-Claude Code watches skill directories, so adding, editing, or removing a `SKILL.md` under `~/.claude/skills/`, the project `.claude/skills/`, or an `--add-dir` directory's `.claude/skills/` takes effect within the session. Creating a top-level skills directory that did not exist at startup needs a restart. For a skill folder that is also a plugin, changes to its `hooks/`, `.mcp.json`, or `agents/` need `/reload-plugins`. `/reload-skills` re-scans skill directories on demand.
+Claude Code watches skill directories, so adding, editing, or removing a `SKILL.md` under `~/.claude/skills/`, the project `.claude/skills/`, or a `.claude/skills/` inside an `--add-dir` directory takes effect within the session. Creating a top-level skills directory that did not exist at startup needs a restart. For a skill folder that is also a plugin, changes to its `hooks/`, `.mcp.json`, or `agents/` need `/reload-plugins`. `/reload-skills` re-scans skill directories on demand.
 
 The `skillOverrides` setting controls a skill's visibility from `settings.json` instead of editing its frontmatter -- useful for skills in a shared repo or provided by an MCP server. The `/skills` menu writes it: highlight a skill, press `Space` to cycle states, `Enter` to save.
 

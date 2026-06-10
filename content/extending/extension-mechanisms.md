@@ -905,7 +905,7 @@ What kind of capability extension?
 
 - Write precise descriptions (determines auto-discovery success)
 - Use progressive disclosure - main instructions in SKILL.md, details in supporting files
-- Restrict `allowed-tools` if skill shouldn't access everything
+- Keep `allowed-tools` minimal -- it pre-approves tools rather than restricting them; use `disallowed-tools` to remove a tool the skill shouldn't call
 - Version control project skills for team consistency
 
 ### MCP Server Usage

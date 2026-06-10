@@ -377,7 +377,7 @@ claudeup ext disable skills my-skill-pack
 
 Refer to each plugin's documentation for specific installation instructions. The exact command and arguments vary by plugin.
 
-Marketplace plugins install through `/plugin` (or `claude plugin install`). When browsing a marketplace, the `/plugin` pane shows each plugin's projected context cost -- the per-message token overhead it adds -- so you can weigh that against the [per-message tax](#the-per-message-tax) before enabling it. `/plugin list` (or `claude plugin list --enabled`) shows what you already have on.
+Marketplace plugins install through `/plugin` (or `claude plugin install`). When browsing a marketplace, the `/plugin` pane shows each plugin's projected context cost -- the per-message token overhead it adds -- so you can weigh that against the [per-message tax](#the-per-message-tax) before enabling it. `/plugin list` (or `claude plugin list --enabled`) shows which plugins are enabled.
 
 ## Building Your Plugin Stack
 

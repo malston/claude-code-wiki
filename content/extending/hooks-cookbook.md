@@ -138,7 +138,7 @@ Hooks from all scopes merge together. Plugins can also register hooks via `hooks
 }
 ```
 
-Add an `args` array to run in **exec form**: `command` is resolved as an executable and spawned directly with `args` as its argument vector, with no shell. Nothing is tokenized, so pipes, `&&`, globs, and quoting do not apply, and special characters (`$`, backticks) pass through verbatim. Use it to avoid shell-quoting bugs. On Windows, `command` must resolve to a real `.exe`; `.cmd`/`.bat` shims still need shell form.
+Add an `args` array to run in **exec form**: `command` is resolved as an executable and spawned directly with `args` as its argument vector, with no shell. Nothing is tokenized, so pipes, `&&`, globs, and quoting do not apply. Claude Code still substitutes its own path placeholders such as `${CLAUDE_PLUGIN_ROOT}` and `${CLAUDE_PROJECT_DIR}`, but there is no shell expansion -- arbitrary `$VAR`, `$(...)`, and backticks are passed literally. Use exec form to avoid shell-quoting bugs. On Windows, `command` must resolve to a real `.exe`; `.cmd`/`.bat` shims still need shell form.
 
 ```json
 {
@@ -398,7 +398,7 @@ Every hook receives a base payload (`session_id`, `transcript_path`, `cwd`, `per
 | WorktreeRemove                  | `worktree_path` (absolute path)                                                                                                                                                                                                              | 0: removed. Other: stderr to user.                                                                                            |
 | PostToolUse, PostToolUseFailure | `tool_name`, `tool_input`, `duration_ms` (tool execution time, excluding permission prompts and PreToolUse hooks)                                                                                                                            | 0: silent or `hookSpecificOutput.updatedToolOutput` to replace the result. Cannot block.                                      |
 | Stop, SubagentStop              | `stop_hook_active`, `background_tasks` (running background tasks), `session_crons` (scheduled cron jobs)                                                                                                                                     | 0: allow stop or `hookSpecificOutput.additionalContext` to continue. 2: block the stop with stderr feedback.                  |
-| MessageDisplay                  | The assistant message text about to render                                                                                                                                                                                                   | 0: `hookSpecificOutput.displayContent` replaces the on-screen text. Display-only -- cannot block.                             |
+| MessageDisplay                  | Carries the assistant text about to render (input field name not documented)                                                                                                                                                                 | 0: `hookSpecificOutput.displayContent` replaces the on-screen text. Display-only -- cannot block.                             |
 
 ## Recipes: Code Quality
 

@@ -303,8 +303,9 @@ This is analogous to dependency injection in software: behavior is injected into
 **SKILL.md anatomy:**
 
 - `name`: Lowercase identifier (max 64 chars)
-- `description`: What triggers auto-discovery (max 1024 chars)
-- `allowed-tools` (optional): Restricts available tools when active
+- `description`: What triggers auto-discovery (combined listing text truncated at 1,536 chars)
+- `allowed-tools` (optional): Pre-approves tools so Claude uses them without prompting; does not restrict the rest
+- `disallowed-tools` (optional): Removes tools from Claude's pool while the skill is active
 
 ### Key Characteristics
 
@@ -904,7 +905,7 @@ What kind of capability extension?
 
 - Write precise descriptions (determines auto-discovery success)
 - Use progressive disclosure - main instructions in SKILL.md, details in supporting files
-- Restrict `allowed-tools` if skill shouldn't access everything
+- Keep `allowed-tools` minimal -- it pre-approves tools rather than restricting them; use `disallowed-tools` to remove a tool the skill shouldn't call
 - Version control project skills for team consistency
 
 ### MCP Server Usage

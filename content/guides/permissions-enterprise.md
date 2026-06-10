@@ -24,6 +24,7 @@ Claude Code's permission system controls what actions Claude can take -- from fi
   - [Executive Summary](#executive-summary)
   - [Table of Contents](#table-of-contents)
   - [Permission Modes](#permission-modes)
+    - [Auto Mode](#auto-mode)
   - [Permission Rules](#permission-rules)
     - [Allow, Deny, Ask](#allow-deny-ask)
     - [Rule Evaluation Order](#rule-evaluation-order)
@@ -71,6 +72,7 @@ Permission modes set the overall behavior for how Claude handles tool approval:
 | `default`           | Prompts for permission on first use of each tool          |
 | `acceptEdits`       | Auto-accepts file edit/write operations for the session   |
 | `plan`              | Read-only: Claude can analyze but not modify or execute   |
+| `auto`              | Runs everything, with a background safety classifier      |
 | `dontAsk`           | Auto-denies unless pre-approved via rules                 |
 | `bypassPermissions` | Skips all permission prompts (isolated environments only) |
 
@@ -87,6 +89,55 @@ Set via settings:
 Or via CLI: `claude --permission-mode acceptEdits`
 
 **`bypassPermissions` warning:** This mode gives Claude unrestricted access to your filesystem, shell, and network. Only use in isolated environments (containers, VMs, CI runners). Enterprise admins can prevent this mode entirely with `disableBypassPermissionsMode`.
+
+### Auto Mode
+
+`auto` mode (research preview, v2.1.83+) lets Claude run without routine permission prompts while a separate classifier model reviews each action first. Reads and file edits inside the working directory are auto-approved; everything else goes to the classifier, which blocks actions that escalate beyond your request, target unrecognized infrastructure, or look driven by hostile content Claude read. Explicit `ask` rules still force a prompt. Unlike `bypassPermissions`, auto mode keeps a safety check in the loop -- it reduces prompts rather than removing oversight.
+
+Auto mode is not a silent default. It appears in the `Shift+Tab` cycle only when your account meets every requirement, and cycling to it shows a one-time opt-in prompt:
+
+| Requirement | Detail                                                                                                                            |
+| ----------- | --------------------------------------------------------------------------------------------------------------------------------- |
+| Plan        | All plans. On Team and Enterprise, an admin must enable it in Claude Code admin settings first                                    |
+| Model       | Opus 4.6+ or Sonnet 4.6 on the Anthropic API; Opus 4.7 or 4.8 on Bedrock, Vertex AI, and Foundry                                  |
+| Provider    | Default-available on the Anthropic API; off on Bedrock, Vertex AI, and Foundry until `CLAUDE_CODE_ENABLE_AUTO_MODE=1` (v2.1.158+) |
+
+Set `defaultMode: "auto"` only in user (`~/.claude/settings.json`) or managed settings; Claude Code ignores `auto` from project or local settings (since v2.1.142) so a repository cannot grant itself auto mode.
+
+What the classifier does by default:
+
+| Allowed                                             | Blocked                                                          |
+| --------------------------------------------------- | ---------------------------------------------------------------- |
+| Local file operations in the working directory      | `curl \| bash` and other download-and-execute patterns           |
+| Installing dependencies from lock files/manifests   | Sending sensitive data to external endpoints                     |
+| Read-only HTTP requests                             | Production deploys and migrations, mass cloud-storage deletes    |
+| Pushing to the branch you started on or Claude made | Force push, pushing directly to `main`, granting IAM/repo access |
+
+On entering auto mode, broad code-execution allow rules (`Bash(*)`, wildcarded interpreters like `Bash(python*)`, package-manager run commands, `Agent` allow rules) are dropped and restored when you leave; narrow rules like `Bash(npm test)` carry over. Boundaries you state in conversation ("don't push until I review") become block signals, but they are re-read from the transcript each check and can be lost to compaction -- use a `deny` rule for a hard guarantee. If the classifier blocks 3 actions in a row or 20 total, auto mode pauses and Claude Code resumes prompting; under `-p` it aborts instead.
+
+**Tuning trusted infrastructure.** Out of the box the classifier trusts only the working directory and the repo's remotes. Tell it what else is internal with the `autoMode` settings block (read from user, local, or managed settings -- never shared project settings). `autoMode.environment` is the field most teams need; `allow`, `soft_deny`, and `hard_deny` override the built-in rule lists. Include the literal `"$defaults"` to extend a list instead of replacing it -- omitting it discards every built-in rule for that section, including the data-exfiltration and force-push blocks.
+
+```json
+{
+  "autoMode": {
+    "environment": [
+      "$defaults",
+      "Source control: github.acme.com/acme-corp and all repos under it",
+      "Trusted buckets: s3://acme-build-artifacts"
+    ],
+    "soft_deny": [
+      "$defaults",
+      "Never run migrations outside the migrations CLI"
+    ],
+    "hard_deny": [
+      "$defaults",
+      "Never send repository contents to third-party code-review APIs"
+    ]
+  }
+}
+```
+
+Precedence inside the classifier: `hard_deny` (unconditional) > `soft_deny` (clearable by explicit user intent or an `allow` exception) > `allow` > stated user intent. Inspect rules with `claude auto-mode defaults`, `claude auto-mode config`, and `claude auto-mode critique`. Admins lock the mode off with `permissions.disableAutoMode: "disable"` in managed settings; `permissions.deny` rules still run before the classifier and cannot be overridden by any `autoMode` entry.
 
 ## Permission Rules
 
@@ -312,6 +363,7 @@ These settings are only available in managed settings files:
 | Setting                           | Description                                                                |
 | --------------------------------- | -------------------------------------------------------------------------- |
 | `disableBypassPermissionsMode`    | Set to `"disable"` to prevent `--dangerously-skip-permissions`             |
+| `disableAutoMode`                 | Set to `"disable"` to prevent users from enabling auto mode                |
 | `allowManagedPermissionRulesOnly` | Blocks user/project permission rules; only managed rules apply             |
 | `allowManagedHooksOnly`           | Blocks user, project, and plugin hooks; only managed and SDK hooks allowed |
 | `strictKnownMarketplaces`         | Controls which plugin marketplaces users can add                           |

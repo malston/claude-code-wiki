@@ -42,6 +42,7 @@ Claude Code's capabilities can be extended through custom subagents (autonomous 
     - [Skill YAML Reference](#skill-yaml-reference)
     - [Invocation Control](#invocation-control)
     - [Auto-Discovery and Token Cost](#auto-discovery-and-token-cost)
+    - [Reloading and Overriding Skills](#reloading-and-overriding-skills)
     - [String Substitutions](#string-substitutions)
     - [Dynamic Context Injection](#dynamic-context-injection)
     - [Running Skills in a Subagent](#running-skills-in-a-subagent)
@@ -455,10 +456,13 @@ Skill instructions in Markdown here...
 | `disable-model-invocation` | No       | `false`        | If `true`, only users can invoke (not Claude)  |
 | `user-invocable`           | No       | `true`         | If `false`, hidden from `/` menu               |
 | `allowed-tools`            | No       | None           | Tools allowed without permission prompts       |
+| `disallowed-tools`         | No       | None           | Tools removed from Claude's pool while active  |
 | `model`                    | No       | --             | Model to use when skill is active              |
 | `context`                  | No       | --             | `fork` to run in a subagent context            |
 | `agent`                    | No       | --             | Which subagent type for `context: fork`        |
 | `hooks`                    | No       | None           | Lifecycle hooks scoped to this skill           |
+
+`allowed-tools` pre-approves tools so Claude uses them without prompting; it does not restrict the rest. `disallowed-tools` does the opposite -- it removes tools from Claude's pool while the skill is active, for autonomous skills that should never call a tool (such as `AskUserQuestion` in a background loop). The `disallowed-tools` restriction clears on your next message.
 
 ### Invocation Control
 
@@ -482,6 +486,30 @@ Claude reads all skill descriptions at session start. The description text is in
 - Override with: `SLASH_COMMAND_TOOL_CHAR_BUDGET` environment variable
 
 To minimize token overhead: write concise descriptions, disable model invocation for rarely-used skills, and keep skill content focused.
+
+### Reloading and Overriding Skills
+
+Claude Code watches skill directories, so adding, editing, or removing a `SKILL.md` under `~/.claude/skills/`, the project `.claude/skills/`, or an `--add-dir` directory's `.claude/skills/` takes effect within the session. Creating a top-level skills directory that did not exist at startup needs a restart. For a skill folder that is also a plugin, changes to its `hooks/`, `.mcp.json`, or `agents/` need `/reload-plugins`. `/reload-skills` re-scans skill directories on demand.
+
+The `skillOverrides` setting controls a skill's visibility from `settings.json` instead of editing its frontmatter -- useful for skills in a shared repo or provided by an MCP server. The `/skills` menu writes it: highlight a skill, press `Space` to cycle states, `Enter` to save.
+
+| Value                   | Listed to Claude     | In `/` menu |
+| ----------------------- | -------------------- | ----------- |
+| `"on"` (default)        | Name and description | Yes         |
+| `"name-only"`           | Name only            | Yes         |
+| `"user-invocable-only"` | Hidden               | Yes         |
+| `"off"`                 | Hidden               | Hidden      |
+
+```json
+{
+  "skillOverrides": {
+    "legacy-context": "name-only",
+    "deploy": "off"
+  }
+}
+```
+
+A skill absent from `skillOverrides` is treated as `"on"`. Plugin skills are not affected -- manage those through `/plugin`.
 
 ### String Substitutions
 
@@ -809,6 +837,8 @@ The `plugin.json` file describes the plugin and can override default component l
 
 Only `name` is required. Other fields are optional. If paths are omitted, Claude Code auto-discovers components in their default locations within the plugin directory.
 
+Set `"defaultEnabled": false` in the manifest to ship the plugin installed but inactive; users turn it on with `/plugin` or `claude plugin enable`. A plugin that ships exactly one skill can place `SKILL.md` at the plugin root instead of a `skills/` directory -- Claude Code loads it as a single skill and takes the invocation name from the frontmatter `name` field.
+
 ### MCP Servers in Plugins
 
 Define MCP servers in `.mcp.json` at the plugin root:
@@ -864,6 +894,15 @@ claude --plugin-dir ./my-plugin
 claude --plugin-dir ./plugin-one --plugin-dir ./plugin-two
 ```
 
+`--plugin-dir` also accepts a `.zip` archive (v2.1.128+). To load a plugin packaged as a `.zip` and hosted at a URL, such as a CI build artifact, use `--plugin-url`; Claude Code fetches it at startup for that session only:
+
+```bash
+claude --plugin-dir ./my-plugin.zip
+claude --plugin-url https://example.com/my-plugin.zip
+```
+
+To develop a plugin without passing a flag every launch, scaffold one in your skills directory with `claude plugin init <name>`. It creates `~/.claude/skills/<name>/` with a `.claude-plugin/plugin.json` manifest and a starter `SKILL.md`, and the next session loads it automatically as `<name>@skills-dir` -- no marketplace or install step.
+
 ### Installation and Management
 
 ```bash
@@ -882,7 +921,12 @@ claude plugin update my-plugin
 
 # Uninstall
 claude plugin uninstall my-plugin@marketplace
+
+# List installed plugins (filter with --enabled / --disabled)
+claude plugin list --enabled
 ```
+
+`/plugin list` shows the same list inside a session. Plugin dependencies are enforced: `claude plugin disable` refuses to disable a plugin that another enabled plugin depends on, and `claude plugin enable` force-enables any transitive dependencies. The `/plugin` marketplace browse pane shows each plugin's projected context cost so you can weigh its per-message token overhead before installing.
 
 Or toggle plugins in `settings.json`:
 

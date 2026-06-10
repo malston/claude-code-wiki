@@ -67,14 +67,14 @@ Claude Code's permission system controls what actions Claude can take -- from fi
 
 Permission modes set the overall behavior for how Claude handles tool approval:
 
-| Mode                | Behavior                                                  |
-| ------------------- | --------------------------------------------------------- |
-| `default`           | Prompts for permission on first use of each tool          |
-| `acceptEdits`       | Auto-accepts file edit/write operations for the session   |
-| `plan`              | Read-only: Claude can analyze but not modify or execute   |
-| `auto`              | Runs everything, with a background safety classifier      |
-| `dontAsk`           | Auto-denies unless pre-approved via rules                 |
-| `bypassPermissions` | Skips all permission prompts (isolated environments only) |
+| Mode                | Behavior                                                                         |
+| ------------------- | -------------------------------------------------------------------------------- |
+| `default`           | Prompts for permission on first use of each tool                                 |
+| `acceptEdits`       | Auto-accepts file edit/write operations for the session                          |
+| `plan`              | Read-only: Claude can analyze but not modify or execute                          |
+| `auto`              | Runs without routine prompts; a safety classifier approves or blocks each action |
+| `dontAsk`           | Auto-denies unless pre-approved via rules                                        |
+| `bypassPermissions` | Skips all permission prompts (isolated environments only)                        |
 
 Set via settings:
 
@@ -137,7 +137,7 @@ On entering auto mode, broad code-execution allow rules (`Bash(*)`, wildcarded i
 }
 ```
 
-Precedence inside the classifier: `hard_deny` (unconditional) > `soft_deny` (clearable by explicit user intent or an `allow` exception) > `allow` > stated user intent. Inspect rules with `claude auto-mode defaults`, `claude auto-mode config`, and `claude auto-mode critique`. Admins lock the mode off with `permissions.disableAutoMode: "disable"` in managed settings; `permissions.deny` rules still run before the classifier and cannot be overridden by any `autoMode` entry.
+Precedence inside the classifier: `hard_deny` (unconditional) > `soft_deny` (clearable by explicit user intent or an `allow` exception) > `allow` > stated user intent. Inspect rules with `claude auto-mode defaults`, `claude auto-mode config`, and `claude auto-mode critique`. Admins lock the mode off with the managed `disableAutoMode` setting (set to `"disable"`); `permissions.deny` rules still run before the classifier and cannot be overridden by any `autoMode` entry.
 
 ## Permission Rules
 

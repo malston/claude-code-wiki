@@ -174,10 +174,32 @@ export const meta = {
   phases: [{ title: "Review" }, { title: "Verify" }],
 };
 
+// Subagents validate their output against these JSON Schemas.
+const FINDINGS_SCHEMA = {
+  type: "object",
+  properties: {
+    findings: {
+      type: "array",
+      items: {
+        type: "object",
+        properties: { title: { type: "string" } },
+        required: ["title"],
+      },
+    },
+  },
+  required: ["findings"],
+};
+const VERDICT_SCHEMA = {
+  type: "object",
+  properties: { isReal: { type: "boolean" } },
+  required: ["isReal"],
+};
+
 // Each route file is reviewed, then each of its findings is independently verified.
 // pipeline() means a file can be in Verify while another is still in Review.
+// args is undefined when the workflow runs without input, so guard with ?.
 const results = await pipeline(
-  args.files ?? [],
+  args?.files ?? [],
   (file) =>
     agent(`Review ${file} for endpoints missing auth checks.`, {
       phase: "Review",

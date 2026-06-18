@@ -265,7 +265,7 @@ The user scope is about **how you work**. The project scope is about **how this 
 For new projects, the `/init` command generates a starter CLAUDE.md based on the codebase:
 
 ```sh
-> /init
+/init
 ```
 
 This analyzes your project structure and creates a reasonable starting point -- but much of what `/init` generates is generic content (build commands Claude could discover, language conventions Claude already follows). The [benchmark findings on generic instructions](#generic-instructions-that-add-no-value) suggest this kind of content falls into the category that reduces quality rather than improving it. The study tested standardized coding tasks rather than `/init` output directly, but the mechanism applies: instructions that restate what the model already knows create adherence penalty without adding signal.
@@ -277,7 +277,7 @@ After running `/init`, review every line and delete anything you can't justify w
 The `/team-onboarding` command generates a teammate ramp-up guide from your local Claude Code usage:
 
 ```sh
-> /team-onboarding
+/team-onboarding
 ```
 
 Per the [release notes](https://code.claude.com/docs/en/whats-new/2026-w15), run it in a project you know well and hand the output to a new teammate so they can replay your setup instead of starting from defaults. Because the guide is derived from how you use Claude Code in a given project, run it from a repo you've spent real time in.

@@ -234,7 +234,7 @@ Single `*` matches within a directory. Double `**` matches recursively.
 | `Skill(commit)`   | The commit skill               |
 | `Skill(deploy *)` | Any skill with "deploy" prefix |
 
-**Deny-rule tool-name globs:** A deny rule can use a glob in the tool-name position. `"*"` in deny position blocks every tool -- a blunt kill switch for locking a profile down to nothing. Allow rules reject non-MCP globs (outside the `mcp__server__*` form), so you cannot glob arbitrary tool names into an allowlist. Unknown tool names in deny rules emit a warning at startup rather than failing silently.
+**Deny-rule tool-name globs:** A deny rule can use a glob in the tool-name position. `"*"` in deny position blocks every tool -- a blunt kill switch for locking a profile down to nothing. Allow rules reject non-MCP globs (outside the `mcp__<server>__*` form), so you cannot glob arbitrary tool names into an allowlist. Unknown tool names in deny rules emit a warning at startup rather than failing silently.
 
 ### Permission Prompts and UX
 

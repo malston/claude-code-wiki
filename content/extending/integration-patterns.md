@@ -8,7 +8,7 @@ weight: 4
 
 ## Executive Summary
 
-Claude Code connects to external systems through four integration mechanisms: MCP servers for tool access, hooks for workflow automation, headless mode for CLI scripting, and GitHub Actions for CI/CD. Each serves a different purpose and operates at a different layer. This article covers when to use each, how they work, and practical patterns for combining them.
+Claude Code connects to external systems through five integration mechanisms: MCP servers for tool access, hooks for workflow automation, headless mode for CLI scripting, GitHub Actions for CI/CD, and monitors for reacting to background events. Each serves a different purpose and operates at a different layer. This article covers when to use each, how they work, and practical patterns for combining them.
 
 | Mechanism          | Purpose                       | Direction            | Runs When                |
 | ------------------ | ----------------------------- | -------------------- | ------------------------ |
@@ -69,7 +69,7 @@ Claude Code connects to external systems through four integration mechanisms: MC
 
 ## The Integration Landscape
 
-Claude Code integrates with external systems through four distinct mechanisms. Each operates at a different layer and serves a different purpose:
+Claude Code integrates with external systems through five distinct mechanisms. Each operates at a different layer and serves a different purpose:
 
 ```sh
                     ┌──────────────────────────────────┐
@@ -106,6 +106,8 @@ Claude Code integrates with external systems through four distinct mechanisms. E
 **Headless mode** (`claude -p`) turns Claude into a command-line tool that other programs can call. It reads a prompt, does the work, prints the result, and exits. This is what makes Claude composable with Unix pipelines and CI/CD systems.
 
 **GitHub Actions** trigger Claude in response to GitHub events -- PR comments, issue creation, scheduled runs. The official `anthropics/claude-code-action` wraps headless mode into a GitHub-native integration.
+
+**Monitors** stream events from a background script into the conversation, so Claude reacts to log lines, file changes, or status checks as they happen rather than when asked. Plugins can auto-arm a monitor at session start or when a skill runs.
 
 ## MCP Servers: Connecting External Tools
 

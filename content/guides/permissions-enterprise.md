@@ -234,7 +234,7 @@ Single `*` matches within a directory. Double `**` matches recursively.
 | `Skill(commit)`   | The commit skill               |
 | `Skill(deploy *)` | Any skill with "deploy" prefix |
 
-**Deny-rule tool-name globs:** A deny rule can use a glob in the tool-name position. `"*"` in deny position blocks every tool -- a blunt kill switch for locking a profile down to nothing. Allow rules reject non-MCP globs (outside the `mcp__<server>__*` form), so you cannot glob arbitrary tool names into an allowlist. Unknown tool names in deny rules emit a warning at startup rather than failing silently.
+**Tool-name globs:** Deny and ask rules accept a glob in the tool-name position. `"*"` matches every tool and `"mcp__*"` matches every MCP tool. A tool matched by a bare-name glob deny rule is removed from Claude's context entirely, the same as a bare tool name; a scoped rule like `Bash(rm *)` instead leaves the tool available and blocks matching calls. Allow rules accept tool-name globs only after a literal `mcp__<server>__` prefix (for example `mcp__github__get_*`); an unanchored allow glob like `"*"` is skipped with a warning and approves nothing. A deny or ask rule whose tool name matches no known tool warns at startup to catch typos, except names containing `_` or `*`.
 
 ### Permission Prompts and UX
 
@@ -338,7 +338,7 @@ Enable via `/sandbox` command or settings.
 | `allowUnixSockets`         | Specific Unix sockets that can be accessed     |
 | `allowLocalBinding`        | Whether Bash can bind local ports              |
 
-On Linux/WSL the sandbox relies on the `bubblewrap` and `socat` binaries. If they live outside the default search path, point Claude Code at them with the managed-only `sandbox.bwrapPath` and `sandbox.socatPath` settings (each a path to the custom binary, overriding the default lookup).
+On Linux/WSL the sandbox relies on the `bubblewrap` and `socat` binaries. If they live outside the default search path, set the managed-only `sandbox.bwrapPath` and `sandbox.socatPath` settings to their locations.
 
 ### Security Limitations
 
@@ -364,22 +364,22 @@ Managed settings require administrator privileges to create or modify. They use 
 
 These settings are only available in managed settings files:
 
-| Setting                           | Description                                                                                                                      |
-| --------------------------------- | -------------------------------------------------------------------------------------------------------------------------------- |
-| `disableBypassPermissionsMode`    | Set to `"disable"` to prevent `--dangerously-skip-permissions`                                                                   |
-| `disableAutoMode`                 | Set to `"disable"` to prevent users from enabling auto mode                                                                      |
-| `requiredMinimumVersion`          | Refuse to start if the running version is older than this; `claude update`/`install`/`doctor` still work                         |
-| `requiredMaximumVersion`          | Refuse to start if the running version is newer than this; auto-updates skip versions above the ceiling                          |
-| `allowManagedPermissionRulesOnly` | Blocks user/project permission rules; only managed rules apply                                                                   |
-| `allowManagedHooksOnly`           | Blocks user, project, and plugin hooks; only managed and SDK hooks allowed                                                       |
-| `parentSettingsBehavior`          | `"first-wins"` (default) or `"merge"`: whether host-supplied settings (Agent SDK, IDE) apply under the admin tier (tighten-only) |
-| `strictKnownMarketplaces`         | Controls which plugin marketplaces users can add                                                                                 |
-| `pluginSuggestionMarketplaces`    | Allowlist of org marketplaces whose plugins may surface as contextual install suggestions                                        |
-| `allowedMcpServers`               | Allowlist of MCP servers users can configure                                                                                     |
-| `deniedMcpServers`                | Denylist of MCP servers (takes precedence over allow)                                                                            |
-| `allowAllClaudeAiMcps`            | Load claude.ai cloud MCP connectors alongside a deployed `managed-mcp.json`                                                      |
-| `forceLoginMethod`                | Restrict auth to `claudeai` or `console` only                                                                                    |
-| `forceLoginOrgUUID`               | Auto-select organization during login                                                                                            |
+| Setting                           | Description                                                                                                                                       |
+| --------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `disableBypassPermissionsMode`    | Set to `"disable"` to prevent `--dangerously-skip-permissions`                                                                                    |
+| `disableAutoMode`                 | Set to `"disable"` to prevent users from enabling auto mode                                                                                       |
+| `requiredMinimumVersion`          | Refuse to start if the running version is older than this; `claude update`/`install`/`doctor` still work                                          |
+| `requiredMaximumVersion`          | Refuse to start if the running version is newer than this; auto-updates skip versions above it, and `claude update`/`install`/`doctor` still work |
+| `allowManagedPermissionRulesOnly` | Blocks user/project permission rules; only managed rules apply                                                                                    |
+| `allowManagedHooksOnly`           | Blocks user, project, and plugin hooks; only managed and SDK hooks allowed                                                                        |
+| `parentSettingsBehavior`          | `"first-wins"` (default) or `"merge"`: whether host-supplied settings (Agent SDK, IDE) apply under the admin tier (tighten-only)                  |
+| `strictKnownMarketplaces`         | Controls which plugin marketplaces users can add                                                                                                  |
+| `pluginSuggestionMarketplaces`    | Allowlist of org marketplaces whose plugins may surface as contextual install suggestions                                                         |
+| `allowedMcpServers`               | Allowlist of MCP servers users can configure                                                                                                      |
+| `deniedMcpServers`                | Denylist of MCP servers (takes precedence over allow)                                                                                             |
+| `allowAllClaudeAiMcps`            | Load claude.ai cloud MCP connectors alongside a deployed `managed-mcp.json`                                                                       |
+| `forceLoginMethod`                | Restrict auth to `claudeai` or `console` only                                                                                                     |
+| `forceLoginOrgUUID`               | Auto-select organization during login                                                                                                             |
 
 ### Example Enterprise Configuration
 

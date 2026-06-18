@@ -21,6 +21,7 @@ The `managed-settings.json` file is the enterprise-level configuration that sits
     "CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC": "1"
   },
   "cleanupPeriodDays": 14,
+  "requiredMinimumVersion": "2.1.166",
   "permissions": {
     "disableBypassPermissionsMode": "disable",
     "deny": [
@@ -82,6 +83,19 @@ Blocks access to secrets, credentials, SSH keys. Prevents Claude from making arb
 
 - `allowManagedHooksOnly: false` -- allows project-level hooks initially. Set to `true` if hook execution is a security concern.
 - `strictKnownMarketplaces: []` -- empty array blocks all plugin marketplaces. To allow vetted plugins, add source objects (e.g., `{"source": "github", "repo": "acme-corp/approved-plugins"}`).
+
+### Version Pinning
+
+`requiredMinimumVersion` refuses to start Claude Code if the installed version is older than the value, directing the user to the organization's approved update path. Pair it with `requiredMaximumVersion` to pin a tested ceiling -- background auto-updates and `claude update` skip versions above it, so an in-range install stays in range. In both cases `claude update`, `claude install`, and `claude doctor` keep working outside the range so users can recover. Use these to hold the fleet on a version your team has validated, rather than letting every machine track the latest release. This differs from `minimumVersion`, which blocks downgrades but never blocks startup.
+
+### Additional Managed-Only Controls
+
+| Setting                                   | When to use it                                                                                                                                                                                                  |
+| ----------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `parentSettingsBehavior`                  | Set to `"merge"` if you deploy Claude Code through the Agent SDK or an IDE extension and want those host-supplied settings to apply under (and only tighten) the admin tier. Default `"first-wins"` drops them. |
+| `pluginSuggestionMarketplaces`            | Allowlist the org marketplaces whose plugins may surface as contextual install suggestions. Names take effect only when the marketplace's source is also declared in managed settings.                          |
+| `allowAllClaudeAiMcps`                    | Load claude.ai cloud MCP connectors alongside a deployed `managed-mcp.json` (which otherwise suppresses them).                                                                                                  |
+| `sandbox.bwrapPath` / `sandbox.socatPath` | On Linux/WSL, point the sandbox at custom `bubblewrap` and `socat` binary locations when they are not on the default search path.                                                                               |
 
 ## Distribution
 

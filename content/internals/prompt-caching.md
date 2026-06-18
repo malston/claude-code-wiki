@@ -87,7 +87,7 @@ The cache operates on **prefix matching** -- it caches everything from the begin
 - **Optional: 1 hour** -- Costs more to write (2x base instead of 1.25x) but survives longer idle periods
 - No manual cache clearing -- entries expire automatically after the TTL without use
 
-For interactive Claude Code sessions the 5-minute default is fine: as long as you send messages within 5 minutes of each other, the cache stays warm. The TTL is configurable through environment variables when a longer-lived cache helps (see [Configuring Cache Behavior](#configuring-cache-behavior)). Subscription (Pro/Max) users within included usage receive the 1-hour TTL automatically.
+For interactive Claude Code sessions the 5-minute default is fine: as long as you send messages within 5 minutes of each other, the cache stays warm. For a longer-lived cache, the TTL is configurable through environment variables (see [Configuring Cache Behavior](#configuring-cache-behavior)). Subscription (Pro/Max) users get the 1-hour TTL automatically while usage stays within plan limits; once you exceed the limit and draw on usage credits, the TTL drops back to 5 minutes because that usage is billed per token.
 
 ### What Gets Cached
 
@@ -173,16 +173,16 @@ Changes to the prompt prefix invalidate the cache from that point forward:
 
 ### Configuring Cache Behavior
 
-Breakpoint placement is automatic, but a few environment variables and one flag control the rest:
+Breakpoint placement is automatic. A few environment variables set the cache TTL or turn caching off, and one CLI flag controls the cached prefix:
 
 | Setting                            | Effect                                                                                                                                                                                                                             |
 | ---------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `ENABLE_PROMPT_CACHING_1H=1`       | Request a 1-hour cache TTL instead of the 5-minute default (API key, Bedrock, Vertex, Foundry, Claude Platform on AWS). 1-hour writes cost 2x base. Subscription users within included usage already get 1-hour TTL automatically. |
-| `FORCE_PROMPT_CACHING_5M=1`        | Force the 5-minute TTL even where 1-hour would otherwise apply. Overrides `ENABLE_PROMPT_CACHING_1H`.                                                                                                                              |
+| `ENABLE_PROMPT_CACHING_1H=1`       | Request a 1-hour cache TTL instead of the 5-minute default (API key, Bedrock, Vertex, Foundry, Claude Platform on AWS). 1-hour writes cost 2x base. (Subscription users already get the 1-hour TTL automatically, as noted above.) |
+| `FORCE_PROMPT_CACHING_5M=1`        | Force the 5-minute TTL even where 1-hour would otherwise apply, overriding `ENABLE_PROMPT_CACHING_1H` (including one set in managed settings). Useful for debugging or comparing the two TTLs.                                     |
 | `ENABLE_PROMPT_CACHING_1H_BEDROCK` | Deprecated -- use `ENABLE_PROMPT_CACHING_1H`.                                                                                                                                                                                      |
 | `DISABLE_PROMPT_CACHING=1`         | Disable caching for all models (takes precedence over the per-model variants `DISABLE_PROMPT_CACHING_OPUS`, `_SONNET`, `_HAIKU`, `_FABLE`). Claude Code prints a startup warning whenever caching is disabled this way.            |
 
-For scripted, multi-user headless runs, `claude -p --exclude-dynamic-system-prompt-sections "<query>"` moves the per-machine system-prompt sections (working directory, environment info, memory paths, git-repo flag) into the first user message, so the cached prefix is identical across users and machines running the same task. It applies only to the default system prompt and is ignored when `--system-prompt` or `--system-prompt-file` is set.
+For scripted, multi-user headless runs, `claude -p --exclude-dynamic-system-prompt-sections "<query>"` moves the per-machine system-prompt sections (working directory, environment info, memory paths, git-repo flag) into the first user message. The cached prefix then stays identical across users and machines running the same task. The flag applies only to the default system prompt; it is ignored when `--system-prompt` or `--system-prompt-file` is set.
 
 ## The Economics
 
@@ -329,7 +329,7 @@ You generally don't need to think about prompt caching in Claude Code -- it's ha
 
 - **System prompt size (for cost)** -- With caching, the cost difference between a 10K and 30K system prompt is ~$2 per 200-message session. Not worth agonizing over.
 - **Conversation length** -- Previous turns get cached incrementally. Long conversations are efficiently handled.
-- **Cache management** -- Claude Code places breakpoints and manages cache strategy automatically. The cache lifetime and whether caching runs at all are the only knobs, both set via environment variables (see [Configuring Cache Behavior](#configuring-cache-behavior)).
+- **Cache management** -- Claude Code places breakpoints and manages cache strategy automatically. What you can change is the cache lifetime and whether caching runs at all, set via environment variables (see [Configuring Cache Behavior](#configuring-cache-behavior)).
 
 ## Cache Break Detection
 

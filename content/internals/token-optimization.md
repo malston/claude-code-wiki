@@ -32,7 +32,8 @@ A typical setup with 20+ plugins can consume **4,000-5,000+ tokens per message**
   - [Auditing Your Setup](#auditing-your-setup)
     - [Step 1: Inventory Plugins](#step-1-inventory-plugins)
     - [Step 2: Inventory Local Skills](#step-2-inventory-local-skills)
-    - [Step 3: Estimate Token Costs](#step-3-estimate-token-costs)
+    - [Step 3: Measure Token Costs with `/context`](#step-3-measure-token-costs-with-context)
+    - [Step 4: Attribute Plan Usage with `/usage`](#step-4-attribute-plan-usage-with-usage)
   - [Decision Framework](#decision-framework)
     - [Keep, Disable, or Replace](#keep-disable-or-replace)
     - [Identifying Redundancy](#identifying-redundancy)
@@ -132,11 +133,13 @@ claudeup ext list
 
 Items marked with `*` are enabled. Items marked with `x` are disabled. Focus on the `skills:` section.
 
-### Step 3: Estimate Token Costs
+### Step 3: Measure Token Costs with `/context`
 
-Look at your skill catalog in a running session. The system reminder will contain a block starting with "The following skills are available for use with the Skill tool:" -- that's the full catalog text loaded every message.
+Run `/context all` in a session to see per-skill token estimates. As of Claude Code 2.1.139, these estimates are computed with the model's tokenizer and shown as rounded values, so they reflect what each skill actually costs rather than a guess. For skills that come from a plugin, `/context` shows the providing plugin's name, which makes it easy to attribute catalog cost back to the plugin that introduced it.
 
-Rough estimation by description length:
+`/context` also flags context-heavy tools, memory bloat, and capacity warnings, so it doubles as a first pass for the decision framework below.
+
+If you need a rough number without a running session, estimate by description length. Look at your skill catalog: the system reminder contains a block starting with "The following skills are available for use with the Skill tool:" -- that's the full catalog text loaded every message.
 
 | Description Type             | Example                                                                                                   | ~Tokens |
 | ---------------------------- | --------------------------------------------------------------------------------------------------------- | ------- |
@@ -145,6 +148,12 @@ Rough estimation by description length:
 | Long (trigger + examples)    | Skills with multiple trigger examples and detailed descriptions                                           | ~80-120 |
 
 Multiply by entry count for a rough total.
+
+### Step 4: Attribute Plan Usage with `/usage`
+
+`/context` measures what occupies the context window right now. `/usage` measures what has been driving your usage over time. On a Pro, Max, Team, or Enterprise plan, `/usage` shows a breakdown of what counts against your plan limits, attributing recent usage to skills, subagents, plugins, and individual MCP servers, with each shown as a percentage of the total. Press `d` or `w` to switch between the last 24 hours and the last 7 days.
+
+The figures are approximate and computed from local session history on the current machine, so usage from other devices or claude.ai is not included. This breakdown points at which category to audit first: if a single MCP server or plugin dominates the percentage, that is where the largest savings are.
 
 ## Decision Framework
 
@@ -352,3 +361,4 @@ For project-specific needs, consider:
 - [Plugins](https://code.claude.com/docs/en/plugins.md) -- Plugin architecture, installation, management
 - [Memory](https://code.claude.com/docs/en/memory.md) -- CLAUDE.md hierarchy, context impact
 - [Model Configuration](https://code.claude.com/docs/en/model-config.md) -- Context windows, prompt caching
+- [Track Costs and Usage](https://code.claude.com/docs/en/costs.md) -- `/usage` per-category breakdown, session cost tracking

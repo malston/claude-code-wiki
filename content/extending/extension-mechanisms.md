@@ -278,12 +278,12 @@ Don't create a subagent when:
 
 A forked subagent inverts the isolation model above. Instead of starting fresh, a fork inherits the parent conversation at the moment it spawns: the same system prompt, tools, model, and message history as the main session. Its own tool calls still stay out of the main conversation, and only its final result returns, so the main context window stays clean.
 
-| Property      | Normal subagent                     | Forked subagent                  |
-| ------------- | ----------------------------------- | -------------------------------- |
-| Context       | Fresh, with the prompt you pass     | Full parent conversation history |
-| System prompt | From the subagent's definition file | Same as the main session         |
-| Model         | From the subagent's `model` field   | Same as the main session         |
-| Prompt cache  | Separate cache                      | Shared with the main session     |
+| Property      | Normal subagent                     | Forked subagent                          |
+| ------------- | ----------------------------------- | ---------------------------------------- |
+| Context       | Fresh, with the prompt you pass     | Full parent conversation history         |
+| System prompt | From the subagent's definition file | Same as the main session                 |
+| Model         | From the subagent's `model` field   | Same as the main session                 |
+| Prompt cache  | Separate cache                      | Reuses the parent's on the first request |
 
 Because the fork's system prompt and tool definitions match the parent, its first request reuses the parent's prompt cache, which makes a fork cheaper than spawning a fresh subagent for a task that needs the same context. Use a fork when a named subagent would need too much background to be useful, or to try several approaches in parallel from the same starting point.
 

@@ -334,7 +334,7 @@ A normal subagent starts from its own definition with a fresh context. A forked 
 Enable fork mode by setting `CLAUDE_CODE_FORK_SUBAGENT=1` (set to `0` to disable it). The variable works in interactive sessions and, as of v2.1.121, in non-interactive mode (`claude -p`) and the Agent SDK. Forked subagents require Claude Code v2.1.117 or later. With fork mode on:
 
 - Claude spawns a fork by requesting the `fork` subagent type explicitly. Spawns without a subagent type still use the general-purpose subagent.
-- Every subagent spawn runs in the background. Set `CLAUDE_CODE_DISABLE_BACKGROUND_TASKS=1` to keep spawns synchronous.
+- Every subagent spawn runs in the background, overriding the foreground default for normal subagents. Set `CLAUDE_CODE_DISABLE_BACKGROUND_TASKS=1` to keep spawns synchronous.
 - A fork cannot spawn another fork.
 
 Because a fork's system prompt and tool definitions match the parent, its first request reuses the parent's prompt cache, which makes forking cheaper than a fresh subagent for tasks that need the same context. A skill with `context: fork` (see [Running Skills in a Subagent](#running-skills-in-a-subagent)) uses the same forking mechanism, but drives the fork from the skill's content and chosen `agent` type rather than the parent conversation.

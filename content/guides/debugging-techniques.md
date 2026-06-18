@@ -422,9 +422,9 @@ Two bundled commands review a diff in the terminal without leaving the session. 
 The effort level controls coverage. Lower levels return fewer, higher-confidence findings; `high` through `max` give broader coverage and may include uncertain findings. Without an effort argument, the review uses the session's current effort.
 
 ```text
-/code-review                 review the default diff at current effort
-/code-review high            broader coverage on the default diff
-/code-review main...feature  review the committed diff a PR would contain
+/code-review                    review the default diff at current effort
+/code-review high               broader coverage on the default diff
+/code-review main...my-feature  review the committed diff a PR would contain
 ```
 
 Two flags change what happens with the findings:

@@ -209,9 +209,13 @@ Review the plan carefully before approving. If the proposed units aren't truly i
 
 Your `CLAUDE.md` and custom skills are inherited by each spawned agent, so a well-maintained project context improves every parallel worker.
 
-## Strategy 4: Use Git Worktrees for Manual Parallelism
+## Strategy 4: Use Git Worktrees for Parallel Sessions
 
-When `/batch` doesn't fit -- because the tasks aren't uniform, or you want more control -- you can manually run parallel Claude sessions using git worktrees.
+When `/batch` doesn't fit -- because the tasks aren't uniform, or you want more control -- you can run parallel Claude sessions in separate git worktrees. Claude Code manages the worktrees for you with the `--worktree` flag and the `EnterWorktree`/`ExitWorktree` tools, so you don't run `git worktree` by hand.
+
+### Start a session in a worktree
+
+Pass `--worktree` (or `-w`) to create an isolated worktree and start Claude in it. By default the worktree is created under `.claude/worktrees/<name>/` at your repository root, on a new branch named `worktree-<name>`. If you omit the name, Claude generates one.
 
 ```bash
 # Terminal 1: feature work
@@ -226,14 +230,58 @@ claude --worktree refactor-logging
 
 Each session gets its own branch and working directory. No file conflicts between sessions. Each Claude instance gets a fresh context budget dedicated to its specific task.
 
+Add `--tmux` (which requires `--worktree`) to open the worktree session in a tmux session, using iTerm2 native panes when available (pass `--tmux=classic` for traditional tmux):
+
+```bash
+claude -w feature-auth --tmux
+```
+
+To branch a worktree from a pull request, pass `#<number>` or a full GitHub pull request URL. Claude fetches `pull/<number>/head` from `origin` and creates the worktree at `.claude/worktrees/pr-<number>`:
+
+```bash
+claude --worktree "#1234"
+```
+
+### Switch worktrees mid-session
+
+You can also ask Claude to "work in a worktree" during a session, and it creates one with the `EnterWorktree` tool. From inside a worktree, Claude can switch directly into another worktree under `.claude/worktrees/` by calling `EnterWorktree` with the target path -- the previous worktree stays on disk untouched. The `ExitWorktree` tool returns the session to the original directory.
+
+### Choose the base branch
+
+By default new worktrees branch from your repository's default branch, `origin/HEAD`, so they start from a clean tree matching the remote. If no remote is configured or the fetch fails, the worktree falls back to your current local `HEAD`. This is controlled by the `worktree.baseRef` setting, which accepts `"fresh"` (default) or `"head"`:
+
+```json
+{
+  "worktree": {
+    "baseRef": "head"
+  }
+}
+```
+
+Setting `baseRef` to `"head"` branches from your local `HEAD` instead, so new worktrees carry your unpushed commits and feature-branch state -- useful when you need to isolate work that builds on in-progress changes. The setting applies to `--worktree`, the `EnterWorktree` tool, and subagent isolation. It accepts only `"fresh"` or `"head"`, not arbitrary git refs.
+
+### Cleanup
+
 When you exit a worktree session:
 
 - **No changes:** worktree and branch are cleaned up automatically
 - **Changes exist:** Claude prompts you to keep or remove
 
-Add `.claude/worktrees/` to your `.gitignore` to keep things clean.
+Worktrees created with `--worktree` are never removed by the automatic cleanup sweep. Add `.claude/worktrees/` to your `.gitignore` to keep things clean.
 
-Subagents can also use worktree isolation. Ask Claude to "use worktrees for your agents" or add `isolation: worktree` to a custom subagent's frontmatter.
+### Subagent and background-session isolation
+
+Subagents can also use worktree isolation. Ask Claude to "use worktrees for your agents" or add `isolation: worktree` to a custom subagent's frontmatter. Subagent worktrees use the same base branch as `--worktree`.
+
+For [background sessions]({{< relref "/guides/background-agents" >}}), the `worktree.bgIsolation` setting controls how file edits are isolated (requires Claude Code v2.1.143 or later). The default `"worktree"` blocks `Edit`/`Write` in the main checkout until `EnterWorktree` is called; `"none"` lets background jobs edit the working copy directly, for repos where worktrees are impractical:
+
+```json
+{
+  "worktree": {
+    "bgIsolation": "none"
+  }
+}
+```
 
 ## Strategy 5: Be Strategic About What Claude Reads
 
@@ -327,7 +375,7 @@ For very long sessions, consider `/clear` and starting fresh. If you've committe
 | ------------------------------------------------ | ------------------------------------------------- |
 | Narrow and deep (one module, complex logic)      | Single session, tight scoping, three-step pattern |
 | Wide and uniform (same change across many files) | `/batch`                                          |
-| Multiple independent tasks                       | Manual worktrees (`claude --worktree`)            |
+| Multiple independent tasks                       | Parallel worktree sessions (`claude --worktree`)  |
 | Large refactor with ordered dependencies         | Chained smaller steps with commits                |
 | Recurring patterns across sessions               | Skills and CLAUDE.md                              |
 | Monorepo or multi-service codebase               | Hierarchical CLAUDE.md with per-module context    |

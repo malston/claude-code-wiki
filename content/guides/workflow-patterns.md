@@ -423,7 +423,7 @@ claude -w feature-auth
 claude --worktree
 ```
 
-This creates a worktree at `.claude/worktrees/<name>/` with a branch based on HEAD. On exit, the worktree is removed automatically if no changes were made. If changes exist, Claude prompts you to keep or remove it.
+This creates a worktree at `.claude/worktrees/<name>/`. By default the branch is based on `origin/<default-branch>` (the `worktree.baseRef` setting, default `fresh`); set `worktree.baseRef: "head"` to branch from your local HEAD instead. On exit, the worktree is removed automatically if no changes were made. If changes exist, Claude prompts you to keep or remove it.
 
 Add `--tmux` to launch the worktree session inside a tmux pane (`claude --worktree feature-auth --tmux`). This requires `--worktree` and auto-detects iTerm2 for native split panes. Pass `--tmux=classic` to force traditional tmux. For multi-agent pane layouts, see the [agent teams]({{< relref "/extending/agent-teams" >}}) article's tmux display mode.
 

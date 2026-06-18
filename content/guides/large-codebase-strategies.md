@@ -230,7 +230,7 @@ claude --worktree refactor-logging
 
 Each session gets its own branch and working directory. No file conflicts between sessions. Each Claude instance gets a fresh context budget dedicated to its specific task.
 
-Add `--tmux` (which requires `--worktree`) to open the worktree session in a tmux session, using iTerm2 native panes when available:
+Add `--tmux` (which requires `--worktree`) to open the worktree session in a tmux session, using iTerm2 native panes when available (pass `--tmux=classic` for traditional tmux):
 
 ```bash
 claude -w feature-auth --tmux
@@ -273,7 +273,7 @@ Worktrees created with `--worktree` are never removed by the automatic cleanup s
 
 Subagents can also use worktree isolation. Ask Claude to "use worktrees for your agents" or add `isolation: worktree` to a custom subagent's frontmatter. Subagent worktrees use the same base branch as `--worktree`.
 
-For [background sessions]({{< relref "/extending/agent-teams" >}}), the `worktree.bgIsolation` setting controls how file edits are isolated (requires Claude Code v2.1.143 or later). The default `"worktree"` blocks `Edit`/`Write` in the main checkout until `EnterWorktree` is called; `"none"` lets background jobs edit the working copy directly, for repos where worktrees are impractical:
+For [background sessions]({{< relref "/guides/background-agents" >}}), the `worktree.bgIsolation` setting controls how file edits are isolated (requires Claude Code v2.1.143 or later). The default `"worktree"` blocks `Edit`/`Write` in the main checkout until `EnterWorktree` is called; `"none"` lets background jobs edit the working copy directly, for repos where worktrees are impractical:
 
 ```json
 {

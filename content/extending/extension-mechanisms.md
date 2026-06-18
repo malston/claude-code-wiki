@@ -33,6 +33,7 @@ Claude Code extends capabilities through three distinct mechanisms with differen
       - [Example 2: Legacy System Migration Assistant](#example-2-legacy-system-migration-assistant)
       - [Example 3: Incident Response Debugger](#example-3-incident-response-debugger)
     - [When NOT to Create a Subagent](#when-not-to-create-a-subagent)
+    - [Forked Subagents](#forked-subagents)
   - [Skills](#skills)
     - [What They Are](#what-they-are-1)
     - [Technical Structure](#technical-structure)
@@ -272,6 +273,23 @@ Don't create a subagent when:
 | Task completes in <10 turns      | Main context is fine                 |
 
 **Rule of thumb**: Create a subagent when you're _delegating work_ that needs isolation. Use a skill when you're _guiding work_ that happens in main context.
+
+### Forked Subagents
+
+A forked subagent inverts the isolation model above. Instead of starting fresh, a fork inherits the parent conversation at the moment it spawns: the same system prompt, tools, model, and message history as the main session. Its own tool calls still stay out of the main conversation, and only its final result returns, so the main context window stays clean.
+
+| Property      | Normal subagent                     | Forked subagent                          |
+| ------------- | ----------------------------------- | ---------------------------------------- |
+| Context       | Fresh, with the prompt you pass     | Full parent conversation history         |
+| System prompt | From the subagent's definition file | Same as the main session                 |
+| Model         | From the subagent's `model` field   | Same as the main session                 |
+| Prompt cache  | Separate cache                      | Reuses the parent's on the first request |
+
+Because the fork's system prompt and tool definitions match the parent, its first request reuses the parent's prompt cache, which makes a fork cheaper than spawning a fresh subagent for a task that needs the same context. Use a fork when a named subagent would need too much background to be useful, or to try several approaches in parallel from the same starting point.
+
+Forked subagents require Claude Code v2.1.117 or later. Set `CLAUDE_CODE_FORK_SUBAGENT=1` to enable fork mode on external builds, or `0` to disable it; the variable works in interactive sessions and, as of v2.1.121, in non-interactive mode and the Agent SDK. When fork mode is on, Claude spawns a fork by requesting the `fork` subagent type explicitly, and every subagent spawn runs in the background. A fork cannot spawn another fork.
+
+A skill can also run in a forked context by declaring `context: fork` in its frontmatter, which the [building extensions](custom-extensions.md) guide covers in detail.
 
 ## Skills
 

@@ -34,6 +34,7 @@ Claude Code's capabilities can be extended through custom subagents (autonomous 
     - [Preloading Skills](#preloading-skills)
     - [CLI-Defined Subagents](#cli-defined-subagents)
     - [Foreground vs Background](#foreground-vs-background)
+    - [Forked Subagents](#forked-subagents)
     - [Example: Code Reviewer](#example-code-reviewer)
     - [Example: Test Runner](#example-test-runner)
   - [Skills](#skills)
@@ -325,6 +326,18 @@ These exist only for the session and are not saved to disk.
 - **Background**: Runs concurrently. Permissions are pre-approved before launch. Use `Ctrl+B` to background a running subagent.
 
 Disable background execution with: `CLAUDE_CODE_DISABLE_BACKGROUND_TASKS=1`
+
+### Forked Subagents
+
+A normal subagent starts from its own definition with a fresh context. A forked subagent instead inherits the entire parent conversation at the moment it spawns -- the same system prompt, tools, model, and message history as the main session. Its tool calls stay out of the main conversation and only its final result returns, so a fork lets you hand off a side task without re-explaining the situation.
+
+Enable fork mode by setting `CLAUDE_CODE_FORK_SUBAGENT=1` (set to `0` to disable it). The variable works in interactive sessions and, as of v2.1.121, in non-interactive mode (`claude -p`) and the Agent SDK. Forked subagents require Claude Code v2.1.117 or later. With fork mode on:
+
+- Claude spawns a fork by requesting the `fork` subagent type explicitly. Spawns without a subagent type still use the general-purpose subagent.
+- Every subagent spawn runs in the background, overriding the foreground default for normal subagents. Set `CLAUDE_CODE_DISABLE_BACKGROUND_TASKS=1` to keep spawns synchronous.
+- A fork cannot spawn another fork.
+
+Because a fork's system prompt and tool definitions match the parent, its first request reuses the parent's prompt cache, which makes forking cheaper than a fresh subagent for tasks that need the same context. A skill with `context: fork` (see [Running Skills in a Subagent](#running-skills-in-a-subagent)) uses the same forking mechanism, but drives the fork from the skill's content and chosen `agent` type rather than the parent conversation.
 
 ### Example: Code Reviewer
 

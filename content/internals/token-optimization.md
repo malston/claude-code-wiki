@@ -135,7 +135,7 @@ Items marked with `*` are enabled. Items marked with `x` are disabled. Focus on 
 
 ### Step 3: Measure Token Costs with `/context`
 
-Run `/context all` in a session to see per-skill token estimates. As of Claude Code 2.1.139, these estimates are computed with the model's tokenizer and shown as rounded values, so they reflect what each skill actually costs rather than a guess. For skills that come from a plugin, `/context` shows the providing plugin's name, which makes it easy to attribute catalog cost back to the plugin that introduced it.
+Run `/context all` in a session to see per-skill token estimates. As of Claude Code 2.1.139, these estimates use the model's tokenizer and are shown as rounded values, so they track real tokenization more closely than the description-length method below. For skills that come from a plugin, `/context` shows the providing plugin's name, which makes it easy to attribute catalog cost back to the plugin that introduced it.
 
 `/context` also flags context-heavy tools, memory bloat, and capacity warnings, so it doubles as a first pass for the decision framework below.
 

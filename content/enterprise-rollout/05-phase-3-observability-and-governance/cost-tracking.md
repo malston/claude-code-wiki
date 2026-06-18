@@ -65,6 +65,26 @@ Deploy dashboards showing:
 - Cost trends and projections
 - Top 10 users by consumption (for outlier detection, not surveillance)
 
+### Slicing Metrics by Team and Entrypoint
+
+Claude Code emits its own OpenTelemetry metrics (token counts, cost, lines of code) alongside the gateway logs. Two attributes let you break those metrics down without parsing prompt content.
+
+Set custom dimensions through `OTEL_RESOURCE_ATTRIBUTES`. As of Claude Code v2.1.161, its keys are attached as labels on every metric datapoint, so you can group usage by team, department, or repository:
+
+```bash
+export OTEL_RESOURCE_ATTRIBUTES="department=engineering,team.id=platform,cost_center=eng-123"
+```
+
+Attachment is on by default; set `OTEL_METRICS_INCLUDE_RESOURCE_ATTRIBUTES=false` to suppress it. Values must be comma-separated `key=value` pairs with no spaces (percent-encode any spaces in values).
+
+To see how a session was launched, opt in to the `app.entrypoint` metric attribute (default: excluded):
+
+```bash
+export OTEL_METRICS_INCLUDE_ENTRYPOINT=true
+```
+
+It reports values such as `cli`, `sdk-cli`, `sdk-ts`, `sdk-py`, or `claude-vscode`, which separates interactive developer usage from headless SDK and CI consumption when you attribute cost.
+
 ## Prompt Caching
 
 Bedrock supports prompt caching, which can reduce costs by up to 90% for repeated context patterns (like CLAUDE.md and rules that load every session). Monitor cache hit rates during Cohort 1 and optimize:

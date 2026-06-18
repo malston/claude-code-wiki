@@ -84,6 +84,18 @@ Bedrock offers opt-in model invocation logging that captures full prompt and res
 - Set S3 bucket with immutable retention policy for audit trail
 - Restrict access to compliance/security teams via IAM
 
+## Claude Code Telemetry as a Client-Side Audit Source
+
+The three AWS layers above record what reached Bedrock. They do not show which subagent issued a request, what command a developer's agent ran, or which files an `@`-mention pulled into context. Claude Code's OpenTelemetry traces and log events fill that gap on the client side. Point its OTLP exporter at the same SIEM that receives gateway logs.
+
+**Agent attribution on tool spans:** As of Claude Code v2.1.145, `claude_code.tool` spans carry `agent_id` and `parent_agent_id` attributes. `agent_id` identifies the subagent or teammate that ran the tool (absent on the main session); `parent_agent_id` identifies the agent that spawned it. Background subagent spans nest under the `claude_code.tool` span of the agent that dispatched them, so a trace shows which delegated agent took an action.
+
+**Tool parameters (content-level detail):** Tool input is redacted by default. Set `OTEL_LOG_TOOL_DETAILS=1` to include a `tool_parameters` attribute on `tool_result` and `tool_decision` events, capturing Bash commands, MCP server and tool names, and skill names. On `tool_decision` events this records which command was rejected when the `decision` is `"reject"`. This is the client-side equivalent of content logging, so treat it like Bedrock invocation logging: it can capture sensitive values, and the same Zero Data Retention (ZDR) considerations apply. The data goes only to your configured OTEL endpoint, never to Anthropic.
+
+**File and resource access via `@`-mentions:** The `claude_code.at_mention` log event (added in Claude Code v2.1.122) fires when Claude Code resolves an `@`-mention. It carries a `mention_type` attribute (`file`, `directory`, `agent`, or `mcp_resource`) and a `success` flag, giving an access trail for resources a developer pulled into a prompt.
+
+**Repository and PR context:** When a status line script is configured, its stdin JSON includes `workspace.repo` (`host`, `owner`, `name`, parsed from the `origin` remote) and, when an open pull request is detected for the current branch, `pr.number`, `pr.url`, and `pr.review_state`. A status line command can forward these to your logging pipeline to tie a session to a specific repository and PR.
+
 ## Anthropic Direct vs. Bedrock Audit Paths
 
 Anthropic offers a Compliance API for Claude for Enterprise (direct API) customers. It provides programmatic access to usage data, activity logs, conversation histories, and selective deletion, with filtering by user and time range. Compliance teams can integrate this into existing monitoring workflows through a single API integration point.

@@ -83,6 +83,30 @@ Blocks access to secrets, credentials, SSH keys. Prevents Claude from making arb
 - `allowManagedHooksOnly: false` -- allows project-level hooks initially. Set to `true` if hook execution is a security concern.
 - `strictKnownMarketplaces: []` -- empty array blocks all plugin marketplaces. To allow vetted plugins, add source objects (e.g., `{"source": "github", "repo": "acme-corp/approved-plugins"}`).
 
+### Version Pinning
+
+`requiredMinimumVersion` refuses to start Claude Code if the installed version is older than the value, directing the user to the organization's approved update path. Pair it with `requiredMaximumVersion` to pin a tested ceiling: a version above it also refuses to start. Together they hold the fleet on a version your team has validated, rather than letting every machine track the latest release. These keys are top-level managed settings, so add them outside the `permissions` block:
+
+```json
+{
+  "requiredMinimumVersion": "2.1.150",
+  "requiredMaximumVersion": "2.1.166"
+}
+```
+
+Set both to a range your fleet already runs -- the values above are placeholders, and a floor above a machine's installed version locks it out of startup until it updates. Where background auto-updates are enabled, `claude update` and the auto-updater skip versions above the ceiling, so an in-range install stays in range. This binder disables the auto-updater via `CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC`, so machines advance only through your managed rollout, and the ceiling then guards against a manually installed out-of-range version.
+
+`claude update`, `claude install`, and `claude doctor` keep working outside the range so users can recover. This differs from `minimumVersion`, which blocks downgrades but never blocks startup.
+
+### Additional Managed-Only Controls
+
+| Setting                                   | When to use it                                                                                                                                                                                                                                                                                    |
+| ----------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `parentSettingsBehavior`                  | Set to `"merge"` so host-supplied settings (Agent SDK, IDE extension) apply under the admin tier and can only tighten it. Default `"first-wins"` drops them.                                                                                                                                      |
+| `pluginSuggestionMarketplaces`            | Allowlist the org marketplaces whose plugins may surface as contextual install suggestions. A name takes effect only when that marketplace is registered on the machine and its source is declared in managed settings; the official Anthropic marketplace is exempt from the source requirement. |
+| `allowAllClaudeAiMcps`                    | Load claude.ai cloud MCP connectors alongside a deployed `managed-mcp.json` (which otherwise suppresses them).                                                                                                                                                                                    |
+| `sandbox.bwrapPath` / `sandbox.socatPath` | On Linux/WSL, point the sandbox at custom `bubblewrap` and `socat` binary locations when they are not on the default search path.                                                                                                                                                                 |
+
 ## Distribution
 
 | Platform | Path                                                            |

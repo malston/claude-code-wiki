@@ -462,7 +462,7 @@ re-run the suite after each fix, and commit when it's green.
 keep going until every test passes.
 ```
 
-Without a fixed interval, Claude schedules the next iteration only when there is more to do. Once the suite is provably green it stops on its own by not scheduling another wakeup. In self-paced mode Claude may also use the Monitor tool to stream a background script's output instead of re-running the prompt, which is often more responsive than polling.
+Without a fixed interval, Claude schedules the next iteration only when there is more to do. Once the suite is provably green it stops on its own by not scheduling another wakeup. In self-paced mode Claude may also use the [Monitor tool]({{< relref "/extending/integration-patterns" >}}#the-monitor-tool) to stream a background script's output instead of re-running the prompt, which is often more responsive than polling.
 
 ### Stopping a Loop
 

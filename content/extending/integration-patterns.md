@@ -8,7 +8,7 @@ weight: 4
 
 ## Executive Summary
 
-Claude Code connects to external systems through four integration mechanisms: MCP servers for tool access, hooks for workflow automation, headless mode for CLI scripting, and GitHub Actions for CI/CD. Each serves a different purpose and operates at a different layer. This article covers when to use each, how they work, and practical patterns for combining them.
+Claude Code connects to external systems through five integration mechanisms: MCP servers for tool access, hooks for workflow automation, headless mode for CLI scripting, GitHub Actions for CI/CD, and monitors for reacting to background events. Each serves a different purpose and operates at a different layer. This article covers when to use each, how they work, and practical patterns for combining them.
 
 | Mechanism          | Purpose                       | Direction            | Runs When                |
 | ------------------ | ----------------------------- | -------------------- | ------------------------ |
@@ -49,6 +49,9 @@ Claude Code connects to external systems through four integration mechanisms: MC
     - [Cost Considerations](#cost-considerations)
   - [Claude as MCP Server](#claude-as-mcp-server)
   - [Plugins: Packaging Integrations](#plugins-packaging-integrations)
+  - [Monitors: Reacting to Background Events](#monitors-reacting-to-background-events)
+    - [The Monitor Tool](#the-monitor-tool)
+    - [Plugin Background Monitors](#plugin-background-monitors)
   - [Integration Decision Framework](#integration-decision-framework)
   - [Combining Integration Patterns](#combining-integration-patterns)
     - [MCP + Hooks: Auto-Validated External Access](#mcp--hooks-auto-validated-external-access)
@@ -66,7 +69,7 @@ Claude Code connects to external systems through four integration mechanisms: MC
 
 ## The Integration Landscape
 
-Claude Code integrates with external systems through four distinct mechanisms. Each operates at a different layer and serves a different purpose:
+Claude Code integrates with external systems through five distinct mechanisms. Each operates at a different layer and serves a different purpose:
 
 ```sh
                     ┌──────────────────────────────────┐
@@ -103,6 +106,8 @@ Claude Code integrates with external systems through four distinct mechanisms. E
 **Headless mode** (`claude -p`) turns Claude into a command-line tool that other programs can call. It reads a prompt, does the work, prints the result, and exits. This is what makes Claude composable with Unix pipelines and CI/CD systems.
 
 **GitHub Actions** trigger Claude in response to GitHub events -- PR comments, issue creation, scheduled runs. The official `anthropics/claude-code-action` wraps headless mode into a GitHub-native integration.
+
+**Monitors** stream events from a background script into the conversation, so Claude reacts to log lines, file changes, or status checks as they happen rather than when asked. Plugins can auto-arm a monitor at session start or when a skill runs.
 
 ## MCP Servers: Connecting External Tools
 
@@ -813,6 +818,69 @@ Hooks are defined in `hooks/hooks.json` within the plugin:
 }
 ```
 
+## Monitors: Reacting to Background Events
+
+The mechanisms above run when Claude calls a tool, when a lifecycle event fires, or when a script invokes Claude. Monitors fill a different slot: they run a command in the background for the lifetime of a session and feed each output line back to Claude as a notification, so it can react to log entries, file changes, or polled status mid-conversation without pausing the work you are doing.
+
+### The Monitor Tool
+
+The Monitor tool (Claude Code v2.1.98 and later) lets Claude watch something in the background and react when it changes. You ask Claude to do one of these:
+
+- Tail a log file and flag errors as they appear
+- Poll a PR or CI job and report when its status changes
+- Watch a directory for file changes
+- Track output from any long-running script you point it at
+
+Claude writes a small script for the watch, runs it in the background, and receives each output line as it arrives. You keep working in the same session and Claude interjects when an event lands. Stop a monitor by asking Claude to cancel it or by ending the session.
+
+The Monitor tool uses the same permission rules as Bash, so `allow` and `deny` patterns set for Bash apply here too. It is not available on Amazon Bedrock, Google Vertex AI, or Microsoft Foundry, and it is not available when `DISABLE_TELEMETRY` or `CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC` is set.
+
+### Plugin Background Monitors
+
+Plugins can declare monitors that start automatically when the plugin is active, so a teammate who installs the plugin gets the watch without asking Claude to start it (Claude Code v2.1.105 and later). Plugin monitors are an experimental component: the manifest schema may change between releases while it stabilizes.
+
+Add a `monitors/monitors.json` file at the plugin root with an array of monitor entries:
+
+```json
+[
+  {
+    "name": "deploy-status",
+    "command": "\"${CLAUDE_PLUGIN_ROOT}\"/scripts/poll-deploy.sh ${user_config.api_endpoint}",
+    "description": "Deployment status changes"
+  },
+  {
+    "name": "error-log",
+    "command": "tail -F ./logs/error.log",
+    "description": "Application error log",
+    "when": "on-skill-invoke:debug"
+  }
+]
+```
+
+Each stdout line from `command` is delivered to Claude as a notification during the session. The fields:
+
+| Field         | Required | Description                                                                                                                                                  |
+| ------------- | -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `name`        | Yes      | Identifier unique within the plugin; prevents duplicate processes on reload or repeat invoke                                                                 |
+| `command`     | Yes      | Shell command run as a persistent background process in the session working directory                                                                        |
+| `description` | Yes      | Short summary of what is watched; shown in the task panel and notification summaries                                                                         |
+| `when`        | No       | `"always"` (default) starts at session start and on plugin reload; `"on-skill-invoke:<skill>"` starts the first time that skill in this plugin is dispatched |
+
+The `command` value supports the same variable substitutions as MCP and LSP server configs, including `${CLAUDE_PLUGIN_ROOT}`, `${CLAUDE_PROJECT_DIR}`, `${user_config.*}`, and any `${ENV_VAR}` from the environment.
+
+Declare monitors inline instead by setting `experimental.monitors` in `plugin.json` to the same array, or to a relative path string such as `"./config/monitors.json"` to load from a non-default location:
+
+```json
+{
+  "name": "my-plugin",
+  "experimental": {
+    "monitors": "./monitors.json"
+  }
+}
+```
+
+The `experimental` placement is a migration in progress (Claude Code v2.1.129): declaring `monitors` at the manifest top level still works, but `claude plugin validate` warns, and a future release will require the key under `experimental`. Plugin monitors share the Monitor tool's availability constraints, run unsandboxed at the same trust level as hooks, and run only in interactive CLI sessions. Disabling a plugin mid-session does not stop monitors already running; they stop when the session ends.
+
 ## Integration Decision Framework
 
 Use this flowchart to choose the right integration mechanism:
@@ -1035,6 +1103,8 @@ Use the most specific matcher possible to minimize unnecessary hook executions.
 - [Hooks Reference (Claude Code)](https://code.claude.com/docs/en/hooks) -- Hook events, schemas, and configuration
 - [Hooks Guide (Claude Code)](https://code.claude.com/docs/en/hooks-guide) -- Practical hook setup walkthrough
 - [CLI Reference (Claude Code)](https://code.claude.com/docs/en/cli-reference) -- Full command-line flag reference
+- [Tools Reference: Monitor tool (Claude Code)](https://code.claude.com/docs/en/tools-reference#monitor-tool) -- Monitor tool behavior and availability
+- [Plugins Reference: Monitors (Claude Code)](https://code.claude.com/docs/en/plugins-reference#monitors) -- Plugin monitor schema, `when` triggers, and `experimental` placement
 - [GitHub Actions (Claude Code)](https://code.claude.com/docs/en/github-actions) -- Official GitHub Actions integration
 - [claude-code-action Repository](https://github.com/anthropics/claude-code-action) -- Source and examples for the GitHub Action
 - [Model Context Protocol](https://modelcontextprotocol.io/introduction) -- MCP specification and SDK

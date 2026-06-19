@@ -48,6 +48,12 @@ Claude Code is an agentic coding tool -- it explores, plans, and implements rath
     - [Rewind and Checkpoints](#rewind-and-checkpoints)
     - [Named Sessions](#named-sessions)
     - [Resuming Work](#resuming-work)
+  - [Recurring Tasks with /loop](#recurring-tasks-with-loop)
+    - [Fixed Interval vs Self-Paced](#fixed-interval-vs-self-paced)
+    - [Babysit a PR Until It Merges](#babysit-a-pr-until-it-merges)
+    - [Wait on a Deploy, Then Verify](#wait-on-a-deploy-then-verify)
+    - [Self-Paced Test-Fixing Sweep](#self-paced-test-fixing-sweep)
+    - [Stopping a Loop](#stopping-a-loop)
   - [Multi-Session and Parallel Work](#multi-session-and-parallel-work)
     - [Git Worktrees for Isolation](#git-worktrees-for-isolation)
     - [tmux Monitoring Layouts](#tmux-monitoring-layouts)
@@ -404,6 +410,64 @@ claude --from-pr 123
 
 From inside a session, `/resume` switches to a different conversation without leaving Claude Code.
 
+## Recurring Tasks with /loop
+
+`/loop` re-runs a prompt or slash command on a schedule while the session stays open. Use it to poll a deploy, babysit a PR, or check back on a long-running build without retyping the same prompt. `/proactive` is an alias for the same command. Loops are session-scoped: they stop when you start a new conversation, and `claude --resume` or `claude --continue` restores any loop created within the last seven days.
+
+### Fixed Interval vs Self-Paced
+
+What you pass to `/loop` determines how it schedules the next run:
+
+| What you provide     | Example                                 | Behavior                                                                  |
+| -------------------- | --------------------------------------- | ------------------------------------------------------------------------- |
+| Interval and prompt  | `/loop 5m check if the deploy finished` | Runs on a fixed cron schedule at that cadence                             |
+| Interval and command | `/loop 20m /review-pr 1234`             | Re-runs the saved skill or command each iteration                         |
+| Prompt only          | `/loop check whether CI passed`         | Claude picks the next delay (one minute to one hour) after each iteration |
+
+For a fixed interval, the interval can lead the prompt as a bare token like `30m` or trail it as a clause like `every 2 hours`. Supported units are `s` (seconds), `m` (minutes), `h` (hours), and `d` (days). Cron has one-minute granularity, so seconds round up to the nearest minute and odd intervals like `7m` or `90m` round to the nearest valid step (Claude tells you which it picked).
+
+When you omit the interval, Claude self-paces: after each iteration it chooses a delay between one minute and one hour based on what it observed -- short waits while a build is finishing or a PR is active, longer waits when nothing is pending -- and prints the chosen delay and the reason.
+
+### Babysit a PR Until It Merges
+
+Run `/review-pr` (or your own PR command) on a fixed interval so each pass picks up new CI results and review comments:
+
+```text
+/loop 10m check PR 1234: poll CI, pull any failing job logs and
+push a minimal fix, address new review comments and resolve the
+threads, and merge once everything is green
+```
+
+Each iteration re-runs the same instruction against the current state of the PR. When CI is red, Claude diagnoses and pushes a fix; when reviewers leave comments, it addresses them; once the checks pass and nothing is outstanding, it merges. Press `Esc` to stop the loop once the PR lands.
+
+### Wait on a Deploy, Then Verify
+
+Poll a deploy and gate follow-up work on its success:
+
+```text
+/loop 5m check if the deploy to staging finished. if it
+succeeded, run the smoke tests and stop. if it's still in
+progress, report status and wait for the next iteration.
+```
+
+The loop reports progress on each pass and only runs the smoke tests once the deploy reports success. Stop it with `Esc` after the tests run, or let the seven-day expiry end it.
+
+### Self-Paced Test-Fixing Sweep
+
+Omit the interval to let Claude work at its own pace through a failing suite:
+
+```text
+/loop run the test suite. fix one failing test at a time,
+re-run the suite after each fix, and commit when it's green.
+keep going until every test passes.
+```
+
+Without a fixed interval, Claude schedules the next iteration only when there is more to do. Once the suite is provably green it stops on its own by not scheduling another wakeup. In self-paced mode Claude may also use the [Monitor tool]({{< relref "/extending/integration-patterns" >}}#the-monitor-tool) to stream a background script's output instead of re-running the prompt, which is often more responsive than polling.
+
+### Stopping a Loop
+
+Press `Esc` while a loop is waiting for the next iteration to clear the pending wakeup so it does not fire again. Wakeups display as "Claude resuming /loop wakeup" when they fire. A self-paced loop also ends on its own once the task is provably complete; a fixed-interval loop runs until you stop it or seven days elapse.
+
 ## Multi-Session and Parallel Work
 
 ### Git Worktrees for Isolation
@@ -687,6 +751,7 @@ Use subagents when tasks can run in parallel, require isolated context, or invol
 
 - [Best Practices (Claude Code Docs)](https://code.claude.com/docs/en/best-practices) -- Official best practices guide
 - [Common Workflows (Claude Code Docs)](https://code.claude.com/docs/en/common-workflows) -- Step-by-step workflow recipes
+- [Scheduled Tasks (Claude Code Docs)](https://code.claude.com/docs/en/scheduled-tasks) -- `/loop` interval syntax, self-pacing, and stopping behavior
 - [Effective Prompting Article]({{< relref "effective-prompting" >}}) -- Structuring requests for better results
 - [Context Management Article]({{< relref "/internals/context-management" >}}) -- Working within the token budget
 - [Extension Mechanisms Article]({{< relref "/extending/extension-mechanisms" >}}) -- Subagents, skills, and MCP servers

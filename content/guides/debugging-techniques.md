@@ -44,6 +44,9 @@ Debugging with Claude Code works best when treated as a systematic investigation
     - [It Worked Before](#it-worked-before)
     - [Intermittent Failures](#intermittent-failures)
     - [Build and Configuration Errors](#build-and-configuration-errors)
+  - [Built-in Review Commands](#built-in-review-commands)
+    - [`/code-review`](#code-review)
+    - [`/simplify`](#simplify)
   - [Using Subagents for Debugging](#using-subagents-for-debugging)
   - [Debugging Across Context Windows](#debugging-across-context-windows)
   - [Anti-Patterns](#anti-patterns)
@@ -407,6 +410,42 @@ For dependency issues:
  library X and Y. read go.mod and figure out which
  version constraints are incompatible"
 ```
+
+## Built-in Review Commands
+
+Two bundled commands review a diff in the terminal without leaving the session. They suit a different moment from the manual tracing above: run them after a fix is written, to catch correctness bugs and cleanups in the change before it ships.
+
+### `/code-review`
+
+`/code-review` reviews a diff and reports correctness bugs plus reuse, simplification, and efficiency cleanups. By default it covers your branch's commits ahead of its upstream plus any uncommitted changes in the working tree. Pass a target to review something else: a file path, a PR number, a branch name, or a ref range such as `main...my-feature`.
+
+The effort level controls coverage. Lower levels return fewer, higher-confidence findings; `high` through `max` give broader coverage and may include uncertain findings. Without an effort argument, the review uses the session's current effort.
+
+```text
+/code-review                    review the default diff at current effort
+/code-review high               broader coverage on the default diff
+/code-review main...my-feature  review the committed diff a PR would contain
+```
+
+Two flags change what happens with the findings:
+
+| Flag        | Effect                                                   |
+| ----------- | -------------------------------------------------------- |
+| `--comment` | Post findings as inline GitHub PR comments               |
+| `--fix`     | Apply the findings to your working tree after the review |
+
+`/code-review ultra` runs a deeper multi-agent review in the cloud; `/code-review ultra --fix` applies its findings to the working tree when they return to the session.
+
+### `/simplify`
+
+`/simplify` reviews the changed code for cleanup opportunities -- reuse of existing helpers, simplification, efficiency, and whether the change sits at the right level of abstraction -- and applies the fixes. From v2.1.154 it does not look for correctness bugs; use `/code-review` for that. Pass a path or PR reference to review a specific target.
+
+```text
+/simplify          clean up the changed code and apply fixes
+/simplify 1234     clean up the diff for PR 1234
+```
+
+The bug-hunting equivalent is `/code-review --fix`, which reports correctness bugs in addition to cleanups.
 
 ## Using Subagents for Debugging
 

@@ -552,7 +552,7 @@ The helper script is called after 5 minutes or on HTTP 401. Customize the interv
 
 ### Workload Identity Federation
 
-Workload identity federation (WIF) replaces long-lived `ANTHROPIC_API_KEY` secrets with short-lived OpenID Connect tokens minted by an identity provider you already run -- AWS IAM, Google Cloud, GitHub Actions, Kubernetes, Microsoft Entra ID, Okta, or any standards-compliant OIDC issuer. The workload presents a signed JWT, Anthropic validates it against a federation rule you configure in the Claude Console, and returns a short-lived access token bound to a service account. Nothing static has to be stored in CI, rotated, or leaked. The [Workload Identity Federation guide](https://platform.claude.com/docs/en/manage-claude/workload-identity-federation) covers the full setup.
+Workload identity federation (WIF) replaces long-lived API key secrets with short-lived OpenID Connect tokens minted by an identity provider you already run -- AWS IAM, Google Cloud, GitHub Actions, Kubernetes, Microsoft Entra ID, Okta, or any standards-compliant OIDC issuer. The workload presents a signed JWT, Anthropic validates it against a federation rule you configure in the Claude Console, and returns a short-lived access token bound to a service account. Nothing static has to be stored in CI, rotated, or leaked. The [Workload Identity Federation guide](https://platform.claude.com/docs/en/manage-claude/workload-identity-federation) covers the full setup.
 
 A federation rule is scoped to a workspace, and the minted token follows that workspace's rate limits and usage attribution. When a single rule covers more than one workspace, set `ANTHROPIC_WORKSPACE_ID` (Claude Code v2.1.141+) so the token exchange knows which workspace to target:
 

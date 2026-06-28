@@ -511,7 +511,7 @@ A goal that is still active when a session ends is restored on `claude --resume`
 
 ## Terminal Display Modes
 
-Claude Code's `tui` setting selects how the CLI renders. The `fullscreen` renderer draws on the terminal's alternate screen buffer, like `vim` or `htop`, which removes flicker, keeps memory flat in long conversations, and adds mouse support; `default` is the classic renderer that keeps the conversation in your terminal's native scrollback. Fullscreen rendering is a research preview.
+Claude Code's `tui` setting selects how the CLI renders and defaults to the `fullscreen` renderer. Fullscreen draws on the terminal's alternate screen buffer, like `vim` or `htop`, which removes flicker, keeps memory flat in long conversations, and adds mouse support; `default` is the classic renderer that keeps the conversation in your terminal's native scrollback. Fullscreen rendering is a research preview.
 
 Switch renderers in a live session without losing context:
 
@@ -526,13 +526,13 @@ Because the fullscreen renderer lives in the alternate screen buffer, your termi
 Two commands shape how much you see:
 
 - `/focus` toggles a condensed view that shows only your last prompt, a one-line summary of each tool call with edit diffstats, and the final response. The setting persists across sessions; run `/focus` again to turn it off.
-- `Ctrl+O` toggles the transcript between normal and verbose, expanding tool calls and MCP activity that otherwise collapse to a single line.
+- `Ctrl+O` toggles that transcript viewer between normal and verbose detail, expanding tool calls and MCP activity that otherwise collapse to a single line.
 
-| Setting / variable                     | Effect                                                                                                                                   |
-| -------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------- |
-| `tui`                                  | `"fullscreen"` or `"default"`; set by `/tui`. `CLAUDE_CODE_NO_FLICKER=1` is equivalent                                                   |
-| `autoScrollEnabled`                    | In fullscreen, follow new output to the bottom. Set to `false` (or **Auto-scroll** off in `/config`) to keep the view where you leave it |
-| `CLAUDE_CODE_DISABLE_ALTERNATE_SCREEN` | Set to `1` to force the classic renderer; takes precedence over `CLAUDE_CODE_NO_FLICKER` and the `tui` setting                           |
+| Setting / variable                     | Effect                                                                                                                                                   |
+| -------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `tui`                                  | `"fullscreen"` (default) or `"default"`; set by `/tui`. `CLAUDE_CODE_NO_FLICKER=1` is equivalent                                                         |
+| `autoScrollEnabled`                    | Default `true`: in fullscreen, follow new output to the bottom. Set to `false` (or **Auto-scroll** off in `/config`) to keep the view where you leave it |
+| `CLAUDE_CODE_DISABLE_ALTERNATE_SCREEN` | Set to `1` to force the classic renderer; takes precedence over `CLAUDE_CODE_NO_FLICKER` and the `tui` setting                                           |
 
 Background sessions opened from agent view always use the fullscreen renderer, so neither the `tui` setting nor `CLAUDE_CODE_DISABLE_ALTERNATE_SCREEN` applies to them.
 

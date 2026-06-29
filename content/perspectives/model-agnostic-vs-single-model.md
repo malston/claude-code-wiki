@@ -74,5 +74,5 @@ If you are choosing a tool, stop scoring it on the length of the model list. Ask
 
 ## Related Reading
 
-- [Model Selection](../../guides/model-selection/) -- choosing among Claude tiers within Claude Code.
-- [Context Window Management Across Coding Assistants](../../guides/coding-assistants-context/) -- how different tools handle the context budget.
+- [Model Selection]({{< relref "guides/model-selection" >}}) -- choosing among Claude tiers within Claude Code.
+- [Context Window Management Across Coding Assistants]({{< relref "guides/coding-assistants-context" >}}) -- how different tools handle the context budget.

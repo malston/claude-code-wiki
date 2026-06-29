@@ -130,8 +130,8 @@ The phased cohort approach in [Cohort Strategy](../../04-phase-2-phased-rollout/
 
 ## References
 
-- Forrester Total Economic Impact (TEI) methodology -- benefits, costs, flexibility, and risk-adjustment.
-- DORA metrics (Accelerate / State of DevOps research) -- delivery throughput and stability.
-- SPACE framework -- multi-dimensional developer productivity measurement.
+- [Forrester Total Economic Impact (TEI) methodology](https://www.forrester.com/policies/tei/) -- benefits, costs, flexibility, and risk-adjustment.
+- [DORA metrics (Accelerate / State of DevOps research)](https://dora.dev/) -- delivery throughput and stability.
+- [SPACE framework](https://queue.acm.org/detail.cfm?id=3454124) -- multi-dimensional developer productivity measurement.
 - [Cost Tracking and Budgets](../../05-phase-3-observability-and-governance/cost-tracking/) -- the token-based cost view for Claude Code on Bedrock.
 - [Market Opportunity Analysis](../../01-skill-gaps-and-market-opportunity/market-opportunity/) -- the engagement-level business case.

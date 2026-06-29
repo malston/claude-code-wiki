@@ -361,6 +361,8 @@ Managed settings require administrator privileges to create or modify. They use 
 - Linux/WSL: `/etc/claude-code/managed-settings.json`
 - Windows: `C:\Program Files\ClaudeCode\managed-settings.json`
 
+The same system directory also supports a `managed-settings.d/` drop-in directory, which lets separate teams deploy independent policy fragments without coordinating edits to one file. `managed-settings.json` is merged first as the base, then every `*.json` file in `managed-settings.d/` is sorted alphabetically and merged on top (the systemd convention).
+
 ### Managed-Only Controls
 
 These settings are only available in managed settings files:

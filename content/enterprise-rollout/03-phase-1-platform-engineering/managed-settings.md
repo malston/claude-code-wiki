@@ -123,6 +123,10 @@ Deploy via:
 
 This should feel identical to how you'd push any other enterprise configuration file.
 
+### Drop-in Policy Fragments
+
+The system directory also supports a `managed-settings.d/` drop-in directory. `managed-settings.json` is merged first as the base, then every `*.json` file in `managed-settings.d/` is sorted alphabetically and merged on top (systemd convention). This lets separate teams -- platform, security, a specific business unit -- own independent policy fragments without coordinating edits to one shared file.
+
 ## Server-Managed Settings (Anthropic Direct)
 
 Anthropic also offers server-managed settings via the Claude.ai admin console (public beta) for Teams and Enterprise plan customers using Anthropic's API directly. No MDM infrastructure required -- administrators configure settings in a web UI, and Claude Code clients fetch them at startup and poll hourly.

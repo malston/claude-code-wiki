@@ -51,6 +51,7 @@ Claude Code's permission system controls what actions Claude can take -- from fi
     - [Microsoft Foundry](#microsoft-foundry)
     - [LLM Gateway Support](#llm-gateway-support)
     - [Authentication Helpers](#authentication-helpers)
+    - [Workload Identity Federation](#workload-identity-federation)
   - [CI/CD Permission Strategies](#cicd-permission-strategies)
     - [Headless Mode Permissions](#headless-mode-permissions)
     - [GitHub Actions](#github-actions)
@@ -548,6 +549,16 @@ For dynamic credential rotation:
 ```
 
 The helper script is called after 5 minutes or on HTTP 401. Customize the interval with `CLAUDE_CODE_API_KEY_HELPER_TTL_MS`.
+
+### Workload Identity Federation
+
+Workload identity federation (WIF) replaces long-lived API key secrets with short-lived OpenID Connect tokens minted by an identity provider you already run -- AWS IAM, Google Cloud, GitHub Actions, Kubernetes, Microsoft Entra ID, Okta, or any standards-compliant OIDC issuer. The workload presents a signed JWT, Anthropic validates it against a federation rule you configure in the Claude Console, and returns a short-lived access token bound to a service account. Nothing static has to be stored in CI, rotated, or leaked. The [Workload Identity Federation guide](https://platform.claude.com/docs/en/manage-claude/workload-identity-federation) covers the full setup.
+
+A federation rule is scoped to a workspace, and the minted token follows that workspace's rate limits and usage attribution. When a single rule covers more than one workspace, set `ANTHROPIC_WORKSPACE_ID` (Claude Code v2.1.141+) so the token exchange knows which workspace to target:
+
+```bash
+export ANTHROPIC_WORKSPACE_ID=wrkspc_...
+```
 
 ## CI/CD Permission Strategies
 

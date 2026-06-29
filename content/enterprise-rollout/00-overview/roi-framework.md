@@ -71,7 +71,8 @@ If Anthropic's commissioned Forrester TEI study for Claude is used as a referenc
 Benefit scales with active usage, cost scales with seats purchased. A rollout at 70% active adoption and one at 30% produce wildly different ROI off the same license bill. Model the active-seat ratio explicitly and forecast it rising across the ramp rather than assuming day-one saturation.
 
 ```text
-Effective benefit = per-active-user benefit x (active seats / purchased seats)
+Total benefit = per-active-user benefit x active seats
+              = per-active-user benefit x purchased seats x active-seat ratio
 ```
 
 This is also the lever you control after purchase. Champion programs, enablement, and right-sizing the seat count to real demand move this number more than any pricing negotiation.

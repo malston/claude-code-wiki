@@ -129,8 +129,7 @@ To set them up: install the Claude app, sign in with the same account you use in
 Commands that open an interactive picker in the terminal, such as `/plugin` or `/resume`, run only from the local CLI. These work from mobile and web:
 
 - Text-output commands: `/compact`, `/clear`, `/context`, `/usage`, `/usage-credits`, `/recap`, `/reload-plugins`, `/exit`
-- `/mcp` (from v2.1.166): returns a text summary instead of a picker, and accepts `reconnect`, `enable`, and `disable`
-- `/config` (from v2.1.181): pass `key=value` to set a setting, or run it with no argument to list settable keys
+- `/config` (from v2.1.181): pass `key=value` to set a setting, or `--help` to list settable keys
 
 [`/goal`]({{< relref "/guides/workflow-patterns" >}}#goal-driven-sessions-with-goal) also runs through Remote Control, so you can set a completion condition and let the session work while you step away.
 

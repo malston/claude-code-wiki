@@ -30,6 +30,8 @@ A model-agnostic tool has to abstract the model behind a common interface so tha
 
 This is visible in practice: a prompt that works well on one model in an agnostic tool often degrades when you switch models, because the surrounding harness was not rebuilt for the new model. The menu changed; the tuning did not.
 
+One exception matters, because it cuts against the obvious read. The penalty falls on the third-party models routed through the generic interface. A model the tool builds itself is different: the vendor controls both halves and can co-design them as tightly as any single-model tool does. Cursor's Composer is the clearest case. It is the most tightly coupled model in Cursor's lineup, the one place Cursor escapes its own abstraction tax. An agnostic tool runs a shallow harness for the models it rents and a deep one for the model it owns.
+
 ## Who Agnosticism Actually Serves
 
 Optionality is sold as a user benefit. Its largest beneficiary is the tool vendor.

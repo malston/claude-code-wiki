@@ -63,7 +63,7 @@ Active users = purchased seats x active-seat ratio. Benefit = active users x ris
 | Enablement + admin              | $0            | $110,000     | $90,000      | $80,000      |
 | One-time setup                  | $120,000      | $0           | $0           | $0           |
 | **Net cash flow**               | **-$120,000** | **$400,000** | **$744,000** | **$916,000** |
-| Discount factor (r = 10%)       | 1.0000        | 0.9091       | 0.8264       | 0.7513       |
+| Discount factor (r = 10%)       | 1.00000       | 0.90909      | 0.82645      | 0.75131      |
 | **Present value**               | **-$120,000** | **$363,636** | **$614,879** | **$688,200** |
 
 ## Headline Results
@@ -73,7 +73,7 @@ Active users = purchased seats x active-seat ratio. Benefit = active users x ris
 | Three-year NPV                | ~$1.55M                             | Sum of the present-value row                    |
 | Undiscounted three-year net   | $1.94M                              | Sum of the net-cash-flow row                    |
 | Three-year ROI (undiscounted) | ~149%                               | (total benefit - total cost) / total cost       |
-| Discounted payback            | ~4 months into Year 1               | $120,000 setup / ($400,000 / 12)                |
+| Payback (undiscounted)        | ~3.6 months into Year 1             | $120,000 setup / ($400,000 / 12)                |
 | IRR                           | Large; not the deciding metric here | Spreadsheet `=IRR()` over the net-cash-flow row |
 
 For this cash-flow shape -- a small upfront cost recovered within months -- IRR runs into the hundreds of percent and stops being informative. NPV and payback are the numbers to present.

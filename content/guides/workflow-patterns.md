@@ -48,12 +48,15 @@ Claude Code is an agentic coding tool -- it explores, plans, and implements rath
     - [Rewind and Checkpoints](#rewind-and-checkpoints)
     - [Named Sessions](#named-sessions)
     - [Resuming Work](#resuming-work)
+    - [Session Recap](#session-recap)
   - [Recurring Tasks with /loop](#recurring-tasks-with-loop)
     - [Fixed Interval vs Self-Paced](#fixed-interval-vs-self-paced)
     - [Babysit a PR Until It Merges](#babysit-a-pr-until-it-merges)
     - [Wait on a Deploy, Then Verify](#wait-on-a-deploy-then-verify)
     - [Self-Paced Test-Fixing Sweep](#self-paced-test-fixing-sweep)
     - [Stopping a Loop](#stopping-a-loop)
+  - [Goal-Driven Sessions with /goal](#goal-driven-sessions-with-goal)
+  - [Terminal Display Modes](#terminal-display-modes)
   - [Multi-Session and Parallel Work](#multi-session-and-parallel-work)
     - [Git Worktrees for Isolation](#git-worktrees-for-isolation)
     - [tmux Monitoring Layouts](#tmux-monitoring-layouts)
@@ -410,6 +413,20 @@ claude --from-pr 123
 
 From inside a session, `/resume` switches to a different conversation without leaving Claude Code.
 
+### Session Recap
+
+When you return to the terminal after stepping away, Claude Code shows a one-line recap of what the session has done so far, so you don't have to scroll back to reorient. The recap generates in the background once at least three minutes have passed since the last completed turn and the terminal is unfocused, so it's ready when you switch back. It only appears once the session has at least three turns, and never twice in a row.
+
+Run `/recap` to generate a summary on demand. It works from claude.ai and the mobile app when Remote Control is active, and is always skipped in non-interactive (`-p`) mode.
+
+Session recap is on by default for every plan and provider. Control it three ways, in increasing precedence:
+
+| Control                           | Effect                                                                                      |
+| --------------------------------- | ------------------------------------------------------------------------------------------- |
+| `/config` -> **Session recap**    | Toggle on or off interactively                                                              |
+| `awaySummaryEnabled` setting      | Set to `false` to disable; same as the `/config` toggle                                     |
+| `CLAUDE_CODE_ENABLE_AWAY_SUMMARY` | Set to `0` to force off or `1` to force on, overriding the setting and the `/config` toggle |
+
 ## Recurring Tasks with /loop
 
 `/loop` re-runs a prompt or slash command on a schedule while the session stays open. Use it to poll a deploy, babysit a PR, or check back on a long-running build without retyping the same prompt. `/proactive` is an alias for the same command. Loops are session-scoped: they stop when you start a new conversation, and `claude --resume` or `claude --continue` restores any loop created within the last seven days.
@@ -467,6 +484,57 @@ Without a fixed interval, Claude schedules the next iteration only when there is
 ### Stopping a Loop
 
 Press `Esc` while a loop is waiting for the next iteration to clear the pending wakeup so it does not fire again. Wakeups display as "Claude resuming /loop wakeup" when they fire. A self-paced loop also ends on its own once the task is provably complete; a fixed-interval loop runs until you stop it or seven days elapse.
+
+## Goal-Driven Sessions with /goal
+
+Where `/loop` re-runs on a clock, `/goal` runs until a condition holds. You set a completion condition and Claude keeps working across turns without you prompting each step. After every turn, a small fast model (Haiku by default) checks whether the condition is met against what Claude has surfaced in the conversation. A "no" returns a short reason and Claude starts another turn; a "yes" clears the goal. `/goal` requires Claude Code v2.1.139 or later.
+
+Reach for a goal when the work has a verifiable end state -- migrating every call site until the build and tests pass, working a labeled issue backlog until the queue is empty, or splitting a file until each module is under a size budget.
+
+```text
+/goal all tests in test/auth pass and the lint step is clean
+```
+
+Setting a goal starts a turn immediately with the condition as the directive, so you don't send a separate prompt. While it runs, a `◎ /goal active` indicator shows elapsed time, and the evaluator's most recent reason appears in the status view and transcript so you can see what Claude is working toward next.
+
+| Action       | Command             | Notes                                                                                  |
+| ------------ | ------------------- | -------------------------------------------------------------------------------------- |
+| Set a goal   | `/goal <condition>` | One goal per session; a new condition replaces the active one                          |
+| Check status | `/goal`             | Shows the condition, elapsed time, turns evaluated, token spend, and the latest reason |
+| Clear a goal | `/goal clear`       | `stop`, `off`, `reset`, `none`, and `cancel` are aliases; `/clear` also removes it     |
+
+Write the condition as something Claude's own output can demonstrate, since the evaluator reads the transcript rather than running commands or files itself. "`npm test` exits 0" works because Claude runs the tests and the result lands in the conversation. The condition can be up to 4,000 characters; to bound a run, add a clause like `or stop after 20 turns`.
+
+Under the hood, `/goal` is a session-scoped [prompt-based Stop hook]({{< relref "/extending/hooks-cookbook" >}}). It is unavailable in untrusted workspaces, when `disableAllHooks` is set at any level, or when `allowManagedHooksOnly` is set in managed settings, and the command tells you why instead of doing nothing. Evaluator tokens bill on the small fast model and are typically negligible next to main-turn spend.
+
+A goal that is still active when a session ends is restored on `claude --resume` or `--continue`, though the turn count, timer, and token baseline reset. `/goal` also runs non-interactively -- `claude -p "/goal ..."` runs the loop to completion in a single invocation, interruptible with Ctrl+C. Pair it with [auto mode]({{< relref "/guides/permissions-enterprise" >}}#auto-mode) so each turn runs unattended.
+
+## Terminal Display Modes
+
+Claude Code's `tui` setting selects how the CLI renders and defaults to the `fullscreen` renderer. Fullscreen draws on the terminal's alternate screen buffer, like `vim` or `htop`, which removes flicker, keeps memory flat in long conversations, and adds mouse support; `default` is the classic renderer that keeps the conversation in your terminal's native scrollback. Fullscreen rendering is a research preview.
+
+Switch renderers in a live session without losing context:
+
+```text
+/tui fullscreen   # switch to the flicker-free renderer and relaunch
+/tui default      # switch back to the classic renderer
+/tui              # print which renderer is active
+```
+
+Because the fullscreen renderer lives in the alternate screen buffer, your terminal's `Cmd+F` and tmux copy mode can't see the conversation. Press `Ctrl+O` to enter the transcript viewer, then `[` to write the conversation into native scrollback or `v` to open it in your editor. Inside the viewer, `?` shows the shortcut panel and `{` / `}` jump between user prompts.
+
+Two commands shape how much you see:
+
+- `/focus` toggles a condensed view that shows only your last prompt, a one-line summary of each tool call with edit diffstats, and the final response. The setting persists across sessions; run `/focus` again to turn it off.
+- `Ctrl+O` toggles that transcript viewer between normal and verbose detail, expanding tool calls and MCP activity that otherwise collapse to a single line.
+
+| Setting / variable                     | Effect                                                                                                                                                   |
+| -------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `tui`                                  | `"fullscreen"` (default) or `"default"`; set by `/tui`. `CLAUDE_CODE_NO_FLICKER=1` is equivalent                                                         |
+| `autoScrollEnabled`                    | Default `true`: in fullscreen, follow new output to the bottom. Set to `false` (or **Auto-scroll** off in `/config`) to keep the view where you leave it |
+| `CLAUDE_CODE_DISABLE_ALTERNATE_SCREEN` | Set to `1` to force the classic renderer; takes precedence over `CLAUDE_CODE_NO_FLICKER` and the `tui` setting                                           |
+
+Background sessions opened from agent view always use the fullscreen renderer, so neither the `tui` setting nor `CLAUDE_CODE_DISABLE_ALTERNATE_SCREEN` applies to them.
 
 ## Multi-Session and Parallel Work
 

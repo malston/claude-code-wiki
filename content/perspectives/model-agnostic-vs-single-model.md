@@ -48,7 +48,7 @@ It also serves the model maker, who has an obvious incentive to build the best p
 
 The strongest case for agnosticism is not quality. It is what happens when the provider relationship goes wrong, and 2025-2026 supplied the examples.
 
-In June 2025, Anthropic cut most of Windsurf's first-party Claude capacity with under a week's notice, reportedly because OpenAI was acquiring Windsurf. Windsurf had to strip Claude access for free users and pivot to bring-your-own-key overnight. In January 2026, Anthropic enforced the clause in its commercial terms that prohibits using Claude to build competing products, which blocked a rival lab's staff from reaching Claude through Cursor.
+In June 2025, Anthropic reportedly cut most of Windsurf's first-party Claude capacity with little notice, after reports that OpenAI was acquiring Windsurf. Windsurf had to strip Claude access for free users and pivot to bring-your-own-key. In January 2026, Anthropic enforced the clause in its commercial terms that prohibits using Claude to build competing products; this was reported to have blocked a rival lab's staff from reaching Claude through Cursor.
 
 A tool whose only model is a model it does not control is exposed to decisions it does not make. That is the real argument for keeping more than one model wired up, and for building your own. It is an insurance argument, not a quality argument, and it is strong on its own terms.
 
